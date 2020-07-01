@@ -54,3 +54,33 @@
 * created by -> ref: one user
 * assigned to -> ref: one user
 * update dt
+
+## UserSchedule
+* _id
+* User Id -> ref one user
+* timezone
+* weekdayAvailability: [
+    {
+        day: "Monday",
+        start time: "8am",
+        end time: "8pm",
+    },
+    {
+        day: "Tuesday",
+        start time: "8am",
+        end time: "8pm",
+    }
+]
+
+* unavailability: [
+    {
+        date: "07/09/2020",
+        start date: "",
+        end date: "" 
+    },
+     {
+        date: "07/09/2020",
+        start date: "",
+        end date: "" 
+    },
+]
