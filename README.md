@@ -1,1 +1,3 @@
-# Project Planner (Name tentative)
+# Project Kanri
+
+Manage your team's projects!
