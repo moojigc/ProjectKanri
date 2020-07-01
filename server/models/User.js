@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
 
 // Turn bcrypt's hash func into a promise
 async function crypt(pass) {
@@ -33,6 +33,10 @@ const UserSchema = new Schema({
 		validate: [({ length }) => length >= 8, "Password must be at least 8 characters."]
 	},
 	createdAt: {
+		type: Date,
+		default: Date.now
+	},
+	updatedAt: {
 		type: Date,
 		default: Date.now
 	}
