@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useContext } from "react";
 import { Types } from "mongoose";
-import { login, register, logout, getUserStatus } from "./userAPI";
+
 /**
  * user data from the server
  */
@@ -14,39 +14,12 @@ const { Provider } = UserContext;
 /**
  * Get and set user state
  * @param {{ _id: any, username: string, auth: boolean }} userState
- * @param {{ type: "register" | "login" | "logout" | "user-status", user: {_id, password, password2?, email, username, auth: boolean} }} action
+ * @param {{ user: {_id, password, password2?, email, username, auth: boolean} }} action
  */
-const reducer = async (userState, action) => {
-	const { type, user } = action;
-	switch (type) {
-		case "login": {
-			const res = await login({
-				username: user.username,
-				email: user.email,
-				password: user.password
-			});
-			return res.user;
-		}
-		case "register": {
-			const res = await register({
-				username: user.username,
-				email: user.email,
-				password: user.password,
-				password2: user.password2
-			});
-			return res.user;
-		}
-		case "logout": {
-			const res = await logout();
-			return res.user;
-		}
-		case "user-status": {
-			const res = await getUserStatus();
-			return res.user;
-		}
-		default:
-			break;
-	}
+const reducer = (userState, action) => {
+	// I was gonna include all the user actions in this reducer, but the reducer doesn't play nice with Promises,
+	// so you must include the dispatch function inside a separate callback/async function
+	return action.user;
 };
 
 const UserProvider = ({ value = {}, ...props }) => {

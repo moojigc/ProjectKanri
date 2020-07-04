@@ -31,7 +31,7 @@ if (productionEnv) app.use(express.static(join(__dirname, "client/build")));
 app.use(express.urlencoded({ extended: true }))
 	.use(express.json())
 	// Allows cross-origin requests from our React dev server
-	.use(cors({ credentials: true, origin: "http://localhost:3000" }))
+	.use(cors({ credentials: true, origin: `http://localhost:3000` }))
 	// Session middleware
 	.use(
 		session({
@@ -40,6 +40,7 @@ app.use(express.urlencoded({ extended: true }))
 			saveUninitialized: true,
 			store: Store,
 			cookie: {
+				maxAge: 60000 * 60 * 24,
 				sameSite: true,
 				httpOnly: true,
 				secure: false
@@ -52,7 +53,7 @@ app.use(express.urlencoded({ extended: true }))
 	// Send compressed files to client
 	.use(compression());
 // Set routes
-// require("./server/routes/api-router")(app);
+require("./server/routes/user-routes")(app);
 if (productionEnv)
 	app.get("*", (req, res) => {
 		res.sendFile(join(__dirname, "client/build/index.html"));

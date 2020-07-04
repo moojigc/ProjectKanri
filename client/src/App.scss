@@ -1,38 +1,37 @@
-.App {
-  text-align: center;
+@import "./utils/reset";
+
+:root {
+	font-size: 20px;
+	font-family: "Roboto", Helvetica, Arial, sans-serif;
+	--dark-blue: rgb(80, 84, 119);
+	--main-blue: rgb(97, 108, 153);
+	--sakura-pink: rgb(252, 221, 242);
+	--dark-pink: rgb(255, 194, 194);
+	--light-pink: rgb(255, 222, 222);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+	// For now, can change later
+	background: var(--main-blue);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.wrapper {
+	background: var(--light-pink);
+	border-radius: 0 0 0.25rem 0.25rem;
+	padding: 1rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.heading {
+	padding: 0.25rem;
+	border-radius: 0.25rem 0.25rem 0 0;
+	font-weight: 300;
+	text-align: center;
+	font-size: 3rem;
+	background: var(--light-pink);
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@media screen and (max-width: 997px) {
+	:root {
+		font-size: 16px;
+	}
 }
