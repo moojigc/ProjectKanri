@@ -1,34 +1,20 @@
 import Axios from "axios";
 
 /**
- * send login request to server
- * @param {Object} data
- * @param {string} [data.username]
- * @param {string} [data.email]
- * @param {string} data.password
+ *
+ * @param {Object} d
+ * @param {"login" | "register" | "logout" | "user-status"} d.action
+ * @param {{username, email, password, password2?}} [d.userDetails]
+ * @param {string} [d.username]
+ * @param {string} [d.email]
+ * @param {string} [d.password]
+ * @param {string} [d.password2]
  */
-export const login = async ({ username, email, password }) => {
+const userRequest = async ({ action, userDetails, username, email, password, password2 }) => {
 	let { data } = await Axios({
-		url: "/api/login",
-		data: { username, email, password },
-		method: "POST",
-		withCredentials: true
-	});
-	return data;
-};
-
-/**
- * send register request to server
- * @param {Object} data
- * @param {string} data.username
- * @param {string} data.email
- * @param {string} data.password
- */
-export const register = async ({ username, email, password, password2 }) => {
-	let { data } = await Axios({
-		url: "/api/register",
-		method: "POST",
-		data: {
+		url: `/api/${action}`,
+		method: action === "logout" || action === "user-status" ? "GET" : "POST",
+		data: userDetails || {
 			username,
 			email,
 			password,
@@ -39,26 +25,4 @@ export const register = async ({ username, email, password, password2 }) => {
 	return data;
 };
 
-/**
- * Sends Logout API request to server
- */
-export const logout = async () => {
-	let { data } = await Axios({
-		url: "/api/logout",
-		method: "GET",
-		withCredentials: true
-	});
-	return data;
-};
-
-/**
- * Check whether or not user is logged in
- */
-export const getUserStatus = async () => {
-	let { data } = await Axios({
-		url: "/api/user-status",
-		method: "GET",
-		withCredentials: true
-	});
-	return data;
-};
+export default userRequest;

@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "install": "cd client && npm install",
     "build": "cd client && npm run build",
     "watch": "concurrently \"nodemon --ignore \"./client/\" server.js\" \"cd client && npm start\"",
     "test": "echo \"Error: no test specified\" && exit 0",
@@ -12,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
