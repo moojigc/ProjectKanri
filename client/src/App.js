@@ -5,6 +5,7 @@ import UserStatus from "./components/UserStatus";
 import Login from "./pages/Login";
 import { getUserStatus } from "./utils/userAPI";
 import "./App.scss";
+import Task from "./pages/Task";
 
 function App() {
 	return (
@@ -14,6 +15,9 @@ function App() {
 					<Switch>
 						<Route exact path="/login">
 							<Login />
+						</Route>
+						<Route exact path="/task">
+						<Task />
 						</Route>
 					</Switch>
 				</UserStatus>
