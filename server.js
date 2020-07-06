@@ -6,7 +6,7 @@ const express = require("express"),
 	compression = require("compression"),
 	{ join } = require("path"),
 	cors = require("cors"),
-	PORT = process.env.PORT || 3100,
+	PORT = process.env.PORT || 3500,
 	MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/project-planner",
 	productionEnv = process.env.NODE_ENV === "production" ? true : false;
 
