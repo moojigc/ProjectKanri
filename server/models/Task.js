@@ -24,7 +24,7 @@ const TaskSchema = new Schema({
 	comments: [
 		{
 			type: Types.ObjectId,
-			ref: "TaskComments"
+			ref: "TaskComment"
 		}
 	],
 	creator: {
