@@ -1,5 +1,6 @@
 // @ts-check
 import React, { useEffect, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -9,15 +10,14 @@ import Face from "@material-ui/icons/Face";
 import Email from "@material-ui/icons/EmailOutlined";
 import Lock from "@material-ui/icons/Lock";
 import Send from "@material-ui/icons/Send";
-import userApi from "../../utils/userAPI";
+import userAPI from "../../utils/userAPI";
 import Wrapper from "../../components/Wrapper";
 import FormGroup from "@material-ui/core/FormGroup";
-import { UserContext } from "../../utils/UserContext";
-import Alert from "../../components/Alert";
 import { makeStyles } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import Title from "../../components/Title";
+import Alert from "../../components/Alert";
 
 const useStyles = makeStyles((theme) => ({
 	info: {
@@ -43,17 +43,10 @@ const Register = () => {
 	const { user, setUser } = useContext(UserContext);
 	const handleRegister = async (event) => {
 		event.preventDefault();
-		let res = await userApi({
-			action: "register",
-			userDetails: userDetails
-		});
-		console.log(res);
+		let res = await userAPI.register(userDetails);
 		setFlash(res.flash);
 		if (res.redirect === "/login") history.push(res.redirect);
 	};
-	useEffect(() => {
-		console.log(user);
-	}, [user]);
 	return (
 		<Container maxWidth="lg" component="main">
 			<Wrapper>

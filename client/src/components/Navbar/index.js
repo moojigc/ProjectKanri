@@ -44,11 +44,10 @@ const Navbar = () => {
 		if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
 			return;
 		}
-
 		setDrawerOpen(!drawerOpen);
 	};
 	const logout = async () => {
-		let res = await userAPI({ action: "logout" });
+		let res = await userAPI.logout();
 		setUser(res.user);
 		setFlash(res.flash);
 		history.push("/login");
@@ -56,11 +55,18 @@ const Navbar = () => {
 	useEffect(() => {
 		let title = location.pathname.split("/")[1];
 		document.title =
-			location.pathname !== "/" ? title + " - Google Books Search" : "Google Books Search";
+			location.pathname !== "/"
+				? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri"
+				: "ProjectKanri";
 	}, [location.pathname]);
 	const AppDrawer = () => {
 		return (
-			<Drawer variant="temporary" anchor="left" open={drawerOpen} onClose={toggleDrawer}>
+			<Drawer
+				variant="temporary"
+				transitionDuration={400}
+				anchor="left"
+				open={drawerOpen}
+				onClose={toggleDrawer}>
 				<div className={classes.drawer}>
 					<List>
 						<ListItem button component={A} to="/" key="/">

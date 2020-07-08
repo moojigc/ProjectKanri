@@ -23,7 +23,7 @@ function App() {
 	});
 
 	useEffect(() => {
-		userAPI({ action: "user-status" }).then((res) => {
+		userAPI.checkStatus().then((res) => {
 			console.log(res);
 			setUser(res);
 		});

@@ -27,17 +27,11 @@ const Login = () => {
 	const { user, setUser } = useContext(UserContext);
 	const handleLogin = async (event) => {
 		event.preventDefault();
-		let res = await userApi({
-			action: "login",
-			userDetails: loginDetails
-		});
+		let res = await userApi.login(loginDetails);
 		console.log(res);
 		setUser(res.user);
 		setFlash(res.flash);
 	};
-	useEffect(() => {
-		console.log(user);
-	}, [user]);
 	return (
 		<Container maxWidth="lg" component="main">
 			<Wrapper>
@@ -46,6 +40,7 @@ const Login = () => {
 					<Grid container justify="center" spacing={2}>
 						<Grid item sm={12}>
 							<TextField
+								required
 								onChange={({ target }) =>
 									setLoginDetails({
 										...loginDetails,
@@ -67,6 +62,7 @@ const Login = () => {
 						</Grid>
 						<Grid item sm={12}>
 							<TextField
+								required
 								onChange={({ target }) =>
 									setLoginDetails({ ...loginDetails, password: target.value })
 								}
