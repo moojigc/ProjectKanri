@@ -82,18 +82,18 @@ const projects = (theUsers, theTasks) => {
 		{
 			title: "Keikaku",
 			description: "Project to do projects",
-			tasks: theTasks,
+			tasks: theTasks.slice(0, 8),
 			admins: [theUsers[0]._id],
-			members: theUsers.slice(1).map((u) => u._id),
+			members: theUsers.slice(0, 4).map((u) => u._id),
 			creator: theUsers[0]._id
 		},
 		{
 			title: "Sakusen",
 			description: "Project for tactics",
-			tasks: theTasks,
+			tasks: theTasks.slice(8, 16),
 			admins: [theUsers[0]._id],
-			members: theUsers.slice(1).map((u) => u._id),
-			creator: theUsers[0]._id
+			members: theUsers.slice(0, 4).map((u) => u._id),
+			creator: theUsers[1]._id
 		}
 	];
 };
