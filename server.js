@@ -7,8 +7,8 @@ const express = require("express"),
 	{ join } = require("path"),
 	cors = require("cors"),
 	PORT = process.env.PORT || 3500,
-	MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/project-planner",
-	productionEnv = process.env.NODE_ENV === "production" ? true : false;
+	MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/projectkanri",
+	productionEnv = process.env.NODE_ENV === "production";
 
 // Connect to database
 mongoose
@@ -56,7 +56,7 @@ app.use(express.urlencoded({ extended: true }))
 require("./server/routes/user-routes")(app);
 if (productionEnv)
 	app.get("*", (req, res) => {
-		res.sendFile(join(__dirname, "client/build/index.html"));
+		res.sendFile(join(__dirname, "client", "build", "index.html"));
 	});
 app.listen(PORT, (error) => {
 	if (error) throw error;

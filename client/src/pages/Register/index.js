@@ -1,3 +1,4 @@
+// @ts-check
 import React, { useEffect, useState, useContext } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -5,35 +6,50 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Face from "@material-ui/icons/Face";
+import Email from "@material-ui/icons/EmailOutlined";
 import Lock from "@material-ui/icons/Lock";
 import Send from "@material-ui/icons/Send";
 import userApi from "../../utils/userAPI";
 import Wrapper from "../../components/Wrapper";
-import Switch from "@material-ui/core/Switch";
 import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { UserContext } from "../../utils/UserContext";
-import { FlashContext } from "../../utils/FlashContext";
 import Alert from "../../components/Alert";
+import { makeStyles } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { FlashContext } from "../../utils/FlashContext";
 import Title from "../../components/Title";
 
-const Login = () => {
-	const [loginDetails, setLoginDetails] = useState({
-		usernameOrEmail: "",
+const useStyles = makeStyles((theme) => ({
+	info: {
+		background: theme.palette.primary.light,
+		color: theme.palette.primary.contrastText,
+		padding: "1rem",
+		borderRadius: "0.25rem"
+	}
+}));
+
+const Register = () => {
+	const classes = useStyles();
+	const [userDetails, setUserDetails] = useState({
+		username: "",
 		password: "",
-		rememberMe: false
+		password2: "",
+		email: ""
 	});
+	const history = useHistory();
+	// @ts-ignore
 	const { flash, setFlash } = useContext(FlashContext);
+	// @ts-ignore
 	const { user, setUser } = useContext(UserContext);
-	const handleLogin = async (event) => {
+	const handleRegister = async (event) => {
 		event.preventDefault();
 		let res = await userApi({
-			action: "login",
-			userDetails: loginDetails
+			action: "register",
+			userDetails: userDetails
 		});
 		console.log(res);
-		setUser(res.user);
 		setFlash(res.flash);
+		if (res.redirect === "/login") history.push(res.redirect);
 	};
 	useEffect(() => {
 		console.log(user);
@@ -41,15 +57,36 @@ const Login = () => {
 	return (
 		<Container maxWidth="lg" component="main">
 			<Wrapper>
-				<Title>Login</Title>
-				<form onSubmit={handleLogin}>
+				<Title>Register</Title>
+				<form onSubmit={handleRegister}>
 					<Grid container justify="center" spacing={2}>
 						<Grid item sm={12}>
 							<TextField
 								onChange={({ target }) =>
-									setLoginDetails({
-										...loginDetails,
-										usernameOrEmail: target.value
+									setUserDetails({
+										...userDetails,
+										email: target.value
+									})
+								}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<Email />
+										</InputAdornment>
+									)
+								}}
+								fullWidth
+								id="username-or-email"
+								variant="filled"
+								label="Email"
+							/>
+						</Grid>
+						<Grid item sm={12}>
+							<TextField
+								onChange={({ target }) =>
+									setUserDetails({
+										...userDetails,
+										username: target.value
 									})
 								}
 								InputProps={{
@@ -62,13 +99,13 @@ const Login = () => {
 								fullWidth
 								id="username-or-email"
 								variant="filled"
-								label="Username/Email"
+								label="Username"
 							/>
 						</Grid>
-						<Grid item sm={12}>
+						<Grid item sm={6}>
 							<TextField
 								onChange={({ target }) =>
-									setLoginDetails({ ...loginDetails, password: target.value })
+									setUserDetails({ ...userDetails, password: target.value })
 								}
 								InputProps={{
 									startAdornment: (
@@ -80,26 +117,30 @@ const Login = () => {
 								fullWidth
 								id="password"
 								variant="filled"
+								type="password"
 								label="Password"
 							/>
 						</Grid>
+						<Grid item sm={6}>
+							<TextField
+								onChange={({ target }) =>
+									setUserDetails({ ...userDetails, password2: target.value })
+								}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											<Lock />
+										</InputAdornment>
+									)
+								}}
+								fullWidth
+								id="password"
+								type="password"
+								variant="filled"
+								label="Confirm Password"
+							/>
+						</Grid>
 						<Grid item>
-							<FormGroup row>
-								<FormControlLabel
-									control={
-										<Switch
-											checked={loginDetails.rememberMe}
-											onChange={({ target }) =>
-												setLoginDetails({
-													...loginDetails,
-													rememberMe: target.checked
-												})
-											}
-										/>
-									}
-									label="Remember me?"
-								/>
-							</FormGroup>
 							<FormGroup row>
 								<Button
 									type="submit"
@@ -116,13 +157,9 @@ const Login = () => {
 					</Grid>
 				</form>
 			</Wrapper>
-			{flash.message ? (
-				<Alert style={{ marginTop: "1rem", borderRadius: "0.25rem" }}>
-					{flash.message}
-				</Alert>
-			) : null}
+			{flash.message ? <Alert type={flash.type}>{flash.message}</Alert> : null}
 		</Container>
 	);
 };
 
-export default Login;
+export default Register;

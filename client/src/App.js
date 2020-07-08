@@ -1,26 +1,52 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { UserProvider } from './utils/UserContext'
-import UserStatus from "./components/UserStatus";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Provider as UserProvider } from "./utils/UserContext";
+import { Provider as FlashProvider } from "./utils/FlashContext";
 import Login from "./pages/Login";
-import { getUserStatus } from "./utils/userAPI";
-import "./App.scss";
+import userAPI from "./utils/userAPI";
 import Task from "./pages/Task";
+import Register from "./pages/Register";
+import theme from "./utils/theme";
+import { ThemeProvider } from "@material-ui/core";
+import "./App.scss";
+import Navbar from "./components/Navbar";
 
 function App() {
+	const [user, setUser] = useState({
+		auth: false,
+		username: "Guest",
+		_id: ""
+	});
+	const [flash, setFlash] = useState({
+		message: "",
+		type: "error" || "success"
+	});
+
+	useEffect(() => {
+		userAPI({ action: "user-status" }).then((res) => {
+			console.log(res);
+			setUser(res);
+		});
+	}, []);
 	return (
 		<Router>
-			<UserProvider>
-				<UserStatus>
-					<Switch>
-						<Route exact path="/login">
-							<Login />
-						</Route>
-						<Route exact path="/task">
-						<Task />
-						</Route>
-					</Switch>
-				</UserStatus>
+			<UserProvider value={{ user, setUser }}>
+				<FlashProvider value={{ flash, setFlash }}>
+					<ThemeProvider theme={theme}>
+						<Navbar />
+						<Switch>
+							<Route exact path="/login">
+								<Login />
+							</Route>
+							<Route exact path="/task">
+								<Task />
+							</Route>
+							<Route exact path="/register">
+								<Register />
+							</Route>
+						</Switch>
+					</ThemeProvider>
+				</FlashProvider>
 			</UserProvider>
 		</Router>
 	);
