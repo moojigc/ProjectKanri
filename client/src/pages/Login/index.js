@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -12,7 +12,10 @@ import Wrapper from "../../components/Wrapper";
 import Switch from "@material-ui/core/Switch";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { useUserContext } from "../../utils/UserContext";
+import { UserContext } from "../../utils/UserContext";
+import { FlashContext } from "../../utils/FlashContext";
+import Alert from "../../components/Alert";
+import Title from "../../components/Title";
 
 const Login = () => {
 	const [loginDetails, setLoginDetails] = useState({
@@ -20,28 +23,24 @@ const Login = () => {
 		password: "",
 		rememberMe: false
 	});
-	const [flash, setFlash] = useState(null);
-	const [user, dispatchUser] = useUserContext();
-	const handleLogin = async () => {
-		let res = await userApi({
-			action: "login",
-			userDetails: loginDetails
-		});
+	const { flash, setFlash } = useContext(FlashContext);
+	const { user, setUser } = useContext(UserContext);
+	const handleLogin = async (event) => {
+		event.preventDefault();
+		let res = await userApi.login(loginDetails);
 		console.log(res);
-		dispatchUser({ user: res.user });
+		setUser(res.user);
 		setFlash(res.flash);
 	};
-	useEffect(() => {
-		console.log(user);
-	}, [user]);
 	return (
 		<Container maxWidth="lg" component="main">
-			<h1 className="heading">Login</h1>
 			<Wrapper>
-				<form>
+				<Title>Login</Title>
+				<form onSubmit={handleLogin}>
 					<Grid container justify="center" spacing={2}>
 						<Grid item sm={12}>
 							<TextField
+								required
 								onChange={({ target }) =>
 									setLoginDetails({
 										...loginDetails,
@@ -63,6 +62,7 @@ const Login = () => {
 						</Grid>
 						<Grid item sm={12}>
 							<TextField
+								required
 								onChange={({ target }) =>
 									setLoginDetails({ ...loginDetails, password: target.value })
 								}
@@ -98,7 +98,7 @@ const Login = () => {
 							</FormGroup>
 							<FormGroup row>
 								<Button
-									onClick={handleLogin}
+									type="submit"
 									style={{ marginTop: "1rem" }}
 									variant="contained"
 									size="large">
@@ -112,11 +112,10 @@ const Login = () => {
 					</Grid>
 				</form>
 			</Wrapper>
-			{flash ? (
-				// Temporary
-				<Wrapper style={{ marginTop: "1rem", borderRadius: "0.25rem" }}>
+			{flash.message ? (
+				<Alert style={{ marginTop: "1rem", borderRadius: "0.25rem" }}>
 					{flash.message}
-				</Wrapper>
+				</Alert>
 			) : null}
 		</Container>
 	);
