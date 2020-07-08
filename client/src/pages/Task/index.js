@@ -16,9 +16,27 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { useUserContext } from "../../utils/UserContext";
 import taskAPI from "../../utils/taskAPI";
 import Title from "../../components/Title";
+import { MenuItem, Box } from "@material-ui/core";
+
+const tempUsers = [
+	{
+		value: "001",
+		label: "Pia"
+	},
+
+	{
+		value: "002",
+		label: "Moojig"
+	},
+	{
+		value: "003",
+		label: "Sam"
+	}
+];
 
 export default function Task() {
 	const [task, setTask] = useState({});
+	const [assignee, setAssignee] = useState("001");
 	const { id } = useParams();
 	useEffect(() => {
 		taskAPI
@@ -27,10 +45,40 @@ export default function Task() {
 			.catch((err) => console.log(err));
 	}, []);
 
+	const handleChange = (event) => {
+		setAssignee(event.target.value);
+	};
+
 	return (
 		<Container maxWidth="lg" component="main">
 			<Wrapper>
 				<Title>Task</Title>
+				<Grid container justify="center" spacing={2}>
+					<Grid item sm={10}>
+						<TextField
+							color="textPrimary"
+							disabled
+							value="Pia"
+							label="Created By:"
+							helperText="7/8/2020"
+						/>
+
+						<TextField
+							style={{ width: "3rem" }}
+							id="select-assignee"
+							select
+							label="Assigned To"
+							value={assignee}
+							onChange={handleChange}>
+							{tempUsers.map((user) => (
+								<MenuItem key={user.value} value={user.value}>
+									{user.label}
+								</MenuItem>
+							))}
+						</TextField>
+					</Grid>
+					<Grid item sm={2}></Grid>
+				</Grid>
 				<Grid container justify="center" spacing={2}>
 					<Grid item sm={12}>
 						Lorem Ipsum is simply dummy text of the printing and typesetting industry.
@@ -47,32 +95,6 @@ export default function Task() {
 			<Wrapper style={{ marginTop: "1rem" }}>
 				<Grid item sm={12}>
 					{" "}
-					Assigned User, Created By:, Updated Date:{" "}
-				</Grid>
-			</Wrapper>
-			<Wrapper style={{ marginTop: "1rem" }}>
-				<Grid item sm={12}>
-					Text 1
-				</Grid>
-			</Wrapper>
-			<Wrapper style={{ marginTop: "1rem" }}>
-				<Grid item sm={12}>
-					Text 1
-				</Grid>
-			</Wrapper>
-			<Wrapper style={{ marginTop: "1rem" }}>
-				<Grid item sm={12}>
-					Text 1
-				</Grid>
-			</Wrapper>
-			<Wrapper style={{ marginTop: "1rem" }}>
-				<Grid item sm={12}>
-					Text 1
-				</Grid>
-			</Wrapper>
-			<Wrapper style={{ marginTop: "1rem" }}>
-				<Grid item sm={12}>
-					Text 1
 				</Grid>
 			</Wrapper>
 		</Container>

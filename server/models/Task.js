@@ -35,7 +35,13 @@ const TaskSchema = new Schema({
 	assignedUser: {
 		type: Types.ObjectId,
 		ref: "User"
-	}
+	},
+	status: {
+		type: String,
+		enum: ["New","To Do","In Progress","In Review","Completed"],
+		default: "New", 
+		required: true
+	},
 });
 const Task = model("Task", TaskSchema);
 
