@@ -26,7 +26,6 @@ const guestUser = {
  */
 module.exports = (router) => {
 	router.post("/api/register", async ({ body }, res) => {
-		console.log(body);
 		const isInvalid =
 			Object.values(body).filter((field) => field === null || field === "").length > 0;
 		if (isInvalid) {

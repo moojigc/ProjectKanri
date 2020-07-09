@@ -23,10 +23,13 @@ function App() {
 	});
 
 	useEffect(() => {
-		userAPI.checkStatus().then((res) => {
-			console.log(res);
-			setUser(res);
-		});
+		userAPI
+			.checkStatus()
+			.then((res) => {
+				setUser({ ...res.user });
+				console.log(res.user);
+			})
+			.then(() => console.log(user));
 	}, []);
 	return (
 		<Router>

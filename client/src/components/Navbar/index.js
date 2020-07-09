@@ -6,7 +6,6 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import Search from "@material-ui/icons/Search";
 import { Link as A, useHistory, useLocation } from "react-router-dom";
 import {
 	makeStyles,
@@ -17,17 +16,17 @@ import {
 	ListItem,
 	Link
 } from "@material-ui/core";
-import { ExitToApp } from "@material-ui/icons";
+import { ExitToApp, HomeOutlined } from "@material-ui/icons";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import userAPI from "../../utils/userAPI";
 
 const useStyles = makeStyles((theme) => ({
 	nav: {
-		background: theme.palette.primary.dark
+		background: theme.palette.primary.light
 	},
 	drawer: {
-		background: theme.palette.primary.dark,
+		background: theme.palette.primary.light,
 		padding: "1rem",
 		height: "inherit"
 	}
@@ -71,7 +70,7 @@ const Navbar = () => {
 					<List>
 						<ListItem button component={A} to="/" key="/">
 							<ListItemIcon>
-								<Search />
+								<HomeOutlined />
 							</ListItemIcon>
 							<ListItemText>Home</ListItemText>
 						</ListItem>
@@ -107,7 +106,11 @@ const Navbar = () => {
 								Login
 							</Link>
 						</Button>
-					) : null}
+					) : (
+						<Button>
+							<AccountCircle />
+						</Button>
+					)}
 				</Toolbar>
 			</AppBar>
 		</div>

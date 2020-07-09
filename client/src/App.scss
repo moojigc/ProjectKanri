@@ -3,31 +3,18 @@
 :root {
 	font-size: 20px;
 	font-family: "Roboto", Helvetica, Arial, sans-serif;
-	--dark-blue: rgb(80, 84, 119);
-	--main-blue: rgb(97, 108, 153);
-	--sakura-pink: rgb(252, 221, 242);
-	--dark-pink: rgb(255, 194, 194);
-	--light-pink: rgb(255, 222, 222);
+	font-weight: 300;
+	--secondary-light: rgb(128, 137, 173);
+	--secondary-dark: rgb(80, 84, 119);
+	--secondary-main: rgb(97, 108, 153);
+	--primary-main: rgb(252, 221, 242);
+	--primary-dark: rgb(255, 194, 194);
+	--primary-light: rgb(255, 222, 222);
 }
 
 body {
 	// For now, can change later
-	background: var(--main-blue);
-}
-
-.wrapper {
-	background: var(--light-pink);
-	border-radius: 0 0 0.25rem 0.25rem;
-	padding: 1rem;
-}
-
-.heading {
-	padding: 0.25rem;
-	border-radius: 0.25rem 0.25rem 0 0;
-	font-weight: 300;
-	text-align: center;
-	font-size: 3rem;
-	background: var(--light-pink);
+	background: var(--primary-dark);
 }
 
 @media screen and (max-width: 997px) {

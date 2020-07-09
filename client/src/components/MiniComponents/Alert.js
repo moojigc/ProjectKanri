@@ -1,14 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Box } from "@material-ui/core";
 
 /**
  * Alerts the user to a success or failure
- * @param {Object} o
- * @param {any} o.children
- * @param {"error" | "success"} o.type
- * @param {import("react").ReactPropTypes} [o.props]
+ * @param {Object} props
+ * @param {"error" | "success"} props.type
+ * @param {any} props.children
+ * @param {import("@material-ui/core").BoxProps} [props.other]
  */
-const Alert = ({ children, type, ...props }) => {
+export const Alert = (props) => {
+	const { type, other } = props;
 	const useStyles = makeStyles((theme) => ({
 		alert: {
 			background:
@@ -27,10 +28,8 @@ const Alert = ({ children, type, ...props }) => {
 	}));
 	const classes = useStyles();
 	return (
-		<div {...props} className={classes.alert}>
-			{children}
-		</div>
+		<Box {...other} className={classes.alert}>
+			{props.children}
+		</Box>
 	);
 };
-
-export default Alert;

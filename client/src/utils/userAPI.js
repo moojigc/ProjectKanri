@@ -32,7 +32,7 @@ const userRequest = {
 	 * @param {boolean} data.rememberMe
 	 */
 	login: async (data) => {
-		return await request("login", data);
+		return await request("login", data, "POST");
 	},
 	/**
 	 * Async create new user request
