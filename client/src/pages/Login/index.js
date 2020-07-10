@@ -15,7 +15,8 @@ import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
-import { Title, Wrapper, Alert, ButtonLink } from "../../components/MiniComponents";
+import { Alert } from "@material-ui/lab";
+import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 
 const useStyles = makeStyles((theme) => ({
 	info: {
@@ -49,6 +50,7 @@ const Login = () => {
 		event.preventDefault();
 		try {
 			let res = await userAPI.login(loginDetails);
+			console.log(res);
 			setUser(res.user);
 			setFlash(res.flash);
 		} catch (error) {
@@ -67,7 +69,7 @@ const Login = () => {
 				<form onSubmit={handleLogin}>
 					<Grid container>
 						<Grid item sm={12}>
-							<ButtonLink to="/register" fullSizeInfo>
+							<ButtonLink to="/signup" info>
 								First time user? Sign up here.
 							</ButtonLink>
 						</Grid>
@@ -148,7 +150,7 @@ const Login = () => {
 					</Grid>
 				</form>
 			</Wrapper>
-			{flash.message ? <Alert type={flash.type}>{flash.message}</Alert> : null}
+			{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
 		</Container>
 	);
 };

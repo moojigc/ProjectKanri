@@ -41,8 +41,6 @@ const useStyles = makeStyles((theme) => ({
 /**
  * A title component built around Material UI's `<Typography/>`. By default an h1 but h2 sizing.
  * @param {import("@material-ui/core").TypographyProps} [props]
- * @param {"h1" | "h2" | "h3" | "h4" | "h5" | "h6"} [options.component]
- * @param {"h1" | "h2" | "h3" | "h4" | "h5" | "h6"} [options.variant]
  */
 export const Title = (props) => {
 	const { component, variant } = props;
@@ -68,27 +66,22 @@ export const Wrapper = (props) => {
 };
 
 /**
- *
  * @param {Object} props
  * @param {string} props.to
+ * @param {boolean} [props.info]
  * @param {any} props.children
- * @param {boolean} [props.fullSizeInfo]
- * @param {import("@material-ui/core").ButtonBaseTypeMap} [props.other]
  */
-export const ButtonLink = (props) => {
-	const { to, fullSizeInfo, other } = props;
+export const ButtonLink = ({ to, info, children, ...props }) => {
 	const history = useHistory();
 	const classes = useStyles();
 	return (
-		<Button
-			{...other}
-			onClick={() => history.push(to)}
-			className={fullSizeInfo ? classes.info : ""}>
+		<Button onClick={() => history.push(to)} className={info ? classes.info : ""} {...props}>
 			<Link to={to} component={A}>
-				{props.children}
+				{children}
 			</Link>
 		</Button>
 	);
 };
 
 export { Alert } from "./Alert";
+export { default as Snackbar } from "./Snackbar";

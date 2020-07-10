@@ -15,22 +15,26 @@ import FormGroup from "@material-ui/core/FormGroup";
 import { makeStyles } from "@material-ui/core";
 import { FlashContext } from "../../utils/FlashContext";
 import { Alert, Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
+import { UserContext } from "../../utils/UserContext";
 
 const useStyles = makeStyles((theme) => ({
-	info: {
-		background: theme.palette.info.light,
-		color: theme.palette.info.contrastText,
-		padding: "1rem",
-		borderRadius: "0.25rem"
+	gradient: {
+		background: "linear-gradient(159deg, rgba(255,222,222,1) 0%, rgba(97,108,153,1) 100%)",
+		height: "calc(100vh - 4rem)",
+		padding: "2rem"
 	}
 }));
 
 const Register = () => {
+	const classes = useStyles();
+	const { user } = useContext(UserContext);
 	const [userDetails, setUserDetails] = useState({
+		firstName: "",
+		lastName: "",
 		username: "",
 		password: "",
 		password2: "",
-		email: ""
+		email: user.email || ""
 	});
 	const history = useHistory();
 	// @ts-ignore
@@ -41,125 +45,182 @@ const Register = () => {
 		setFlash(res.flash);
 		if (res.redirect === "/login") history.push(res.redirect);
 	};
+
 	useEffect(() => {
 		setFlash({ message: null, type: null });
 	}, []);
 	return (
-		<Container maxWidth="lg" component="main">
-			<Wrapper>
-				<Title>Sign Up</Title>
-				<form onSubmit={handleRegister}>
-					<Grid container>
-						<Grid item sm={12}>
-							<ButtonLink to="/login" fullSizeInfo>
-								Have an account? Login here.
-							</ButtonLink>
+		<div className={classes.gradient}>
+			<Container maxWidth="lg" component="main">
+				<Wrapper padding="2rem">
+					<Title>Sign Up</Title>
+					<form onSubmit={handleRegister}>
+						<Grid container>
+							<Grid item sm={12}>
+								<ButtonLink to="/login" info>
+									Have an account? Login here.
+								</ButtonLink>
+							</Grid>
 						</Grid>
-					</Grid>
-					<Grid container justify="center" spacing={2}>
-						<Grid item sm={12}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setUserDetails({
-										...userDetails,
-										email: target.value
-									})
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Email />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="username-or-email"
-								variant="filled"
-								label="Email"
-							/>
+						<Grid container spacing={1}>
+							<Grid item container spacing={2}>
+								<Grid item sm={12}>
+									<TextField
+										required={!user.email}
+										onChange={({ target }) =>
+											setUserDetails({
+												...userDetails,
+												lastName: target.value
+											})
+										}
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													<Email />
+												</InputAdornment>
+											)
+										}}
+										fullWidth
+										type="email"
+										color="secondary"
+										id="email"
+										variant="filled"
+										label="Email"
+										placeholder={user.email}
+									/>
+								</Grid>
+							</Grid>
+							<Grid item container>
+								<Grid item sm={12}>
+									<TextField
+										required
+										onChange={({ target }) =>
+											setUserDetails({
+												...userDetails,
+												username: target.value
+											})
+										}
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													<Face />
+												</InputAdornment>
+											)
+										}}
+										fullWidth
+										color="secondary"
+										id="username"
+										variant="filled"
+										label="Username"
+									/>
+								</Grid>
+							</Grid>
+							<Grid item container spacing={1}>
+								<Grid item sm={6}>
+									<TextField
+										required
+										onChange={({ target }) =>
+											setUserDetails({
+												...userDetails,
+												firstName: target.value
+											})
+										}
+										fullWidth
+										color="secondary"
+										id="first-name"
+										variant="filled"
+										label="First Name"
+									/>
+								</Grid>
+								<Grid item sm={6}>
+									<TextField
+										required
+										onChange={({ target }) =>
+											setUserDetails({
+												...userDetails,
+												lastName: target.value
+											})
+										}
+										fullWidth
+										color="secondary"
+										id="last-name"
+										variant="filled"
+										label="Last Name"
+									/>
+								</Grid>
+							</Grid>
+							<Grid item container spacing={1}>
+								<Grid item sm={6}>
+									<TextField
+										required
+										onChange={({ target }) =>
+											setUserDetails({
+												...userDetails,
+												password: target.value
+											})
+										}
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													<Lock />
+												</InputAdornment>
+											)
+										}}
+										fullWidth
+										color="secondary"
+										id="password"
+										variant="filled"
+										type="password"
+										label="Password"
+									/>
+								</Grid>
+								<Grid item sm={6}>
+									<TextField
+										required
+										onChange={({ target }) =>
+											setUserDetails({
+												...userDetails,
+												password2: target.value
+											})
+										}
+										InputProps={{
+											startAdornment: (
+												<InputAdornment position="start">
+													<Lock />
+												</InputAdornment>
+											)
+										}}
+										fullWidth
+										color="secondary"
+										id="confirm-password"
+										type="password"
+										variant="filled"
+										label="Confirm Password"
+									/>
+								</Grid>
+							</Grid>
+							<Grid item container>
+								<Grid item>
+									<FormGroup row>
+										<Button
+											type="submit"
+											style={{ marginTop: "1rem" }}
+											variant="contained"
+											size="large">
+											Submit
+											<InputAdornment position="end">
+												<Send />
+											</InputAdornment>
+										</Button>
+									</FormGroup>
+								</Grid>
+							</Grid>
 						</Grid>
-						<Grid item sm={12}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setUserDetails({
-										...userDetails,
-										username: target.value
-									})
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Face />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="username-or-email"
-								variant="filled"
-								label="Username"
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setUserDetails({ ...userDetails, password: target.value })
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Lock />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="password"
-								variant="filled"
-								type="password"
-								label="Password"
-							/>
-						</Grid>
-						<Grid item sm={6}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setUserDetails({ ...userDetails, password2: target.value })
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Lock />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="password"
-								type="password"
-								variant="filled"
-								label="Confirm Password"
-							/>
-						</Grid>
-						<Grid item>
-							<FormGroup row>
-								<Button
-									type="submit"
-									style={{ marginTop: "1rem" }}
-									variant="contained"
-									size="large">
-									Submit
-									<InputAdornment position="end">
-										<Send />
-									</InputAdornment>
-								</Button>
-							</FormGroup>
-						</Grid>
-					</Grid>
-				</form>
-			</Wrapper>
-			{flash.message ? <Alert type={flash.type}>{flash.message}</Alert> : null}
-		</Container>
+					</form>
+				</Wrapper>
+				{flash.message ? <Alert type={flash.type}>{flash.message}</Alert> : null}
+			</Container>
+		</div>
 	);
 };
 

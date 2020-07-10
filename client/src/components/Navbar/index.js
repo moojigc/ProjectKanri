@@ -54,7 +54,7 @@ const Navbar = () => {
 	useEffect(() => {
 		let title = location.pathname.split("/")[1];
 		document.title =
-			location.pathname !== "/"
+			location.pathname !== "/" || location.pathname !== "/welcome"
 				? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri"
 				: "ProjectKanri";
 	}, [location.pathname]);
@@ -87,7 +87,7 @@ const Navbar = () => {
 			</Drawer>
 		);
 	};
-	return (
+	return location.pathname === "/welcome" ? null : (
 		<div>
 			<AppDrawer />
 			<AppBar className={classes.nav} position="static">

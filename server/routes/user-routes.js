@@ -84,12 +84,13 @@ module.exports = (router) => {
 			: 60000 * 60 * 24;
 		passport.authenticate("local", function (err, user, info) {
 			if (err) {
+				console.log(err);
 				return res.json({
-					...flash(err, "error"),
 					user: {
 						auth: false
 					},
-					redirect: "/login"
+					redirect: "/login",
+					...flash(err.message, "error")
 				});
 			}
 			if (!user) {

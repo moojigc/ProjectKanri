@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { Provider as UserProvider } from "./utils/UserContext";
 import { Provider as FlashProvider } from "./utils/FlashContext";
 import Login from "./pages/Login";
@@ -8,8 +8,10 @@ import Task from "./pages/Task";
 import Register from "./pages/Register";
 import theme from "./utils/theme";
 import { ThemeProvider } from "@material-ui/core";
-import "./App.scss";
 import Navbar from "./components/Navbar";
+import "./App.scss";
+import Welcome from "./pages/Welcome";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
 	const [user, setUser] = useState({
@@ -38,13 +40,19 @@ function App() {
 					<ThemeProvider theme={theme}>
 						<Navbar />
 						<Switch>
+							<Route exact path="/">
+								{user.auth ? <UserProfile /> : <Redirect to="/welcome" />}
+							</Route>
+							<Route exact path="/welcome">
+								<Welcome />
+							</Route>
 							<Route exact path="/login">
 								<Login />
 							</Route>
 							<Route exact path="/task">
 								<Task />
 							</Route>
-							<Route exact path="/register">
+							<Route exact path="/signup">
 								<Register />
 							</Route>
 						</Switch>
