@@ -14,6 +14,7 @@ import Welcome from "./pages/Welcome";
 import UserProfile from "./pages/UserProfile";
 import { Wrapper } from "./components/MiniComponents";
 import Dashboard from "./pages/Dashboard";
+import Project from "./pages/Project";
 
 function App() {
 	const [isMounted, setMounted] = useState(false);
@@ -73,6 +74,9 @@ function App() {
 							</Route>
 							<Route exact path="/dashboard">
 								<Dashboard />
+							</Route>
+							<Route exact path="/project/:id">
+								<Project />
 							</Route>
 						</Switch>
 					</ThemeProvider>
