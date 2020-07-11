@@ -1,4 +1,5 @@
-const { User } = require("../models/");
+const { User, Project } = require("../models/");
+const { ObjectId } = require("mongoose").Types;
 const passport = require("../config/passport");
 /**
  *
@@ -136,5 +137,22 @@ module.exports = (router) => {
 			...flash("Logged out.", "success"),
 			redirect: "/login"
 		});
+	});
+	router.get("/api/myprofile", async (req, res) => {
+		try {
+			let adminProjects = await Project.where("admins")
+				.in(ObjectId(req.user._id))
+				.populate({
+					path: "admins",
+					select: { password: 0 },
+					match: { _id: req.user._id }
+				});
+			let regularProjects = await Project.where("members")
+				.in(ObjectId(req.user._id))
+				.populate("members", { password: 0, email: 0 });
+			res.json({ adminProjects, regularProjects }).end();
+		} catch (error) {
+			res.json(error).end();
+		}
 	});
 };

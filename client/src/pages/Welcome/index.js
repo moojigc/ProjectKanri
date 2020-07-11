@@ -57,7 +57,7 @@ const Welcome = () => {
 						</Grid>
 					</Grid>
 					<Grid item container xs={12}>
-						<Grid item lg={4} xs={12}>
+						<Grid item xs={12}>
 							<form onSubmit={handleSubmit}>
 								<TextField
 									inputRef={email}

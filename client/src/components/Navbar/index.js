@@ -33,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = () => {
+	const [anchorEl, setAnchorEl] = useState(false);
+	const open = Boolean(anchorEl);
 	const { user, setUser } = useContext(UserContext);
 	const { setFlash } = useContext(FlashContext);
 	const location = useLocation();
@@ -58,6 +60,9 @@ const Navbar = () => {
 				? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri"
 				: "ProjectKanri";
 	}, [location.pathname]);
+	const handleChange = (event) => {
+		setAuth(event.target.checked);
+	};
 	const AppDrawer = () => {
 		return (
 			<Drawer
@@ -87,6 +92,13 @@ const Navbar = () => {
 			</Drawer>
 		);
 	};
+	const handleMenu = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
 	return location.pathname === "/welcome" ? null : (
 		<div>
 			<AppDrawer />
@@ -107,9 +119,33 @@ const Navbar = () => {
 							</Link>
 						</Button>
 					) : (
-						<Button>
-							<AccountCircle />
-						</Button>
+						<div>
+							<IconButton
+								aria-label="account of current user"
+								aria-controls="menu-appbar"
+								aria-haspopup="true"
+								onClick={handleMenu}
+								color="inherit">
+								<AccountCircle />
+							</IconButton>
+							<Menu
+								id="menu-appbar"
+								anchorEl={anchorEl}
+								anchorOrigin={{
+									vertical: "top",
+									horizontal: "right"
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: "top",
+									horizontal: "right"
+								}}
+								open={open}
+								onClose={handleClose}>
+								<MenuItem onClick={handleClose}>Profile</MenuItem>
+								<MenuItem onClick={handleClose}>My account</MenuItem>
+							</Menu>
+						</div>
 					)}
 				</Toolbar>
 			</AppBar>

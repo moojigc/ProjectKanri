@@ -7,13 +7,15 @@ import userAPI from "./utils/userAPI";
 import Task from "./pages/Task";
 import Register from "./pages/Register";
 import theme from "./utils/theme";
-import { ThemeProvider } from "@material-ui/core";
+import { ThemeProvider, CircularProgress, Container } from "@material-ui/core";
 import Navbar from "./components/Navbar";
 import "./App.scss";
 import Welcome from "./pages/Welcome";
 import UserProfile from "./pages/UserProfile";
+import { Wrapper } from "./components/MiniComponents";
 
 function App() {
+	const [isMounted, setMounted] = useState(false);
 	const [user, setUser] = useState({
 		auth: false,
 		username: "Guest",
@@ -25,13 +27,10 @@ function App() {
 	});
 
 	useEffect(() => {
-		userAPI
-			.checkStatus()
-			.then((res) => {
-				setUser({ ...res.user });
-				console.log(res.user);
-			})
-			.then(() => console.log(user));
+		userAPI.checkStatus().then((res) => {
+			setUser(res.user);
+			setMounted(true);
+		});
 	}, []);
 	return (
 		<Router>
@@ -41,7 +40,14 @@ function App() {
 						<Navbar />
 						<Switch>
 							<Route exact path="/">
-								{user.auth ? <UserProfile /> : <Redirect to="/welcome" />}
+								{isMounted ? (
+									user.auth ? (
+										<UserProfile />
+									) : (
+										<Redirect to="/welcome" />
+									)
+								) : // Temporary fix, page loads before user session from server loads
+								null}
 							</Route>
 							<Route exact path="/welcome">
 								<Welcome />
