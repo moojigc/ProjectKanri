@@ -38,10 +38,10 @@ const TaskSchema = new Schema({
 	},
 	status: {
 		type: String,
-		enum: ["New","To Do","In Progress","In Review","Completed"],
-		default: "New", 
+		enum: ["New", "To Do", "In Progress", "In Review", "Completed"],
+		default: "New",
 		required: true
-	},
+	}
 });
 const Task = model("Task", TaskSchema);
 

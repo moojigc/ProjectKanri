@@ -54,6 +54,8 @@ app.use(express.urlencoded({ extended: true }))
 	.use(compression());
 // Set routes
 require("./server/routes/user-routes")(app);
+require("./server/routes/dashboard-routes")(app);
+
 if (productionEnv)
 	app.get("*", (req, res) => {
 		res.sendFile(join(__dirname, "client", "build", "index.html"));

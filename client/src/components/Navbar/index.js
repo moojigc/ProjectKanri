@@ -8,6 +8,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as A, useHistory, useLocation } from "react-router-dom";
 import {
+	Menu,
+	MenuItem,
 	makeStyles,
 	List,
 	ListItemText,
@@ -33,6 +35,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = () => {
+	const [anchorEl, setAnchorEl] = useState(false);
+	const open = Boolean(anchorEl);
 	const { user, setUser } = useContext(UserContext);
 	const { setFlash } = useContext(FlashContext);
 	const location = useLocation();
@@ -54,7 +58,7 @@ const Navbar = () => {
 	useEffect(() => {
 		let title = location.pathname.split("/")[1];
 		document.title =
-			location.pathname !== "/"
+			location.pathname !== "/" || location.pathname !== "/welcome"
 				? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri"
 				: "ProjectKanri";
 	}, [location.pathname]);
@@ -87,7 +91,14 @@ const Navbar = () => {
 			</Drawer>
 		);
 	};
-	return (
+	const handleMenu = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+	return location.pathname === "/welcome" ? null : (
 		<div>
 			<AppDrawer />
 			<AppBar className={classes.nav} position="static">
@@ -107,9 +118,37 @@ const Navbar = () => {
 							</Link>
 						</Button>
 					) : (
-						<Button>
-							<AccountCircle />
-						</Button>
+						<div>
+							<IconButton
+								aria-label="account of current user"
+								aria-controls="menu-appbar"
+								aria-haspopup="true"
+								onClick={handleMenu}
+								color="inherit">
+								<AccountCircle />
+							</IconButton>
+							<Menu
+								id="menu-appbar"
+								anchorEl={anchorEl}
+								anchorOrigin={{
+									vertical: "top",
+									horizontal: "right"
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: "top",
+									horizontal: "right"
+								}}
+								open={open}
+								onClose={handleClose}>
+								<MenuItem component={A} to="/dashboard">
+									Dashboard
+								</MenuItem>
+								<MenuItem component={A} to="/myprofile">
+									My Account
+								</MenuItem>
+							</Menu>
+						</div>
 					)}
 				</Toolbar>
 			</AppBar>
