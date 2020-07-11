@@ -13,6 +13,7 @@ import "./App.scss";
 import Welcome from "./pages/Welcome";
 import UserProfile from "./pages/UserProfile";
 import { Wrapper } from "./components/MiniComponents";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
 	const [isMounted, setMounted] = useState(false);
@@ -69,6 +70,9 @@ function App() {
 										<Redirect to="/login" />
 									)
 								) : null}
+							</Route>
+							<Route exact path="/dashboard">
+								<Dashboard />
 							</Route>
 						</Switch>
 					</ThemeProvider>
