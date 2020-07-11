@@ -8,6 +8,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as A, useHistory, useLocation } from "react-router-dom";
 import {
+	Menu,
+	MenuItem,
 	makeStyles,
 	List,
 	ListItemText,
@@ -60,9 +62,6 @@ const Navbar = () => {
 				? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri"
 				: "ProjectKanri";
 	}, [location.pathname]);
-	const handleChange = (event) => {
-		setAuth(event.target.checked);
-	};
 	const AppDrawer = () => {
 		return (
 			<Drawer
@@ -142,8 +141,12 @@ const Navbar = () => {
 								}}
 								open={open}
 								onClose={handleClose}>
-								<MenuItem onClick={handleClose}>Profile</MenuItem>
-								<MenuItem onClick={handleClose}>My account</MenuItem>
+								<MenuItem component={A} to="/dashboard">
+									Dashboard
+								</MenuItem>
+								<MenuItem component={A} to="/myprofile">
+									My Account
+								</MenuItem>
 							</Menu>
 						</div>
 					)}

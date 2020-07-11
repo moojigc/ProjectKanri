@@ -61,6 +61,15 @@ function App() {
 							<Route exact path="/signup">
 								<Register />
 							</Route>
+							<Route exact path="/myprofile">
+								{isMounted ? (
+									user.auth ? (
+										<UserProfile />
+									) : (
+										<Redirect to="/login" />
+									)
+								) : null}
+							</Route>
 						</Switch>
 					</ThemeProvider>
 				</FlashProvider>
