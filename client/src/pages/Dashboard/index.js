@@ -22,10 +22,12 @@ const Dashboard = () => {
 		dashboardAPI
 			.getProjects()
 			.then((res) => {
-				setProjects(res);
+				let newRes = res.concat(res)
+				setProjects(newRes);
 			})
 			.catch((err) => console.error(err));
 	}, []);
+
 
 	return (
 		<Container maxWidth="lg" component="main">
@@ -41,14 +43,18 @@ const Dashboard = () => {
 						{projects.length ? (
 							projects.map((project) => {
 								return (
-									<Grid item xs={12} sm={6} md={3}>
+									<Grid item xs={12} sm={6} md={4} key={project._id}>
 										<ProjectCard
 											key={project._id}
 											id={project._id}
 											title={project.title}
 											description={project.description}
 											createdAt={project.createdAt}
-											updatedAt={project.updatedAt}></ProjectCard>
+											updatedAt={project.updatedAt}
+											creator={project.creator.username}
+											admins = {project.admins}
+											members = {project.members}
+											></ProjectCard>
 									</Grid>
 								);
 							})
