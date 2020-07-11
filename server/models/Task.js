@@ -38,7 +38,7 @@ const TaskSchema = new Schema({
 	},
 	status: {
 		type: String,
-		enum: ["New To Do", "In Progress", "In Review", "Completed"],
+		enum: ["New", "To Do", "In Progress", "In Review", "Completed"],
 		default: "New",
 		required: true
 	}

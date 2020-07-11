@@ -72,7 +72,7 @@ const tasks = (creators, theComments) => {
 		let randAssign = Math.floor(Math.random() * creators.length);
 		let rand1 = Math.floor(Math.random() * theComments.length);
 		let rand2 = Math.floor(Math.random() * theComments.length);
-		let statuses = ["New To Do", "In Progress", "In Review", "Completed"];
+		let statuses = ["New", "To Do", "In Progress", "In Review", "Completed"];
 
 		let tmpObj = {
 			title: `Task ${i}`,
