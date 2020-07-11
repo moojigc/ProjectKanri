@@ -13,6 +13,9 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { blue } from "@material-ui/core/colors";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { ButtonLink } from "../../components/MiniComponents";
+
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -40,9 +43,11 @@ const ProjectCard = ({
 	createdAt,
 	updatedAt,
 	// tasks,
-	// admins,
-	// members,
-	creator
+	admins,
+	members,
+	creator,
+	children,
+	...props 
 }) => {
 	const classes = useStyles();
 	const [projectID, setProjectID] = useState(id);
@@ -52,16 +57,21 @@ const ProjectCard = ({
 		setExpanded(!expanded);
 	};
 
+	let admninNames = admins.map((admin) => admin.username);
+	let memberNames = members.map((member) => member.username);
+
 	return (
 		<Card className={classes.root}>
-			<CardHeader title={title} subheader={updatedAt} />
+			<CardHeader title={title} subheader={moment(updatedAt).format("D-MMM-YYYY")} />
 			<CardContent>
 				<Typography variant="body2" color="textSecondary" component="p">
 					{description}
 				</Typography>
 			</CardContent>
 			<CardActions disableSpacing>
-				<Button size="small">View Project</Button>
+				<ButtonLink size="small" to={`/project/${id}`} color="secondary">
+					View Project
+				</ButtonLink>
 				<IconButton
 					className={clsx(classes.expand, {
 						[classes.expandOpen]: expanded
@@ -74,11 +84,10 @@ const ProjectCard = ({
 			</CardActions>
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<CardContent>
-					<Typography paragraph>Something:</Typography>
-					<Typography paragraph>More things about our project to go here.</Typography>
-					<Typography paragraph>
-						{createdAt}, {updatedAt}
-					</Typography>
+					<Typography paragraph>Admins:</Typography>
+					<Typography paragraph>{admins ? admninNames.join(", ") : ""}</Typography>
+					<Typography paragraph>Members:</Typography>
+					<Typography paragraph>{members ? memberNames.join(", ") : ""}</Typography>
 					<Typography paragraph>Created By: {creator}</Typography>
 				</CardContent>
 			</Collapse>
