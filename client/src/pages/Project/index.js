@@ -6,7 +6,7 @@ import clsx from "clsx";
 // import { Wrapper } from "../../components/MiniComponents";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
-import { Grid, Typography } from "@material-ui/core/";
+import { Grid, Typography, Chip } from "@material-ui/core/";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import { shadows } from "@material-ui/system";
 import {
@@ -39,6 +39,17 @@ const useStyles = makeStyles((theme) => ({
 	},
 	gridBackground: {
 		backgroundColor: "transparent"
+	},
+	countChip: {
+		marginLeft: "1rem",
+		backgroundColor: theme.palette.secondary,
+		padding: ".5rem"
+	},
+	primary: {
+		backgroundColor: theme.palette.primary
+	},
+	secondary: {
+		backgroundColor: theme.palette.secondary.main
 	}
 }));
 
@@ -81,6 +92,13 @@ const Project = () => {
 					<Grid item xs={12} sm={6} md={3}>
 						<Typography variant="h6" component="h3">
 							To Do
+							<Chip
+								label={todoTasks.length}
+								className={clsx(classes.countChip)}
+								size="small"
+								color="secondary">
+								
+							</Chip>
 						</Typography>
 						<List dense>
 							{todoTasks.length ? (
@@ -91,8 +109,8 @@ const Project = () => {
 											boxShadow={1}
 											className={clsx(classes.taskOutline)}>
 											<ListItemAvatar>
-												<Avatar>
-													<Assignment></Assignment>
+												<Avatar className={clsx(classes.secondary)}>
+													<Assignment ></Assignment>
 												</Avatar>
 											</ListItemAvatar>
 											<ListItemText
@@ -126,6 +144,13 @@ const Project = () => {
 					<Grid item xs={12} sm={6} md={3}>
 						<Typography variant="h6" component="h3">
 							In Progress
+							<Chip
+								label={wipTasks.length}
+								className={clsx(classes.countChip)}
+								size="small"
+								color="secondary">
+								
+							</Chip>
 						</Typography>
 						<List dense>
 							{wipTasks.length ? (
@@ -136,7 +161,7 @@ const Project = () => {
 											boxShadow={1}
 											className={clsx(classes.taskOutline)}>
 											<ListItemAvatar>
-												<Avatar>
+												<Avatar className={clsx(classes.secondary)}>
 													<AssignmentInd></AssignmentInd>
 												</Avatar>
 											</ListItemAvatar>
@@ -171,6 +196,13 @@ const Project = () => {
 					<Grid item xs={12} sm={6} md={3}>
 						<Typography variant="h6" component="h3">
 							In Review
+							<Chip
+								label={reviewTasks.length}
+								className={clsx(classes.countChip)}
+								size="small"
+								color="secondary">
+								
+							</Chip>
 						</Typography>
 						<List dense>
 							{reviewTasks.length ? (
@@ -181,7 +213,7 @@ const Project = () => {
 											boxShadow={1}
 											className={clsx(classes.taskOutline)}>
 											<ListItemAvatar>
-												<Avatar>
+												<Avatar className={clsx(classes.secondary)}>
 													<AssignmentLate></AssignmentLate>
 												</Avatar>
 											</ListItemAvatar>
@@ -216,6 +248,13 @@ const Project = () => {
 					<Grid item xs={12} sm={6} md={3}>
 						<Typography variant="h6" component="h3">
 							Completed
+							<Chip
+								label={doneTasks.length}
+								className={clsx(classes.countChip)}
+								size="small"
+								color="secondary">
+								
+							</Chip>
 						</Typography>
 						<List dense>
 							{doneTasks.length ? (
@@ -226,7 +265,7 @@ const Project = () => {
 											boxShadow={1}
 											className={clsx(classes.taskOutline)}>
 											<ListItemAvatar>
-												<Avatar>
+												<Avatar className={clsx(classes.secondary)}>
 													<AssignmentTurnedIn></AssignmentTurnedIn>
 												</Avatar>
 											</ListItemAvatar>
