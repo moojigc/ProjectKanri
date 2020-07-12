@@ -36,10 +36,10 @@ const useStyles = makeStyles((theme) => ({
 		boxShadow: "1px 2px 2px 1px rgba(97, 108, 153, .3)",
 		marginBottom: "1rem"
 		// padding: theme.spacing(2)
-    },
-    gridBackground: {
-        backgroundColor: 'transparent'
-    }
+	},
+	gridBackground: {
+		backgroundColor: "transparent"
+	}
 }));
 
 const Project = () => {
@@ -76,9 +76,9 @@ const Project = () => {
 				<Typography paragraph>{project.description}</Typography>
 			</Wrapper>
 			<Wrapper className={clsx(classes.gridBackground)}>
-				<Grid container spacing={2} >
+				<Grid container spacing={2}>
 					{/* TO DO TASKS */}
-					<Grid item xs={12} sm={6} md={3} >
+					<Grid item xs={12} sm={6} md={3}>
 						<Typography variant="h6" component="h3">
 							To Do
 						</Typography>
@@ -97,9 +97,10 @@ const Project = () => {
 											</ListItemAvatar>
 											<ListItemText
 												primary={task.title}
-												secondary={"Updated: " + moment(task.updatedAt).format(
-													"D-MMM-YYYY"
-												)}></ListItemText>
+												secondary={
+													"Updated: " +
+													moment(task.updatedAt).format("D-MMM-YYYY")
+												}></ListItemText>
 											<ListItemSecondaryAction>
 												<IconButton
 													edge="end"
@@ -141,9 +142,10 @@ const Project = () => {
 											</ListItemAvatar>
 											<ListItemText
 												primary={task.title}
-												secondary={"Updated: " + moment(task.updatedAt).format(
-													"D-MMM-YYYY"
-												)}></ListItemText>
+												secondary={
+													"Updated: " +
+													moment(task.updatedAt).format("D-MMM-YYYY")
+												}></ListItemText>
 											<ListItemSecondaryAction>
 												<IconButton
 													edge="end"
@@ -185,9 +187,10 @@ const Project = () => {
 											</ListItemAvatar>
 											<ListItemText
 												primary={task.title}
-												secondary={"Updated: " + moment(task.updatedAt).format(
-													"D-MMM-YYYY"
-												)}></ListItemText>
+												secondary={
+													"Updated: " +
+													moment(task.updatedAt).format("D-MMM-YYYY")
+												}></ListItemText>
 											<ListItemSecondaryAction>
 												<IconButton
 													edge="end"
@@ -229,9 +232,10 @@ const Project = () => {
 											</ListItemAvatar>
 											<ListItemText
 												primary={task.title}
-												secondary={"Updated: " + moment(task.updatedAt).format(
-													"D-MMM-YYYY"
-												)}></ListItemText>
+												secondary={
+													"Updated: " +
+													moment(task.updatedAt).format("D-MMM-YYYY")
+												}></ListItemText>
 											<ListItemSecondaryAction>
 												<IconButton
 													edge="end"
