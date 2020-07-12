@@ -5,7 +5,8 @@ import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
 import { Grid, Card, CardContent, Typography, CardHeader } from "@material-ui/core/";
 import ProjectCard from "../../components/ProjectCard";
-import dashboardAPI from "../../utils/dashboardAPI";
+// import dashboardAPI from "../../utils/dashboardAPI";
+import projectAPI from "../../utils/projectAPI";
 
 const useStyles = makeStyles((theme) => ({
 	dynamicgrid: {
@@ -19,8 +20,15 @@ const Dashboard = () => {
 	const [projects, setProjects] = useState([]);
 
 	useEffect(() => {
-		dashboardAPI
-			.getProjects()
+		// dashboardAPI
+		// 	.getProjects()
+		// 	.then((res) => {
+		// 		let newRes = res.concat(res)
+		// 		setProjects(newRes);
+		// 	})
+		// 	.catch((err) => console.error(err));
+		projectAPI
+			.getAllProjects()
 			.then((res) => {
 				let newRes = res.concat(res)
 				setProjects(newRes);

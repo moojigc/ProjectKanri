@@ -54,7 +54,7 @@ app.use(express.urlencoded({ extended: true }))
 	.use(compression());
 // Set routes
 require("./server/routes/user-routes")(app);
-require("./server/routes/dashboard-routes")(app);
+// require("./server/routes/dashboard-routes")(app);
 require("./server/routes/project-routes")(app);
 
 
