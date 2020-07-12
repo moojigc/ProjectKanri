@@ -9,6 +9,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Collapse from "@material-ui/core/Collapse";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
+import { AvatarGroup } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { blue } from "@material-ui/core/colors";
@@ -16,6 +17,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ButtonLink } from "../../components/MiniComponents";
 
 import moment from "moment";
+import { Tooltip } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -47,7 +49,7 @@ const ProjectCard = ({
 	members,
 	creator,
 	children,
-	...props 
+	...props
 }) => {
 	const classes = useStyles();
 	const [projectID, setProjectID] = useState(id);
@@ -57,7 +59,7 @@ const ProjectCard = ({
 		setExpanded(!expanded);
 	};
 
-	let admninNames = admins.map((admin) => admin.username);
+	let adminNames = admins.map((admin) => admin.username);
 	let memberNames = members.map((member) => member.username);
 
 	return (
@@ -84,11 +86,52 @@ const ProjectCard = ({
 			</CardActions>
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<CardContent>
-					<Typography paragraph>Admins:</Typography>
-					<Typography paragraph>{admins ? admninNames.join(", ") : ""}</Typography>
-					<Typography paragraph>Members:</Typography>
-					<Typography paragraph>{members ? memberNames.join(", ") : ""}</Typography>
-					<Typography paragraph>Created By: {creator}</Typography>
+					<Typography paragraph display="inline">
+						Admins:
+						<AvatarGroup max={4}>
+							{admins
+								? adminNames.map((admin) => {
+										return (
+											<Tooltip arrow title={admin}>
+												<Avatar className={classes.avatar} alt={admin}>
+													{admin.charAt(0).toUpperCase()}
+												</Avatar>
+											</Tooltip>
+										);
+								  })
+								: ""}
+						</AvatarGroup>
+					</Typography>
+
+					{/* <Typography paragraph>{admins ? adminNames.join(", ") : ""}</Typography> */}
+					<Typography gutterBottom>
+						Members:
+						<span>
+							<AvatarGroup max={7}>
+								{members
+									? memberNames.map((mem) => {
+											return (
+												<Tooltip arrow title={mem}>
+													<Avatar className={classes.avatar} alt={mem}>
+														{mem.charAt(0).toUpperCase()}
+													</Avatar>
+												</Tooltip>
+											);
+									  })
+									: ""}
+							</AvatarGroup>
+						</span>
+					</Typography>
+
+					{/* <Typography paragraph>{members ? memberNames.join(", ") : ""}</Typography> */}
+					<Typography paragraph>
+						Created By:
+						<Tooltip arrow title={creator}>
+							<Avatar className={classes.avatar} alt={creator}>
+								{creator.charAt(0).toUpperCase()}
+							</Avatar>
+						</Tooltip>
+					</Typography>
 				</CardContent>
 			</Collapse>
 		</Card>
