@@ -13,7 +13,11 @@ import "./App.scss";
 import Welcome from "./pages/Welcome";
 import UserProfile from "./pages/UserProfile";
 import Dashboard from "./pages/Dashboard";
+<<<<<<< HEAD
 import ResetPassword from "./pages/ResetPassword";
+=======
+import Project from "./pages/Project";
+>>>>>>> 821b4d716616884e9563b0baa12652fb49d436a7
 
 function App() {
 	const darkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -82,6 +86,9 @@ function App() {
 							</Route>
 							<Route exact path="/dashboard">
 								<Dashboard />
+							</Route>
+							<Route exact path="/project/:id">
+								<Project />
 							</Route>
 						</Switch>
 					</ThemeProvider>
