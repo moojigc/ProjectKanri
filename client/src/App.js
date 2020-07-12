@@ -13,11 +13,8 @@ import "./App.scss";
 import Welcome from "./pages/Welcome";
 import UserProfile from "./pages/UserProfile";
 import Dashboard from "./pages/Dashboard";
-<<<<<<< HEAD
 import ResetPassword from "./pages/ResetPassword";
-=======
 import Project from "./pages/Project";
->>>>>>> 821b4d716616884e9563b0baa12652fb49d436a7
 
 function App() {
 	const darkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -50,10 +47,10 @@ function App() {
 						<CssBaseline />
 						<Navbar />
 						<Switch>
-							<Route exact path="/">
+							<Route exact path={["/", "/dashboard"]}>
 								{isMounted ? (
 									user.auth ? (
-										<UserProfile />
+										<Dashboard />
 									) : (
 										<Redirect to="/welcome" />
 									)
@@ -69,11 +66,11 @@ function App() {
 							<Route exact path="/resetpass/:token">
 								<ResetPassword />
 							</Route>
-							<Route exact path="/task">
-								<Task />
-							</Route>
 							<Route exact path="/signup">
 								<Register />
+							</Route>
+							<Route exact path="/task">
+								<Task />
 							</Route>
 							<Route exact path="/myprofile">
 								{isMounted ? (
@@ -83,9 +80,6 @@ function App() {
 										<Redirect to="/login" />
 									)
 								) : null}
-							</Route>
-							<Route exact path="/dashboard">
-								<Dashboard />
 							</Route>
 							<Route exact path="/project/:id">
 								<Project />

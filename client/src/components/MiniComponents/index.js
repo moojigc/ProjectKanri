@@ -71,11 +71,14 @@ export const Wrapper = (props) => {
  * @param {boolean} [props.info]
  * @param {any} props.children
  */
-export const ButtonLink = ({ to, info, color, children, ...props }) => {
+export const ButtonLink = ({ to, info, color, className, children, ...props }) => {
 	const history = useHistory();
 	const classes = useStyles();
 	return (
-		<Button onClick={() => history.push(to)} className={info ? classes.info : ""} {...props}>
+		<Button
+			onClick={() => history.push(to)}
+			className={info ? classes.info : className}
+			{...props}>
 			<Link to={to} component={A} color={color}>
 				{children}
 			</Link>

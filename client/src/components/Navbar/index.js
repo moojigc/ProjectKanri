@@ -30,7 +30,10 @@ const useStyles = makeStyles((theme) => ({
 	drawer: {
 		background: theme.palette.primary.light,
 		padding: "1rem",
-		height: "inherit"
+		height: "inherit",
+		"& *": {
+			color: theme.palette.primary.contrastText
+		}
 	}
 }));
 
@@ -80,7 +83,7 @@ const Navbar = () => {
 						</ListItem>
 						<ListItem button component={A} to="/dashboard" key="/dashboard">
 							<ListItemIcon>
-								<DashboardOutlined/>
+								<DashboardOutlined />
 							</ListItemIcon>
 							<ListItemText>Dashboard</ListItemText>
 						</ListItem>

@@ -1,3 +1,4 @@
+//@ts-check
 import React, { useEffect, useState, useContext } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -18,6 +19,7 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
+import ForgotModal from "../../components/ForgotModal";
 
 const useStyles = makeStyles((theme) => ({
 	info: {
@@ -40,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = () => {
+	const history = useHistory();
+
+	const [modalOpen, setModalOpen] = useState(false);
 	const [loginDetails, setLoginDetails] = useState({
 		usernameOrEmail: "",
 		password: "",
@@ -51,15 +56,16 @@ const Login = () => {
 		event.preventDefault();
 		try {
 			let res = await userAPI.login(loginDetails);
-			console.log(res);
 			setUser(res.user);
 			setFlash(res.flash);
+			if (res.user.auth) history.push("/");
 		} catch (error) {
 			console.error(error);
 			setFlash({ message: "Sorry, an error has occurred.", type: "error" });
 		}
 	};
-	const handleForgotPassword = async () => {
+	const handleForgotPassword = async (event) => {
+		event.preventDefault();
 		try {
 			let res = await userAPI.sendResetEmail(loginDetails.usernameOrEmail);
 			setFlash(res.flash);
@@ -68,111 +74,117 @@ const Login = () => {
 			console.error(error);
 		}
 	};
-	const history = useHistory();
 	useEffect(() => {
 		return () => setFlash({ message: null, type: null });
 	}, []);
 	return (
-		<Container maxWidth="lg" component="main">
-			<Wrapper>
-				<Title>Login</Title>
-				<form onSubmit={handleLogin}>
-					<Grid container>
-						<Grid item sm={12}>
-							<ButtonLink to="/signup" info>
-								First time user? Sign up here.
-							</ButtonLink>
+		<React.Fragment>
+			<ForgotModal
+				handleForgotPassword={handleForgotPassword}
+				open={modalOpen}
+				setOpen={setModalOpen}
+			/>
+			<Container maxWidth="lg" component="main">
+				<Wrapper>
+					<Title>Login</Title>
+					<form onSubmit={handleLogin}>
+						<Grid container>
+							<Grid item sm={12}>
+								<ButtonLink to="/signup" info>
+									First time user? Sign up here.
+								</ButtonLink>
+							</Grid>
 						</Grid>
-					</Grid>
-					<Grid container justify="center" spacing={2}>
-						<Grid item md={6}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setLoginDetails({
-										...loginDetails,
-										usernameOrEmail: target.value
-									})
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Face />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="username-or-email"
-								variant="filled"
-								label="Username/Email"
-							/>
-						</Grid>
-						<Grid item md={6}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setLoginDetails({ ...loginDetails, password: target.value })
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Lock />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="password"
-								type="password"
-								variant="filled"
-								label="Password"
-							/>
-						</Grid>
-						<Grid item>
-							<FormGroup row>
-								<FormControlLabel
-									control={
-										<Switch
-											checked={loginDetails.rememberMe}
-											onChange={({ target }) =>
-												setLoginDetails({
-													...loginDetails,
-													rememberMe: target.checked
-												})
-											}
-										/>
+						<Grid container justify="center" spacing={2}>
+							<Grid item md={6}>
+								<TextField
+									required
+									onChange={({ target }) =>
+										setLoginDetails({
+											...loginDetails,
+											usernameOrEmail: target.value
+										})
 									}
-									label="Remember me?"
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												<Face />
+											</InputAdornment>
+										)
+									}}
+									fullWidth
+									id="username-or-email"
+									variant="filled"
+									label="Username/Email"
 								/>
-							</FormGroup>
-							<FormGroup row>
-								<Button
-									type="button"
-									style={{ marginTop: "1rem" }}
-									variant="contained"
-									size="large"
-									onClick={handleForgotPassword}>
-									Forgot Password?
-									<InputAdornment position="end">
-										<HelpOutline />
-									</InputAdornment>
-								</Button>
-								<Button
-									type="submit"
-									style={{ marginTop: "1rem" }}
-									variant="contained"
-									size="large">
-									Submit
-									<InputAdornment position="end">
-										<Send />
-									</InputAdornment>
-								</Button>
-							</FormGroup>
+							</Grid>
+							<Grid item md={6}>
+								<TextField
+									required
+									onChange={({ target }) =>
+										setLoginDetails({ ...loginDetails, password: target.value })
+									}
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												<Lock />
+											</InputAdornment>
+										)
+									}}
+									fullWidth
+									id="password"
+									type="password"
+									variant="filled"
+									label="Password"
+								/>
+							</Grid>
+							<Grid item>
+								<FormGroup row>
+									<FormControlLabel
+										control={
+											<Switch
+												checked={loginDetails.rememberMe}
+												onChange={({ target }) =>
+													setLoginDetails({
+														...loginDetails,
+														rememberMe: target.checked
+													})
+												}
+											/>
+										}
+										label="Remember me?"
+									/>
+								</FormGroup>
+								<FormGroup row>
+									<Button
+										type="button"
+										style={{ marginTop: "1rem" }}
+										variant="contained"
+										size="large"
+										onClick={() => setModalOpen(true)}>
+										Forgot Password?
+										<InputAdornment position="end">
+											<HelpOutline />
+										</InputAdornment>
+									</Button>
+									<Button
+										type="submit"
+										style={{ marginTop: "1rem" }}
+										variant="contained"
+										size="large">
+										Submit
+										<InputAdornment position="end">
+											<Send />
+										</InputAdornment>
+									</Button>
+								</FormGroup>
+							</Grid>
 						</Grid>
-					</Grid>
-				</form>
-			</Wrapper>
-			{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
-		</Container>
+					</form>
+				</Wrapper>
+				{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
+			</Container>
+		</React.Fragment>
 	);
 };
 

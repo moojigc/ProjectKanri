@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
 		width: "100vw",
 		height: "100vh",
 		padding: "2rem"
+	},
+	continueBtn: {
+		background: theme.palette.secondary.main,
+		color: theme.palette.secondary.contrastText
 	}
 }));
 
@@ -79,8 +83,7 @@ const Welcome = () => {
 								<ButtonLink
 									to="/login"
 									type="button"
-									variant="contained"
-									color="primary">
+									className={classes.continueBtn}>
 									Login
 								</ButtonLink>
 							</form>
