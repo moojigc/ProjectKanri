@@ -7,6 +7,7 @@ const passport = require("../config/passport");
  */
 module.exports = (router) => {
 	router.get("/api/task/:id", async (req, res) => {
+		console.log("IN ROUTE: /api/task/:id" + req.params.id);
 		try {
 			let fakeTask = {
 				_id: "al2r3vq32",
