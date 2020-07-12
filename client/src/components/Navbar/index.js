@@ -18,7 +18,7 @@ import {
 	ListItem,
 	Link
 } from "@material-ui/core";
-import { ExitToApp, HomeOutlined } from "@material-ui/icons";
+import { ExitToApp, HomeOutlined, DashboardOutlined } from "@material-ui/icons";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import userAPI from "../../utils/userAPI";
@@ -77,6 +77,12 @@ const Navbar = () => {
 								<HomeOutlined />
 							</ListItemIcon>
 							<ListItemText>Home</ListItemText>
+						</ListItem>
+						<ListItem button component={A} to="/dashboard" key="/dashboard">
+							<ListItemIcon>
+								<DashboardOutlined/>
+							</ListItemIcon>
+							<ListItemText>Dashboard</ListItemText>
 						</ListItem>
 						{user?.auth ? (
 							<ListItem button key="logout" onClick={logout}>
