@@ -36,7 +36,10 @@ const useStyles = makeStyles((theme) => ({
 		boxShadow: "1px 2px 2px 1px rgba(97, 108, 153, .3)",
 		marginBottom: "1rem"
 		// padding: theme.spacing(2)
-	}
+    },
+    gridBackground: {
+        backgroundColor: 'transparent'
+    }
 }));
 
 const Project = () => {
@@ -72,15 +75,14 @@ const Project = () => {
 				<Title>{project.title}</Title>
 				<Typography paragraph>{project.description}</Typography>
 			</Wrapper>
-			<Wrapper>
-				<Typography paragraph>Under Construction</Typography>
-				<Grid container spacing={2}>
+			<Wrapper className={clsx(classes.gridBackground)}>
+				<Grid container spacing={2} >
 					{/* TO DO TASKS */}
 					<Grid item xs={12} sm={6} md={3} >
 						<Typography variant="h6" component="h3">
 							To Do
 						</Typography>
-						<List>
+						<List dense>
 							{todoTasks.length ? (
 								todoTasks.map((task) => {
 									return (
@@ -124,7 +126,7 @@ const Project = () => {
 						<Typography variant="h6" component="h3">
 							In Progress
 						</Typography>
-						<List>
+						<List dense>
 							{wipTasks.length ? (
 								wipTasks.map((task) => {
 									return (
@@ -168,7 +170,7 @@ const Project = () => {
 						<Typography variant="h6" component="h3">
 							In Review
 						</Typography>
-						<List>
+						<List dense>
 							{reviewTasks.length ? (
 								reviewTasks.map((task) => {
 									return (
@@ -210,9 +212,9 @@ const Project = () => {
 					{/* DONE TASKS */}
 					<Grid item xs={12} sm={6} md={3}>
 						<Typography variant="h6" component="h3">
-							Done
+							Completed
 						</Typography>
-						<List>
+						<List dense>
 							{doneTasks.length ? (
 								doneTasks.map((task) => {
 									return (
