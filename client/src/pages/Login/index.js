@@ -4,6 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import HelpOutline from "@material-ui/icons/HelpOutline";
 import Face from "@material-ui/icons/Face";
 import Lock from "@material-ui/icons/Lock";
 import Send from "@material-ui/icons/Send";
@@ -56,6 +57,15 @@ const Login = () => {
 		} catch (error) {
 			console.error(error);
 			setFlash({ message: "Sorry, an error has occurred.", type: "error" });
+		}
+	};
+	const handleForgotPassword = async () => {
+		try {
+			let res = await userAPI.sendResetEmail(loginDetails.usernameOrEmail);
+			setFlash(res.flash);
+			console.log(res);
+		} catch (error) {
+			console.error(error);
 		}
 	};
 	const history = useHistory();
@@ -135,6 +145,17 @@ const Login = () => {
 								/>
 							</FormGroup>
 							<FormGroup row>
+								<Button
+									type="button"
+									style={{ marginTop: "1rem" }}
+									variant="contained"
+									size="large"
+									onClick={handleForgotPassword}>
+									Forgot Password?
+									<InputAdornment position="end">
+										<HelpOutline />
+									</InputAdornment>
+								</Button>
 								<Button
 									type="submit"
 									style={{ marginTop: "1rem" }}

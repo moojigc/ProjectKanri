@@ -72,15 +72,15 @@ const Welcome = () => {
 									style={{ marginRight: "1rem" }}
 									type="submit"
 									variant="contained"
-									color="primary"
+									color="secondary"
 									endIcon={<ArrowForward />}>
-									<Typography color="textPrimary">Continue Sign Up</Typography>
+									<Typography color="textSecondary">Continue Sign Up</Typography>
 								</Button>
 								<ButtonLink
 									to="/login"
 									type="button"
 									variant="contained"
-									color="secondary">
+									color="primary">
 									Login
 								</ButtonLink>
 							</form>
