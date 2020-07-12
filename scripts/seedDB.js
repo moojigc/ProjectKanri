@@ -8,42 +8,42 @@ const users = [
 		firstName: "Moojig",
 		lastName: "Battsogt",
 		email: "moojigc@gmail.com",
-		username: "admin.moojig",
+		username: "moojig.admin",
 		password: "password"
 	},
 	{
 		firstName: "Pia",
 		lastName: "Rahman",
 		email: "admin.pia@test.com",
-		username: "admin.pia",
+		username: "pia.admin",
 		password: "password"
 	},
 	{
 		firstName: "Sam",
 		lastName: "Taddonio",
 		email: "admin.sam@test.com",
-		username: "admin.sam",
+		username: "sam.admin",
 		password: "password"
 	},
 	{
 		firstName: "Sam",
 		lastName: "T",
 		email: "user.sam@test.com",
-		username: "user.sam",
+		username: "sam.user",
 		password: "password"
 	},
 	{
 		firstName: "Pia",
 		lastName: "R",
 		email: "user.pia@test.com",
-		username: "user.pia",
+		username: "pia.user",
 		password: "password"
 	},
 	{
 		firstName: "Moojig",
 		lastName: "B",
 		email: "user.moojig@test.com",
-		username: "user.moojig",
+		username: "moojig.user",
 		password: "password"
 	}
 ];
@@ -80,7 +80,7 @@ const tasks = (creators, theComments) => {
 			comments: [theComments[rand1]._id, theComments[rand2]._id],
 			creator: creators[randCreate]._id,
 			assignedUser: creators[randAssign]._id,
-			status: statuses[Math.floor(Math.random() * 3)]
+			status: statuses[Math.floor(Math.random() * statuses.length)]
 		};
 
 		newTasks.push(tmpObj);
@@ -90,21 +90,25 @@ const tasks = (creators, theComments) => {
 };
 
 const projects = (theUsers, theTasks) => {
+
+	let adminsOne = [theUsers[0]._id,theUsers[1]._id];
+	let adminsTwo = [theUsers[1]._id,theUsers[2]._id];
+
 	return [
 		{
 			title: "Keikaku",
 			description: "Project to do projects",
 			tasks: theTasks.slice(0, 8),
-			admins: [theUsers[0]._id],
-			members: theUsers.slice(0, 4).map((u) => u._id),
+			admins: [theUsers[0]._id,theUsers[1]._id],
+			members: adminsOne.concat(theUsers.slice(3, 5).map((u) => u._id)),
 			creator: theUsers[0]._id
 		},
 		{
 			title: "Sakusen",
 			description: "Project for tactics",
 			tasks: theTasks.slice(8, 16),
-			admins: [theUsers[1]._id],
-			members: theUsers.slice(0, 4).map((u) => u._id),
+			admins: [theUsers[1]._id,theUsers[2]._id],
+			members: adminsTwo.concat(theUsers.slice(4,6).map((u) => u._id)),
 			creator: theUsers[1]._id
 		}
 	];
