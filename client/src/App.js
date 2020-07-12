@@ -60,6 +60,9 @@ function App() {
 							<Route exact path="/task">
 								<Task />
 							</Route>
+							<Route exact path="/task/:id">
+								<Task />
+							</Route>
 							<Route exact path="/signup">
 								<Register />
 							</Route>
