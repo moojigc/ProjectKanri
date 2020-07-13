@@ -13,15 +13,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
+    "clsx": "^1.1.1",
     "compression": "^1.7.4",
     "connect-mongodb-session": "^2.3.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "mongoose": "^5.9.20",
+    "nodemailer": "^6.4.10",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0"
   },

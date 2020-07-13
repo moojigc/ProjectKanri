@@ -7,15 +7,36 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import Face from "@material-ui/icons/Face";
 import Lock from "@material-ui/icons/Lock";
 import Send from "@material-ui/icons/Send";
-import userApi from "../../utils/userAPI";
-import Wrapper from "../../components/Wrapper";
+import userAPI from "../../utils/userAPI";
 import Switch from "@material-ui/core/Switch";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
-import Alert from "../../components/Alert";
-import Title from "../../components/Title";
+import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
+import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
+
+const useStyles = makeStyles((theme) => ({
+	info: {
+		textAlign: "center",
+		textTransform: "unset",
+		width: "100%",
+		marginBottom: "1rem",
+		fontSize: "1.8rem",
+		padding: "1rem",
+		background: theme.palette.secondary.dark,
+		color: theme.palette.secondary.contrastText,
+		borderRadius: "0.25rem",
+		"& a": {
+			color: "inherit"
+		},
+		"&:hover": {
+			background: theme.palette.secondary.main
+		}
+	}
+}));
 
 const Login = () => {
 	const [loginDetails, setLoginDetails] = useState({
@@ -24,21 +45,37 @@ const Login = () => {
 		rememberMe: false
 	});
 	const { flash, setFlash } = useContext(FlashContext);
-	const { user, setUser } = useContext(UserContext);
+	const { setUser } = useContext(UserContext);
 	const handleLogin = async (event) => {
 		event.preventDefault();
-		let res = await userApi.login(loginDetails);
-		console.log(res);
-		setUser(res.user);
-		setFlash(res.flash);
+		try {
+			let res = await userAPI.login(loginDetails);
+			console.log(res);
+			setUser(res.user);
+			setFlash(res.flash);
+		} catch (error) {
+			console.error(error);
+			setFlash({ message: "Sorry, an error has occurred.", type: "error" });
+		}
 	};
+	const history = useHistory();
+	useEffect(() => {
+		return () => setFlash({ message: null, type: null });
+	}, []);
 	return (
 		<Container maxWidth="lg" component="main">
 			<Wrapper>
 				<Title>Login</Title>
 				<form onSubmit={handleLogin}>
-					<Grid container justify="center" spacing={2}>
+					<Grid container>
 						<Grid item sm={12}>
+							<ButtonLink to="/signup" info>
+								First time user? Sign up here.
+							</ButtonLink>
+						</Grid>
+					</Grid>
+					<Grid container justify="center" spacing={2}>
+						<Grid item md={6}>
 							<TextField
 								required
 								onChange={({ target }) =>
@@ -60,7 +97,7 @@ const Login = () => {
 								label="Username/Email"
 							/>
 						</Grid>
-						<Grid item sm={12}>
+						<Grid item md={6}>
 							<TextField
 								required
 								onChange={({ target }) =>
@@ -75,6 +112,7 @@ const Login = () => {
 								}}
 								fullWidth
 								id="password"
+								type="password"
 								variant="filled"
 								label="Password"
 							/>
@@ -112,11 +150,7 @@ const Login = () => {
 					</Grid>
 				</form>
 			</Wrapper>
-			{flash.message ? (
-				<Alert style={{ marginTop: "1rem", borderRadius: "0.25rem" }}>
-					{flash.message}
-				</Alert>
-			) : null}
+			{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
 		</Container>
 	);
 };

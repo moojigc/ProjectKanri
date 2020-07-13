@@ -2,20 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Face from "@material-ui/icons/Face";
-import Lock from "@material-ui/icons/Lock";
-import Send from "@material-ui/icons/Send";
-import userApi from "../../utils/userAPI";
-import Wrapper from "../../components/Wrapper";
-import Switch from "@material-ui/core/Switch";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { useUserContext } from "../../utils/UserContext";
 import taskAPI from "../../utils/taskAPI";
-import Title from "../../components/Title";
+import { Wrapper, Title } from "../../components/MiniComponents";
 import { MenuItem, Box } from "@material-ui/core";
 
 const tempUsers = [

@@ -23,24 +23,24 @@ const ProjectSchema = new Schema({
 	},
 	tasks: [
 		{
-			type: Types.ObjectId,
+			type: Schema.Types.ObjectId,
 			ref: "Task"
 		}
 	],
 	admins: [
 		{
-			type: Types.ObjectId,
+			type: Schema.Types.ObjectId,
 			ref: "User"
 		}
 	],
 	members: [
 		{
-			type: Types.ObjectId,
+			type: Schema.Types.ObjectId,
 			ref: "User"
 		}
 	],
 	creator: {
-		type: Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		ref: "User",
 		required: true
 	}

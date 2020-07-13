@@ -5,31 +5,43 @@ const db = require("../server/models");
 
 const users = [
 	{
-		email: "admin.moojig@test.com",
+		firstName: "Moojig",
+		lastName: "Battsogt",
+		email: "moojigc@gmail.com",
 		username: "admin.moojig",
 		password: "password"
 	},
 	{
+		firstName: "Pia",
+		lastName: "Rahman",
 		email: "admin.pia@test.com",
 		username: "admin.pia",
 		password: "password"
 	},
 	{
+		firstName: "Sam",
+		lastName: "Taddonio",
 		email: "admin.sam@test.com",
 		username: "admin.sam",
 		password: "password"
 	},
 	{
+		firstName: "Sam",
+		lastName: "T",
 		email: "user.sam@test.com",
 		username: "user.sam",
 		password: "password"
 	},
 	{
+		firstName: "Pia",
+		lastName: "R",
 		email: "user.pia@test.com",
 		username: "user.pia",
 		password: "password"
 	},
 	{
+		firstName: "Moojig",
+		lastName: "B",
 		email: "user.moojig@test.com",
 		username: "user.moojig",
 		password: "password"
@@ -60,7 +72,7 @@ const tasks = (creators, theComments) => {
 		let randAssign = Math.floor(Math.random() * creators.length);
 		let rand1 = Math.floor(Math.random() * theComments.length);
 		let rand2 = Math.floor(Math.random() * theComments.length);
-		let statuses = ["New To Do", "In Progress", "In Review", "Completed"];
+		let statuses = ["New", "To Do", "In Progress", "In Review", "Completed"];
 
 		let tmpObj = {
 			title: `Task ${i}`,
@@ -82,18 +94,18 @@ const projects = (theUsers, theTasks) => {
 		{
 			title: "Keikaku",
 			description: "Project to do projects",
-			tasks: theTasks,
+			tasks: theTasks.slice(0, 8),
 			admins: [theUsers[0]._id],
-			members: theUsers.slice(1).map((u) => u._id),
+			members: theUsers.slice(0, 4).map((u) => u._id),
 			creator: theUsers[0]._id
 		},
 		{
 			title: "Sakusen",
 			description: "Project for tactics",
-			tasks: theTasks,
-			admins: [theUsers[0]._id],
-			members: theUsers.slice(1).map((u) => u._id),
-			creator: theUsers[0]._id
+			tasks: theTasks.slice(8, 16),
+			admins: [theUsers[1]._id],
+			members: theUsers.slice(0, 4).map((u) => u._id),
+			creator: theUsers[1]._id
 		}
 	];
 };
@@ -103,7 +115,9 @@ const populateEverything = async () => {
 		await mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/projectkanri");
 		//delete and create users
 		await db.User.deleteMany({});
-		let insertUsers = await db.User.insertMany(users);
+		let newUsers = users.map(async (u) => await new db.User(u).encryptPass());
+		let promises = await Promise.all(newUsers);
+		let insertUsers = await db.User.insertMany(promises);
 
 		//create comments
 		let commentsOne = comments(insertUsers[0], insertUsers[1]);
@@ -122,6 +136,7 @@ const populateEverything = async () => {
 			insertUsers,
 			insertTasks.map((t) => t._id)
 		);
+		await db.Project.deleteMany();
 		return await db.Project.insertMany(dbProjects);
 	} catch (error) {
 		return error;
