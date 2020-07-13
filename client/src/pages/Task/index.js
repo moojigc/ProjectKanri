@@ -5,7 +5,7 @@ import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import taskAPI from "../../utils/taskAPI";
 import { Wrapper, Title } from "../../components/MiniComponents";
-import { MenuItem, Box } from "@material-ui/core";
+import { MenuItem, Box, Typography, Button } from "@material-ui/core";
 
 const tempUsers = [
 	{
@@ -42,32 +42,40 @@ export default function Task() {
 		<Container maxWidth="lg" component="main">
 			<Wrapper>
 				<Title>Task</Title>
-				<Grid container justify="center" spacing={2}>
-					<Grid item sm={10}>
+				<Grid container  spacing={2}>
+					<Grid item sm={3}>
 						<TextField
 							color="textPrimary"
-							disabled
 							value="Pia"
 							label="Created By:"
 							helperText="7/8/2020"
+							fullWidth
 						/>
-
-						<TextField
-							style={{ width: "3rem" }}
+					</Grid>
+					<Grid item sm={3}>
+					<TextField
 							id="select-assignee"
 							select
-							label="Assigned To"
+							label="Assigned To:"
 							value={assignee}
-							onChange={handleChange}>
+							onChange={handleChange}
+							fullWidth>	
 							{tempUsers.map((user) => (
 								<MenuItem key={user.value} value={user.value}>
 									{user.label}
 								</MenuItem>
 							))}
 						</TextField>
+						
 					</Grid>
-					<Grid item sm={2}></Grid>
+				<Grid item sm={3}>
+					<TextField
+				label="Updated On:"
+				value= {"7/13/2020 at 5:54 P.M."}
+				/>	
+					</Grid>			
 				</Grid>
+
 				<Grid container justify="center" spacing={2}>
 					<Grid item sm={12}>
 						Lorem Ipsum is simply dummy text of the printing and typesetting industry.
@@ -80,12 +88,19 @@ export default function Task() {
 						like Aldus PageMaker including versions of Lorem Ipsum.
 					</Grid>
 				</Grid>
+								
 			</Wrapper>
+				<Grid container justify="flex-end"><Button>Save</Button></Grid>
 			<Wrapper style={{ marginTop: "1rem" }}>
 				<Grid item sm={12}>
-					{" "}
+					{""}
 				</Grid>
+	
 			</Wrapper>
+		
 		</Container>
+
+	
+
 	);
 }
