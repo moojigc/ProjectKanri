@@ -16,7 +16,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Box } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import ForgotModal from "../../components/ForgotModal";
@@ -64,26 +64,13 @@ const Login = () => {
 			setFlash({ message: "Sorry, an error has occurred.", type: "error" });
 		}
 	};
-	const handleForgotPassword = async (event) => {
-		event.preventDefault();
-		try {
-			let res = await userAPI.sendResetEmail(loginDetails.usernameOrEmail);
-			setFlash(res.flash);
-			console.log(res);
-		} catch (error) {
-			console.error(error);
-		}
-	};
+
 	useEffect(() => {
 		return () => setFlash({ message: null, type: null });
 	}, []);
 	return (
 		<React.Fragment>
-			<ForgotModal
-				handleForgotPassword={handleForgotPassword}
-				open={modalOpen}
-				setOpen={setModalOpen}
-			/>
+			<ForgotModal open={modalOpen} setOpen={setModalOpen} />
 			<Container maxWidth="lg" component="main">
 				<Wrapper>
 					<Title>Login</Title>
@@ -138,47 +125,53 @@ const Login = () => {
 									label="Password"
 								/>
 							</Grid>
-							<Grid item>
-								<FormGroup row>
-									<FormControlLabel
-										control={
-											<Switch
-												checked={loginDetails.rememberMe}
-												onChange={({ target }) =>
-													setLoginDetails({
-														...loginDetails,
-														rememberMe: target.checked
-													})
-												}
-											/>
-										}
-										label="Remember me?"
-									/>
-								</FormGroup>
-								<FormGroup row>
-									<Button
-										type="button"
-										style={{ marginTop: "1rem" }}
-										variant="contained"
-										size="large"
-										onClick={() => setModalOpen(true)}>
-										Forgot Password?
-										<InputAdornment position="end">
-											<HelpOutline />
-										</InputAdornment>
-									</Button>
-									<Button
-										type="submit"
-										style={{ marginTop: "1rem" }}
-										variant="contained"
-										size="large">
-										Submit
-										<InputAdornment position="end">
-											<Send />
-										</InputAdornment>
-									</Button>
-								</FormGroup>
-							</Grid>
+						</Grid>
+						<Grid container justify="center">
+							<FormGroup row style={{ marginTop: "1rem" }}>
+								<FormControlLabel
+									control={
+										<Switch
+											checked={loginDetails.rememberMe}
+											onChange={({ target }) =>
+												setLoginDetails({
+													...loginDetails,
+													rememberMe: target.checked
+												})
+											}
+										/>
+									}
+									label="Remember me?"
+								/>
+							</FormGroup>
+						</Grid>
+						<Grid container justify="center">
+							<Button
+								color="primary"
+								type="button"
+								style={{ marginTop: "1rem" }}
+								variant="contained"
+								size="small"
+								onClick={() => setModalOpen(true)}>
+								Forgot Password?
+								<InputAdornment position="end">
+									<HelpOutline />
+								</InputAdornment>
+							</Button>
+						</Grid>
+						<Grid container justify="center">
+							<Box display="flex" justifyContent="center">
+								<Button
+									color="secondary"
+									type="submit"
+									style={{ marginTop: "1rem" }}
+									variant="contained"
+									size="large">
+									Submit
+									<InputAdornment position="end">
+										<Send />
+									</InputAdornment>
+								</Button>
+							</Box>
 						</Grid>
 					</form>
 				</Wrapper>
