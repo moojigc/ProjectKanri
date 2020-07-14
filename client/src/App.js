@@ -20,6 +20,7 @@ function App() {
 	const darkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
 	const preferredTheme = theme(darkMode);
+	const forceLightTheme = theme(false);
 
 	const [isMounted, setMounted] = useState(false);
 	const [user, setUser] = useState({
@@ -58,7 +59,9 @@ function App() {
 								null}
 							</Route>
 							<Route exact path="/welcome">
-								<Welcome />
+								<ThemeProvider theme={forceLightTheme}>
+									<Welcome />
+								</ThemeProvider>
 							</Route>
 							<Route exact path="/login">
 								<Login />

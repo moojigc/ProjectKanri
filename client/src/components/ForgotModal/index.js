@@ -111,6 +111,7 @@ const ForgotModal = ({ open, setOpen }) => {
 						</Grid>
 						<Grid container justify="center">
 							<Button
+								text
 								endIcon={<SendOutlined />}
 								type="submit"
 								variant="contained"

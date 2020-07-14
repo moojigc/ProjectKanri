@@ -3,15 +3,16 @@ import { createMuiTheme } from "@material-ui/core";
 const theme = (darkMode) =>
 	createMuiTheme({
 		palette: {
+			type: darkMode ? "dark" : "light",
 			background: {
-				default: darkMode ? "rgb(50, 50, 50)" : "rgb(255, 245, 245)"
+				default: darkMode ? "rgb(25, 26, 27)" : "rgb(255, 245, 245)",
+				paper: darkMode ? "rgb(50,50,50)" : "rgb(252, 221, 242)"
 			},
 			primary: {
-				type: darkMode ? "dark" : "light",
-				main: darkMode ? "rgb(60, 60, 60)" : "rgb(252, 221, 242)"
+				main: darkMode ? "rgb(97, 108, 153)" : "rgb(255, 196, 236)"
 			},
 			secondary: {
-				main: darkMode ? "rgb(166, 62, 130)" : "rgb(97, 108, 153)"
+				main: darkMode ? "rgb(90, 90, 90)" : "rgb(97, 108, 153)"
 			}
 		}
 	});

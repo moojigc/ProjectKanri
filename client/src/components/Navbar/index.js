@@ -25,10 +25,10 @@ import userAPI from "../../utils/userAPI";
 
 const useStyles = makeStyles((theme) => ({
 	nav: {
-		background: theme.palette.primary.light
+		background: theme.palette.background.paper
 	},
 	drawer: {
-		background: theme.palette.primary.light,
+		background: theme.palette.background.paper,
 		padding: "1rem",
 		height: "inherit",
 		"& *": {

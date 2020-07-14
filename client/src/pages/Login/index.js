@@ -21,26 +21,6 @@ import { Alert } from "@material-ui/lab";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import ForgotModal from "../../components/ForgotModal";
 
-const useStyles = makeStyles((theme) => ({
-	info: {
-		textAlign: "center",
-		textTransform: "unset",
-		width: "100%",
-		marginBottom: "1rem",
-		fontSize: "1.8rem",
-		padding: "1rem",
-		background: theme.palette.secondary.dark,
-		color: theme.palette.secondary.contrastText,
-		borderRadius: "0.25rem",
-		"& a": {
-			color: "inherit"
-		},
-		"&:hover": {
-			background: theme.palette.secondary.main
-		}
-	}
-}));
-
 const Login = () => {
 	const history = useHistory();
 
@@ -75,13 +55,6 @@ const Login = () => {
 				<Wrapper>
 					<Title>Login</Title>
 					<form onSubmit={handleLogin}>
-						<Grid container>
-							<Grid item sm={12}>
-								<ButtonLink to="/signup" info>
-									First time user? Sign up here.
-								</ButtonLink>
-							</Grid>
-						</Grid>
 						<Grid container justify="center" spacing={2}>
 							<Grid item md={6}>
 								<TextField
@@ -175,6 +148,13 @@ const Login = () => {
 						</Grid>
 					</form>
 				</Wrapper>
+				<Grid container>
+					<Grid item sm={12}>
+						<ButtonLink to="/signup" info>
+							First time user? Sign up here.
+						</ButtonLink>
+					</Grid>
+				</Grid>
 				{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
 			</Container>
 		</React.Fragment>
