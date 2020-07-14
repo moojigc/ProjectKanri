@@ -1,6 +1,10 @@
-const { User, Project } = require("../models/");
-const { ObjectId } = require("mongoose").Types;
-const passport = require("../config/passport");
+const { User, Project } = require("../models/"),
+	{ ObjectId } = require("mongoose").Types,
+	passport = require("../config/passport"),
+	jwt = require("jsonwebtoken"),
+	sendEmail = require("../config/nodemailer"),
+	EMAIL_SECRET = process.env.EMAIL_SECRET || require("../config/secrets.json").EMAIL_SECRET,
+	crypt = require("../config/crypt");
 /**
  *
  * @param {string} message
@@ -14,6 +18,7 @@ const flash = (message, type) => {
 		}
 	};
 };
+const serverError = (res) => res.status(500).json(flash("Internal server error.", "error")).end();
 
 const guestUser = {
 	_id: null,
@@ -152,7 +157,50 @@ module.exports = (router) => {
 				.populate("members", { password: 0, email: 0 });
 			res.json({ adminProjects, regularProjects }).end();
 		} catch (error) {
-			res.json(error).end();
+			serverError(res);
+		}
+	});
+	router.post("/api/reset-pass", async (req, res) => {
+		console.log(req.body);
+		try {
+			const user = await User.findOne({ email: req.body.email }).select("_id, email");
+			console.log(user);
+			if (!user)
+				return res.json(flash("Account with that email address not found.", "error"));
+			const token = jwt.sign(
+				{
+					user: user._id
+				},
+				EMAIL_SECRET,
+				{
+					expiresIn: "1d"
+				}
+			);
+			sendEmail({ address: user.email, token: token });
+			res.json(
+				flash(
+					`Please check ${user.email} for instructions on resetting your password.`,
+					"success"
+				)
+			).end();
+		} catch (error) {
+			console.error(error);
+			serverError(res);
+		}
+	});
+	router.put("/api/reset-pass/:token", async (req, res) => {
+		try {
+			if (req.body.password !== req.body.password2)
+				return res.json(flash("Passwords must match!", "error")).end();
+			const { user } = jwt.verify(req.params.token, EMAIL_SECRET);
+			const hashedPass = await crypt(req.body.password);
+			let update = await User.updateOne({ _id: user }, { password: hashedPass });
+			if (update.nModified === 1)
+				res.json(flash("Password successfully updated.", "success"));
+			else throw new Error("Could not update password");
+		} catch (error) {
+			console.error(error);
+			serverError(res);
 		}
 	});
 };

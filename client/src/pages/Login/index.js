@@ -1,9 +1,11 @@
+//@ts-check
 import React, { useEffect, useState, useContext } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import HelpOutline from "@material-ui/icons/HelpOutline";
 import Face from "@material-ui/icons/Face";
 import Lock from "@material-ui/icons/Lock";
 import Send from "@material-ui/icons/Send";
@@ -14,31 +16,15 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Box } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
-
-const useStyles = makeStyles((theme) => ({
-	info: {
-		textAlign: "center",
-		textTransform: "unset",
-		width: "100%",
-		marginBottom: "1rem",
-		fontSize: "1.8rem",
-		padding: "1rem",
-		background: theme.palette.secondary.dark,
-		color: theme.palette.secondary.contrastText,
-		borderRadius: "0.25rem",
-		"& a": {
-			color: "inherit"
-		},
-		"&:hover": {
-			background: theme.palette.secondary.main
-		}
-	}
-}));
+import ForgotModal from "../../components/ForgotModal";
 
 const Login = () => {
+	const history = useHistory();
+
+	const [modalOpen, setModalOpen] = useState(false);
 	const [loginDetails, setLoginDetails] = useState({
 		usernameOrEmail: "",
 		password: "",
@@ -50,75 +36,71 @@ const Login = () => {
 		event.preventDefault();
 		try {
 			let res = await userAPI.login(loginDetails);
-			console.log(res);
 			setUser(res.user);
 			setFlash(res.flash);
+			if (res.user.auth) history.push("/");
 		} catch (error) {
 			console.error(error);
 			setFlash({ message: "Sorry, an error has occurred.", type: "error" });
 		}
 	};
-	const history = useHistory();
+
 	useEffect(() => {
 		return () => setFlash({ message: null, type: null });
 	}, []);
 	return (
-		<Container maxWidth="lg" component="main">
-			<Wrapper>
-				<Title>Login</Title>
-				<form onSubmit={handleLogin}>
-					<Grid container>
-						<Grid item sm={12}>
-							<ButtonLink to="/signup" info>
-								First time user? Sign up here.
-							</ButtonLink>
+		<React.Fragment>
+			<ForgotModal open={modalOpen} setOpen={setModalOpen} />
+			<Container maxWidth="lg" component="main">
+				<Wrapper>
+					<Title>Login</Title>
+					<form onSubmit={handleLogin}>
+						<Grid container justify="center" spacing={2}>
+							<Grid item md={6}>
+								<TextField
+									required
+									onChange={({ target }) =>
+										setLoginDetails({
+											...loginDetails,
+											usernameOrEmail: target.value
+										})
+									}
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												<Face />
+											</InputAdornment>
+										)
+									}}
+									fullWidth
+									id="username-or-email"
+									variant="filled"
+									label="Username/Email"
+								/>
+							</Grid>
+							<Grid item md={6}>
+								<TextField
+									required
+									onChange={({ target }) =>
+										setLoginDetails({ ...loginDetails, password: target.value })
+									}
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												<Lock />
+											</InputAdornment>
+										)
+									}}
+									fullWidth
+									id="password"
+									type="password"
+									variant="filled"
+									label="Password"
+								/>
+							</Grid>
 						</Grid>
-					</Grid>
-					<Grid container justify="center" spacing={2}>
-						<Grid item md={6}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setLoginDetails({
-										...loginDetails,
-										usernameOrEmail: target.value
-									})
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Face />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="username-or-email"
-								variant="filled"
-								label="Username/Email"
-							/>
-						</Grid>
-						<Grid item md={6}>
-							<TextField
-								required
-								onChange={({ target }) =>
-									setLoginDetails({ ...loginDetails, password: target.value })
-								}
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<Lock />
-										</InputAdornment>
-									)
-								}}
-								fullWidth
-								id="password"
-								type="password"
-								variant="filled"
-								label="Password"
-							/>
-						</Grid>
-						<Grid item>
-							<FormGroup row>
+						<Grid container justify="center">
+							<FormGroup row style={{ marginTop: "1rem" }}>
 								<FormControlLabel
 									control={
 										<Switch
@@ -134,8 +116,25 @@ const Login = () => {
 									label="Remember me?"
 								/>
 							</FormGroup>
-							<FormGroup row>
+						</Grid>
+						<Grid container justify="center">
+							<Button
+								color="primary"
+								type="button"
+								style={{ marginTop: "1rem" }}
+								variant="contained"
+								size="small"
+								onClick={() => setModalOpen(true)}>
+								Forgot Password?
+								<InputAdornment position="end">
+									<HelpOutline />
+								</InputAdornment>
+							</Button>
+						</Grid>
+						<Grid container justify="center">
+							<Box display="flex" justifyContent="center">
 								<Button
+									color="secondary"
 									type="submit"
 									style={{ marginTop: "1rem" }}
 									variant="contained"
@@ -145,13 +144,20 @@ const Login = () => {
 										<Send />
 									</InputAdornment>
 								</Button>
-							</FormGroup>
+							</Box>
 						</Grid>
+					</form>
+				</Wrapper>
+				<Grid container>
+					<Grid item sm={12}>
+						<ButtonLink to="/signup" info>
+							First time user? Sign up here.
+						</ButtonLink>
 					</Grid>
-				</form>
-			</Wrapper>
-			{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
-		</Container>
+				</Grid>
+				{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
+			</Container>
+		</React.Fragment>
 	);
 };
 

@@ -1,15 +1,5 @@
-const bcrypt = require("bcryptjs");
+const crypt = require("../config/crypt");
 const { Schema, model, Types } = require("mongoose");
-
-// Turn bcrypt's hash func into a promise
-async function crypt(pass) {
-	return await new Promise((resolve, reject) => {
-		bcrypt.hash(pass, 10, function (err, hash) {
-			if (err) reject(err);
-			resolve(hash);
-		});
-	});
-}
 
 const UserSchema = new Schema({
 	firstName: {
