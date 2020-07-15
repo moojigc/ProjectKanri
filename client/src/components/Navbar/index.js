@@ -16,7 +16,10 @@ import {
 	Drawer,
 	ListItemIcon,
 	ListItem,
-	Link
+	Link,
+	Switch,
+	FormControlLabel,
+	FormGroup
 } from "@material-ui/core";
 import { ExitToApp, HomeOutlined, DashboardOutlined } from "@material-ui/icons";
 import { UserContext } from "../../utils/UserContext";
@@ -39,8 +42,7 @@ const useStyles = makeStyles((theme) => ({
 		background: theme.palette.background.default
 	}
 }));
-
-const Navbar = () => {
+const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 	const [anchorEl, setAnchorEl] = useState(false);
 	const open = Boolean(anchorEl);
 	const { user, setUser } = useContext(UserContext);
@@ -60,6 +62,10 @@ const Navbar = () => {
 		setUser(res.user);
 		setFlash(res.flash);
 		history.push("/login");
+	};
+	const handleChangeTheme = ({ target }) => {
+		setPreferredTheme(target.checked);
+		localStorage.setItem("darkMode", target.checked);
 	};
 	useEffect(() => {
 		let title = location.pathname.split("/")[1];
@@ -159,6 +165,19 @@ const Navbar = () => {
 								</MenuItem>
 								<MenuItem component={A} to="/myprofile">
 									My Account
+								</MenuItem>
+								<MenuItem>
+									<FormGroup row>
+										<FormControlLabel
+											control={
+												<Switch
+													checked={preferredTheme}
+													onChange={handleChangeTheme}
+												/>
+											}
+											label="Dark Mode"
+										/>
+									</FormGroup>
 								</MenuItem>
 							</Menu>
 						</div>
