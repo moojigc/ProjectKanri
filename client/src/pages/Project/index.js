@@ -9,12 +9,14 @@ import Container from "@material-ui/core/Container";
 import { Grid, Typography } from "@material-ui/core/";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import { shadows } from "@material-ui/system";
+import CreateDialog from "../../components/CreateDialog";
 import {
 	Assignment,
 	AssignmentInd,
 	AssignmentLate,
 	AssignmentTurnedIn,
-	ArrowForward
+	ArrowForward,
+	Add
 } from "@material-ui/icons";
 import {
 	List,
@@ -25,9 +27,11 @@ import {
 	Link,
 	Avatar,
 	ListItemSecondaryAction,
-	IconButton
+	IconButton,
+	Fab
 } from "@material-ui/core";
 import projectAPI from "../../utils/projectAPI";
+import { set } from "mongoose";
 // import taskAPI from "../../utils/taskAPI";
 
 const useStyles = makeStyles((theme) => ({
@@ -39,6 +43,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 	gridBackground: {
 		backgroundColor: "transparent"
+	},
+	fab: {
+		position: "absolute",
+		bottom: theme.spacing(2),
+		right: theme.spacing(2)
 	}
 }));
 
@@ -47,6 +56,9 @@ const Project = () => {
 	const [project, setProject] = useState({});
 	const [tasks, setTasks] = useState([]);
 	const { id } = useParams();
+
+	const [openCreate, setOpenCreate] = useState(false);
+
 	const returnOrganizedTasks = (tasks = []) => {
 		const todoTasks = {
 			status: TASK_TODO,
@@ -95,68 +107,82 @@ const Project = () => {
 	}, []);
 
 	return (
-		<Container maxWidth="xl" component="main">
-			<Wrapper>
-				<Title>{project.title}</Title>
-				<Typography paragraph>{project.description}</Typography>
-			</Wrapper>
-			<Wrapper className={clsx(classes.gridBackground)}>
-				<Grid container spacing={2}>
-					{returnOrganizedTasks(tasks).map(({ status, tasks }) => {
-						return (
-							<Grid item xs={12} sm={6} md={3}>
-								<Typography variant="h6" component="h3">
-									{status}
-								</Typography>
-								<List dense>
-									{tasks.length ? (
-										tasks.map((task) => {
-											return (
-												<ListItem
-													key={task._id}
-													boxShadow={1}
-													className={clsx(classes.taskOutline)}>
-													<ListItemAvatar>
-														<Avatar>
-															<Assignment></Assignment>
-														</Avatar>
-													</ListItemAvatar>
-													<ListItemText
-														primary={task.title}
-														secondary={
-															"Updated: " +
-															moment(task.updatedAt).format(
-																"D-MMM-YYYY"
-															)
-														}></ListItemText>
-													<ListItemSecondaryAction>
-														<IconButton
-															edge="end"
-															aria-label="Go to task"
-															onClick={() =>
-																window.location.replace(
-																	`/task/${task._id}`
+		<React.Fragment>
+			<Container maxWidth="xl" component="main">
+				<Wrapper>
+					<Title>{project.title}</Title>
+					<Typography paragraph>{project.description}</Typography>
+				</Wrapper>
+				<Wrapper className={clsx(classes.gridBackground)}>
+					<Grid container spacing={2}>
+						{returnOrganizedTasks(tasks).map(({ status, tasks }) => {
+							return (
+								<Grid item xs={12} sm={6} md={3} key={status}>
+									<Typography variant="h6" component="h3">
+										{status}
+									</Typography>
+									<List dense>
+										{tasks.length ? (
+											tasks.map((task) => {
+												return (
+													<ListItem
+														key={task._id}
+														// boxShadow={1}
+														className={clsx(classes.taskOutline)}>
+														<ListItemAvatar>
+															<Avatar>
+																<Assignment></Assignment>
+															</Avatar>
+														</ListItemAvatar>
+														<ListItemText
+															primary={task.title}
+															secondary={
+																"Updated: " +
+																moment(task.updatedAt).format(
+																	"D-MMM-YYYY"
 																)
-															}>
-															<ArrowForward></ArrowForward>
-														</IconButton>
-													</ListItemSecondaryAction>
-												</ListItem>
-											);
-										})
-									) : (
-										<ListItem>
-											<ListItemText
-												primary={"No tasks to do."}></ListItemText>
-										</ListItem>
-									)}
-								</List>
-							</Grid>
-						);
-					})}
-				</Grid>
-			</Wrapper>
-		</Container>
+															}></ListItemText>
+														<ListItemSecondaryAction>
+															<IconButton
+																edge="end"
+																aria-label="Go to task"
+																onClick={() =>
+																	window.location.replace(
+																		`/task/${task._id}`
+																	)
+																}>
+																<ArrowForward></ArrowForward>
+															</IconButton>
+														</ListItemSecondaryAction>
+													</ListItem>
+												);
+											})
+										) : (
+											<ListItem>
+												<ListItemText
+													primary={"No tasks to do."}></ListItemText>
+											</ListItem>
+										)}
+									</List>
+								</Grid>
+							);
+						})}
+					</Grid>
+				</Wrapper>
+				<CreateDialog open={openCreate} setOpen={setOpenCreate}></CreateDialog>
+				<Fab
+					className={clsx(classes.fab)}
+					color="secondary"
+					variant="extended"
+					onClick={() => {
+						console.log("clicked");
+						setOpenCreate(true);
+					}}>
+					<Add></Add>
+					New Project
+				</Fab>
+			</Container>
+		</React.Fragment>
 	);
 };
 
