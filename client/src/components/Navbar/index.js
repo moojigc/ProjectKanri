@@ -19,7 +19,8 @@ import {
 	Link,
 	Switch,
 	FormControlLabel,
-	FormGroup
+	FormGroup,
+	Grid
 } from "@material-ui/core";
 import { ExitToApp, HomeOutlined, DashboardOutlined } from "@material-ui/icons";
 import { UserContext } from "../../utils/UserContext";
@@ -43,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 const Navbar = ({ preferredTheme, setPreferredTheme }) => {
+	const [navTitle, setNavTitle] = useState("ProjectKanri");
 	const [anchorEl, setAnchorEl] = useState(false);
 	const open = Boolean(anchorEl);
 	const { user, setUser } = useContext(UserContext);
@@ -69,10 +71,12 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 	};
 	useEffect(() => {
 		let title = location.pathname.split("/")[1];
-		document.title =
-			location.pathname !== "/" || location.pathname !== "/welcome"
+		let formattedTitle =
+			location.pathname !== "/"
 				? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri"
 				: "ProjectKanri";
+		document.title = formattedTitle;
+		setNavTitle(formattedTitle);
 	}, [location.pathname]);
 	const AppDrawer = () => {
 		return (
@@ -128,7 +132,7 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 						aria-label="menu">
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6">ProjectKanri</Typography>
+					<Typography variant="h6">{navTitle}</Typography>
 					{!user.auth ? (
 						<Button color="inherit">
 							<Link color="textPrimary" component={A} to="/login">
@@ -178,6 +182,16 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 											label="Dark Mode"
 										/>
 									</FormGroup>
+								</MenuItem>
+								<MenuItem>
+									<div onClick={logout}>
+										<Grid container spacing={1} alignItems="flex-start">
+											<Grid item>Logout</Grid>
+											<Grid item>
+												<ExitToApp />
+											</Grid>
+										</Grid>
+									</div>
 								</MenuItem>
 							</Menu>
 						</div>
