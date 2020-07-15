@@ -1,10 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
+import clsx from "clsx";
 import { makeStyles } from "@material-ui/core";
 // import { Wrapper } from "../../components/MiniComponents";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
 import { Grid, Card, CardContent, Typography, CardHeader } from "@material-ui/core/";
 import ProjectCard from "../../components/ProjectCard";
+import ProjectDialog from "../../components/ProjectDialog";
+import { Add } from "@material-ui/icons";
+import { Fab } from "@material-ui/core";
+
 // import dashboardAPI from "../../utils/dashboardAPI";
 import projectAPI from "../../utils/projectAPI";
 
@@ -12,12 +17,18 @@ const useStyles = makeStyles((theme) => ({
 	dynamicgrid: {
 		flexGrow: 1,
 		padding: theme.spacing(2)
+	},
+	fab: {
+		position: "absolute",
+		bottom: theme.spacing(2),
+		right: theme.spacing(2)
 	}
 }));
 
 const Dashboard = () => {
 	const classes = useStyles();
 	const [projects, setProjects] = useState([]);
+	const [openCreate, setOpenCreate] = useState(false);
 
 	useEffect(() => {
 		// dashboardAPI
@@ -30,12 +41,11 @@ const Dashboard = () => {
 		projectAPI
 			.getAllProjects()
 			.then((res) => {
-				let newRes = res.concat(res)
+				let newRes = res.concat(res);
 				setProjects(newRes);
 			})
 			.catch((err) => console.error(err));
 	}, []);
-
 
 	return (
 		<Container maxWidth="lg" component="main">
@@ -49,7 +59,7 @@ const Dashboard = () => {
 						justify="flex-start"
 						alignItems="flex-start">
 						{projects.length ? (
-							projects.map((project) => {
+							projects.map((project, index) => {
 								return (
 									<Grid item xs={12} sm={6} md={4} key={project._id}>
 										<ProjectCard
@@ -60,9 +70,8 @@ const Dashboard = () => {
 											createdAt={project.createdAt}
 											updatedAt={project.updatedAt}
 											creator={project.creator.username}
-											admins = {project.admins}
-											members = {project.members}
-											></ProjectCard>
+											admins={project.admins}
+											members={project.members}></ProjectCard>
 									</Grid>
 								);
 							})
@@ -76,6 +85,18 @@ const Dashboard = () => {
 					</Grid>
 				</div>
 			</Wrapper>
+			<ProjectDialog open={openCreate} setOpen={setOpenCreate}></ProjectDialog>
+			<Fab
+				className={clsx(classes.fab)}
+				color="secondary"
+				variant="extended"
+				onClick={() => {
+					console.log("clicked");
+					setOpenCreate(true);
+				}}>
+				<Add></Add>
+				New Project
+			</Fab>
 		</Container>
 	);
 };

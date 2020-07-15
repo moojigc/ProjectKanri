@@ -18,12 +18,12 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const CreateDialog = ({ open, setOpen }) => {
+const ProjectDialog = ({ open, setOpen }) => {
 
     const classes = useStyles();
     
 	const [projectForm, setProjectForm] = useState({});
-	const { setUser } = useContext(UserContext);
+	const { user, setUser } = useContext(UserContext);
 
 	const handleInputChange = (event) => {
 		const { name, value } = event.target;
@@ -31,7 +31,8 @@ const CreateDialog = ({ open, setOpen }) => {
     };
     
     const handleSubmit = () => {
-        console.log("submitting: ", projectForm);
+        console.log("submitting project: ", projectForm);
+        console.log("current user", user);
         setProjectForm({});
         setOpen(false);
     }
@@ -76,4 +77,4 @@ const CreateDialog = ({ open, setOpen }) => {
 	);
 };
 
-export default CreateDialog;
+export default ProjectDialog;
