@@ -45,11 +45,43 @@ const useStyles = makeStyles((theme) => ({
 const Project = () => {
 	const classes = useStyles();
 	const [project, setProject] = useState({});
-	const [todoTasks, setTodoTasks] = useState([]);
-	const [wipTasks, setWIPTasks] = useState([]);
-	const [reviewTasks, setReviewTasks] = useState([]);
-	const [doneTasks, setDoneTasks] = useState([]);
+	const [tasks, setTasks] = useState([]);
 	const { id } = useParams();
+	const returnOrganizedTasks = (tasks = []) => {
+		const todoTasks = {
+			status: TASK_TODO,
+			tasks: []
+		};
+		const wipTasks = {
+			status: TASK_WIP,
+			tasks: []
+		};
+		const reviewTasks = {
+			status: TASK_REVIEW,
+			tasks: []
+		};
+		const doneTasks = {
+			status: TASK_DONE,
+			tasks: []
+		};
+		for (let i = 0; i < tasks.length; i++) {
+			switch (tasks[i].status) {
+				case TASK_TODO:
+					todoTasks.tasks.push(tasks[i]);
+					break;
+				case TASK_WIP:
+					wipTasks.tasks.push(tasks[i]);
+					break;
+				case TASK_REVIEW:
+					reviewTasks.tasks.push(tasks[i]);
+					break;
+				case TASK_DONE:
+					doneTasks.tasks.push(tasks[i]);
+					break;
+			}
+		}
+		return [todoTasks, wipTasks, reviewTasks, doneTasks];
+	};
 
 	useEffect(() => {
 		projectAPI
@@ -57,14 +89,7 @@ const Project = () => {
 			.then((res) => {
 				setProject(res);
 				console.log("tasks", res.tasks);
-				const todos = res.tasks.filter((task) => task.status === TASK_TODO);
-				const wips = res.tasks.filter((task) => task.status === TASK_WIP);
-				const reviews = res.tasks.filter((task) => task.status === TASK_REVIEW);
-				const dones = res.tasks.filter((task) => task.status === TASK_DONE);
-				setTodoTasks(todos);
-				setWIPTasks(wips);
-				setReviewTasks(reviews);
-				setDoneTasks(dones);
+				setTasks(res.tasks);
 			})
 			.catch((err) => console.error(err));
 	}, []);
@@ -77,185 +102,58 @@ const Project = () => {
 			</Wrapper>
 			<Wrapper className={clsx(classes.gridBackground)}>
 				<Grid container spacing={2}>
-					{/* TO DO TASKS */}
-					<Grid item xs={12} sm={6} md={3}>
-						<Typography variant="h6" component="h3">
-							To Do
-						</Typography>
-						<List dense>
-							{todoTasks.length ? (
-								todoTasks.map((task) => {
-									return (
-										<ListItem
-											key={task._id}
-											boxShadow={1}
-											className={clsx(classes.taskOutline)}>
-											<ListItemAvatar>
-												<Avatar>
-													<Assignment></Assignment>
-												</Avatar>
-											</ListItemAvatar>
+					{returnOrganizedTasks(tasks).map(({ status, tasks }) => {
+						return (
+							<Grid item xs={12} sm={6} md={3}>
+								<Typography variant="h6" component="h3">
+									{status}
+								</Typography>
+								<List dense>
+									{tasks.length ? (
+										tasks.map((task) => {
+											return (
+												<ListItem
+													key={task._id}
+													boxShadow={1}
+													className={clsx(classes.taskOutline)}>
+													<ListItemAvatar>
+														<Avatar>
+															<Assignment></Assignment>
+														</Avatar>
+													</ListItemAvatar>
+													<ListItemText
+														primary={task.title}
+														secondary={
+															"Updated: " +
+															moment(task.updatedAt).format(
+																"D-MMM-YYYY"
+															)
+														}></ListItemText>
+													<ListItemSecondaryAction>
+														<IconButton
+															edge="end"
+															aria-label="Go to task"
+															onClick={() =>
+																window.location.replace(
+																	`/task/${task._id}`
+																)
+															}>
+															<ArrowForward></ArrowForward>
+														</IconButton>
+													</ListItemSecondaryAction>
+												</ListItem>
+											);
+										})
+									) : (
+										<ListItem>
 											<ListItemText
-												primary={task.title}
-												secondary={
-													"Updated: " +
-													moment(task.updatedAt).format("D-MMM-YYYY")
-												}></ListItemText>
-											<ListItemSecondaryAction>
-												<IconButton
-													edge="end"
-													aria-label="Go to task"
-													onClick={() =>
-														window.location.replace(`/task/${task._id}`)
-													}>
-													<ArrowForward></ArrowForward>
-												</IconButton>
-											</ListItemSecondaryAction>
+												primary={"No tasks to do."}></ListItemText>
 										</ListItem>
-									);
-								})
-							) : (
-								<ListItem>
-									<ListItemText primary={"No tasks to do."}></ListItemText>
-								</ListItem>
-							)}
-						</List>
-					</Grid>
-					{/* <Divider orientation="vertical" flexItem></Divider> */}
-					{/* IN PROGRESS TASKS */}
-					<Grid item xs={12} sm={6} md={3}>
-						<Typography variant="h6" component="h3">
-							In Progress
-						</Typography>
-						<List dense>
-							{wipTasks.length ? (
-								wipTasks.map((task) => {
-									return (
-										<ListItem
-											key={task._id}
-											boxShadow={1}
-											className={clsx(classes.taskOutline)}>
-											<ListItemAvatar>
-												<Avatar>
-													<AssignmentInd></AssignmentInd>
-												</Avatar>
-											</ListItemAvatar>
-											<ListItemText
-												primary={task.title}
-												secondary={
-													"Updated: " +
-													moment(task.updatedAt).format("D-MMM-YYYY")
-												}></ListItemText>
-											<ListItemSecondaryAction>
-												<IconButton
-													edge="end"
-													aria-label="Go to task"
-													onClick={() =>
-														window.location.replace(`/task/${task._id}`)
-													}>
-													<ArrowForward></ArrowForward>
-												</IconButton>
-											</ListItemSecondaryAction>
-										</ListItem>
-									);
-								})
-							) : (
-								<ListItem>
-									<ListItemText primary={"No tasks in progress."}></ListItemText>
-								</ListItem>
-							)}
-						</List>
-					</Grid>
-					{/* <Divider orientation="vertical" flexItem></Divider> */}
-					{/* IN REVIEW TASKS */}
-					<Grid item xs={12} sm={6} md={3}>
-						<Typography variant="h6" component="h3">
-							In Review
-						</Typography>
-						<List dense>
-							{reviewTasks.length ? (
-								reviewTasks.map((task) => {
-									return (
-										<ListItem
-											key={task._id}
-											boxShadow={1}
-											className={clsx(classes.taskOutline)}>
-											<ListItemAvatar>
-												<Avatar>
-													<AssignmentLate></AssignmentLate>
-												</Avatar>
-											</ListItemAvatar>
-											<ListItemText
-												primary={task.title}
-												secondary={
-													"Updated: " +
-													moment(task.updatedAt).format("D-MMM-YYYY")
-												}></ListItemText>
-											<ListItemSecondaryAction>
-												<IconButton
-													edge="end"
-													aria-label="Go to task"
-													onClick={() =>
-														window.location.replace(`/task/${task._id}`)
-													}>
-													<ArrowForward></ArrowForward>
-												</IconButton>
-											</ListItemSecondaryAction>
-										</ListItem>
-									);
-								})
-							) : (
-								<ListItem>
-									<ListItemText primary={"No tasks in review."}></ListItemText>
-								</ListItem>
-							)}
-						</List>
-					</Grid>
-					{/* <Divider orientation="vertical" flexItem></Divider> */}
-					{/* DONE TASKS */}
-					<Grid item xs={12} sm={6} md={3}>
-						<Typography variant="h6" component="h3">
-							Completed
-						</Typography>
-						<List dense>
-							{doneTasks.length ? (
-								doneTasks.map((task) => {
-									return (
-										<ListItem
-											key={task._id}
-											boxShadow={1}
-											className={clsx(classes.taskOutline)}>
-											<ListItemAvatar>
-												<Avatar>
-													<AssignmentTurnedIn></AssignmentTurnedIn>
-												</Avatar>
-											</ListItemAvatar>
-											<ListItemText
-												primary={task.title}
-												secondary={
-													"Updated: " +
-													moment(task.updatedAt).format("D-MMM-YYYY")
-												}></ListItemText>
-											<ListItemSecondaryAction>
-												<IconButton
-													edge="end"
-													aria-label="Go to task"
-													onClick={() =>
-														window.location.replace(`/task/${task._id}`)
-													}>
-													<ArrowForward></ArrowForward>
-												</IconButton>
-											</ListItemSecondaryAction>
-										</ListItem>
-									);
-								})
-							) : (
-								<ListItem>
-									<ListItemText primary={"No tasks completed."}></ListItemText>
-								</ListItem>
-							)}
-						</List>
-					</Grid>
+									)}
+								</List>
+							</Grid>
+						);
+					})}
 				</Grid>
 			</Wrapper>
 		</Container>
