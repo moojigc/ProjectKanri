@@ -1,7 +1,8 @@
 const passport = require("passport"),
 	LocalStrategy = require("passport-local").Strategy,
 	{ User } = require("../models"),
-	bcrypt = require("bcryptjs");
+	bcrypt = require("bcryptjs"),
+	{ emailRegex } = require("../../shared");
 
 // Tell passportJS to use a local strategy (as opposed to 3rd party, like Google auth or something)
 passport.use(
@@ -9,7 +10,6 @@ passport.use(
 		{ usernameField: "usernameOrEmail" },
 		async (usernameOrEmail, password, next) => {
 			// Check if user typed in their email or username
-			let emailRegex = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
 			let searchParams = emailRegex.test(usernameOrEmail)
 				? { email: usernameOrEmail }
 				: { username: usernameOrEmail };

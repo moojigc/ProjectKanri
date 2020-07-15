@@ -2,9 +2,10 @@ const { User, Project } = require("../models/"),
 	{ ObjectId } = require("mongoose").Types,
 	passport = require("../config/passport"),
 	jwt = require("jsonwebtoken"),
-	sendEmail = require("../config/nodemailer"),
+	{ sendResetEmail } = require("../config/nodemailer"),
 	EMAIL_SECRET = process.env.EMAIL_SECRET || require("../config/secrets.json").EMAIL_SECRET,
-	crypt = require("../config/crypt");
+	crypt = require("../config/crypt"),
+	{ emailRegex } = require("../../shared");
 /**
  *
  * @param {string} message
@@ -40,7 +41,7 @@ module.exports = (router) => {
 				redirect: "/register"
 			});
 			return;
-		} else if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(body.email)) {
+		} else if (emailRegex.test(body.email)) {
 			res.json({
 				...flash("Not a valid email.", "error"),
 				redirect: "/register"
@@ -176,7 +177,7 @@ module.exports = (router) => {
 					expiresIn: "1d"
 				}
 			);
-			sendEmail({ address: user.email, token: token });
+			sendResetEmail({ address: user.email, token: token });
 			res.json(
 				flash(
 					`Please check ${user.email} for instructions on resetting your password.`,

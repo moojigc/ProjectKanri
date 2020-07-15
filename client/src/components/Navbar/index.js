@@ -28,12 +28,15 @@ const useStyles = makeStyles((theme) => ({
 		background: theme.palette.background.paper
 	},
 	drawer: {
-		background: theme.palette.background.paper,
+		background: theme.palette.background.default,
 		padding: "1rem",
 		height: "inherit",
 		"& *": {
 			color: theme.palette.primary.contrastText
 		}
+	},
+	paper: {
+		background: theme.palette.background.default
 	}
 }));
 
@@ -139,6 +142,7 @@ const Navbar = () => {
 							<Menu
 								id="menu-appbar"
 								anchorEl={anchorEl}
+								PaperProps={{ className: classes.paper }}
 								anchorOrigin={{
 									vertical: "top",
 									horizontal: "right"

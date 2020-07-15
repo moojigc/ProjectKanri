@@ -60,7 +60,7 @@ export const Title = (props) => {
  */
 export const Wrapper = (props) => {
 	const classes = useStyles();
-	return <Box {...props} className={classes.wrapper} />;
+	return <Box {...props} boxShadow={2} className={classes.wrapper} />;
 };
 
 /**

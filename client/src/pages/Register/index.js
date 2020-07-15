@@ -17,6 +17,7 @@ import { FlashContext } from "../../utils/FlashContext";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import { UserContext } from "../../utils/UserContext";
 import { Alert } from "@material-ui/lab";
+import { FaceSharp } from "@material-ui/icons";
 
 const Register = () => {
 	const { user } = useContext(UserContext);
@@ -37,179 +38,200 @@ const Register = () => {
 		setFlash(res.flash);
 		if (res.redirect === "/login") history.push(res.redirect);
 	};
-
+	const handleSetUserDetails = ({ target }) => {
+		const { name, value } = target;
+		setUserDetails({
+			...userDetails,
+			[name]: value
+		});
+	};
 	useEffect(() => {
+		// setFlash({ message: "test", type: "info" });
 		setFlash({ message: null, type: null });
 	}, []);
 	return (
-		<Container maxWidth="lg" component="main">
+		<Container maxWidth="md" component="main">
 			<Wrapper padding="2rem">
 				<Title>Sign Up</Title>
 				<form onSubmit={handleRegister}>
-					<Grid container>
-						<Grid item sm={12}>
-							<ButtonLink to="/login" info>
-								Have an account? Login here.
-							</ButtonLink>
-						</Grid>
-					</Grid>
-					<Grid container spacing={1}>
+					<Grid container justify="center" spacing={2}>
+						{flash.message ? (
+							<Grid item container xs={12} justify="center">
+								<Alert severity={flash.type}>{flash.message}</Alert>
+							</Grid>
+						) : null}
 						<Grid item container spacing={2}>
-							<Grid item sm={12}>
-								<TextField
-									required={!user.email}
-									onChange={({ target }) =>
-										setUserDetails({
-											...userDetails,
-											lastName: target.value
-										})
-									}
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<Email />
-											</InputAdornment>
-										)
-									}}
-									fullWidth
-									type="email"
-									color="secondary"
-									id="email"
-									variant="filled"
-									label="Email"
-									placeholder={user.email}
-								/>
+							<Grid
+								item
+								xs={12}
+								container
+								spacing={1}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item xs={12}>
+									<TextField
+										required
+										onChange={handleSetUserDetails}
+										name="firstName"
+										fullWidth
+										type="text"
+										color="secondary"
+										id="first-name"
+										variant="standard"
+										label="First Name"
+									/>
+								</Grid>
 							</Grid>
 						</Grid>
-						<Grid item container>
-							<Grid item sm={12}>
-								<TextField
-									required
-									onChange={({ target }) =>
-										setUserDetails({
-											...userDetails,
-											username: target.value
-										})
-									}
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<Face />
-											</InputAdornment>
-										)
-									}}
-									fullWidth
-									color="secondary"
-									id="username"
-									variant="filled"
-									label="Username"
-								/>
+						<Grid item container spacing={2}>
+							<Grid
+								item
+								xs={12}
+								container
+								spacing={1}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item xs={12}>
+									<TextField
+										required
+										onChange={handleSetUserDetails}
+										name="lastName"
+										fullWidth
+										type="text"
+										color="secondary"
+										id="last-name"
+										variant="standard"
+										label="Last Name"
+									/>
+								</Grid>
 							</Grid>
 						</Grid>
-						<Grid item container spacing={1}>
-							<Grid item sm={6}>
-								<TextField
-									required
-									onChange={({ target }) =>
-										setUserDetails({
-											...userDetails,
-											firstName: target.value
-										})
-									}
-									fullWidth
-									color="secondary"
-									id="first-name"
-									variant="filled"
-									label="First Name"
-								/>
-							</Grid>
-							<Grid item sm={6}>
-								<TextField
-									required
-									onChange={({ target }) =>
-										setUserDetails({
-											...userDetails,
-											lastName: target.value
-										})
-									}
-									fullWidth
-									color="secondary"
-									id="last-name"
-									variant="filled"
-									label="Last Name"
-								/>
+						<Grid item container spacing={2}>
+							<Grid
+								item
+								xs={12}
+								container
+								spacing={1}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item>
+									<Email />
+								</Grid>
+								<Grid item xs={10}>
+									<TextField
+										required={!user.email}
+										onChange={handleSetUserDetails}
+										name="email"
+										fullWidth
+										type="email"
+										color="secondary"
+										id="email"
+										variant="standard"
+										label="Email"
+										placeholder={user.email}
+									/>
+								</Grid>
 							</Grid>
 						</Grid>
-						<Grid item container spacing={1}>
-							<Grid item sm={6}>
-								<TextField
-									required
-									onChange={({ target }) =>
-										setUserDetails({
-											...userDetails,
-											password: target.value
-										})
-									}
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<Lock />
-											</InputAdornment>
-										)
-									}}
-									fullWidth
-									color="secondary"
-									id="password"
-									variant="filled"
-									type="password"
-									label="Password"
-								/>
-							</Grid>
-							<Grid item sm={6}>
-								<TextField
-									required
-									onChange={({ target }) =>
-										setUserDetails({
-											...userDetails,
-											password2: target.value
-										})
-									}
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<Lock />
-											</InputAdornment>
-										)
-									}}
-									fullWidth
-									color="secondary"
-									id="confirm-password"
-									type="password"
-									variant="filled"
-									label="Confirm Password"
-								/>
+						<Grid item container spacing={2}>
+							<Grid
+								item
+								xs={12}
+								container
+								spacing={1}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item>
+									<FaceSharp />
+								</Grid>
+								<Grid item xs={10}>
+									<TextField
+										required
+										onChange={handleSetUserDetails}
+										name="username"
+										fullWidth
+										type="text"
+										color="secondary"
+										id="username"
+										variant="standard"
+										label="Username"
+									/>
+								</Grid>
 							</Grid>
 						</Grid>
-						<Grid item container>
-							<Grid item>
-								<FormGroup row>
-									<Button
-										type="submit"
-										style={{ marginTop: "1rem" }}
-										variant="contained"
-										size="large">
-										Submit
-										<InputAdornment position="end">
-											<Send />
-										</InputAdornment>
-									</Button>
-								</FormGroup>
+
+						<Grid item container spacing={2}>
+							<Grid
+								item
+								xs={12}
+								container
+								spacing={1}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item>
+									<Lock />
+								</Grid>
+								<Grid item xs={10}>
+									<TextField
+										required
+										onChange={handleSetUserDetails}
+										name="password"
+										fullWidth
+										type="text"
+										color="secondary"
+										id="password"
+										variant="standard"
+										label="Password"
+									/>
+								</Grid>
 							</Grid>
+						</Grid>
+						<Grid item container spacing={2}>
+							<Grid
+								item
+								xs={12}
+								container
+								spacing={1}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item>
+									<Lock />
+								</Grid>
+								<Grid item xs={10}>
+									<TextField
+										required
+										onChange={handleSetUserDetails}
+										name="password2"
+										fullWidth
+										type="text"
+										color="secondary"
+										id="confirm-password"
+										variant="standard"
+										label="Confirm Password"
+									/>
+								</Grid>
+							</Grid>
+						</Grid>
+
+						<Grid container justify="center">
+							<Button
+								color="secondary"
+								type="submit"
+								style={{ marginTop: "1rem" }}
+								variant="contained"
+								size="large">
+								Submit
+								<InputAdornment position="end">
+									<Send />
+								</InputAdornment>
+							</Button>
 						</Grid>
 					</Grid>
 				</form>
 			</Wrapper>
-			{flash.message ? <Alert type={flash.type}>{flash.message}</Alert> : null}
+			<ButtonLink to="/login" color="secondary" fullWidth variant="contained">
+				Have an account? Login here.
+			</ButtonLink>
 		</Container>
 	);
 };
