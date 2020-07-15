@@ -17,11 +17,16 @@ import ResetPassword from "./pages/ResetPassword";
 import Project from "./pages/Project";
 
 function App() {
-	const darkMode = useMediaQuery("(prefers-color-scheme: dark)");
-
-	const preferredTheme = theme(darkMode);
+	const browserDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+	const getUserDarkMode = (browserDarkMode) => {
+		const storedDarkMode = JSON.parse(localStorage.getItem("darkMode"));
+		if (storedDarkMode !== undefined) return storedDarkMode;
+		else return browserDarkMode;
+	};
+	const userPrefersDarkMode = getUserDarkMode(browserDarkMode);
 	const forceLightTheme = theme(false);
 
+	const [preferredTheme, setPreferredTheme] = useState(browserDarkMode);
 	const [isMounted, setMounted] = useState(false);
 	const [user, setUser] = useState({
 		auth: false,
@@ -34,19 +39,22 @@ function App() {
 	});
 
 	useEffect(() => {
-		console.log(darkMode);
+		setPreferredTheme(userPrefersDarkMode);
 		userAPI.checkStatus().then((res) => {
 			setUser(res.user);
 			setMounted(true);
 		});
-	}, [darkMode]);
+	}, [userPrefersDarkMode]);
 	return (
 		<Router>
 			<UserProvider value={{ user, setUser }}>
 				<FlashProvider value={{ flash, setFlash }}>
-					<ThemeProvider theme={preferredTheme}>
+					<ThemeProvider theme={theme(preferredTheme)}>
 						<CssBaseline />
-						<Navbar />
+						<Navbar
+							setPreferredTheme={setPreferredTheme}
+							preferredTheme={preferredTheme}
+						/>
 						<Switch>
 							<Route exact path={["/", "/dashboard"]}>
 								{isMounted ? (
