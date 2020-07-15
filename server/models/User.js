@@ -1,7 +1,13 @@
 const crypt = require("../config/crypt");
 const { Schema, model, Types } = require("mongoose");
+const { emailRegex } = require("../../shared");
 
 const UserSchema = new Schema({
+	verified: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
 	firstName: {
 		type: String,
 		trim: true,
@@ -17,7 +23,7 @@ const UserSchema = new Schema({
 		trim: true,
 		unique: true,
 		required: false,
-		match: [/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/, "Not a valid email."]
+		match: [emailRegex, "Not a valid email."]
 	},
 	username: {
 		type: String,

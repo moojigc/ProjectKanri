@@ -51,52 +51,70 @@ const Login = () => {
 	return (
 		<React.Fragment>
 			<ForgotModal open={modalOpen} setOpen={setModalOpen} />
-			<Container maxWidth="lg" component="main">
+			<Container maxWidth="md" component="main">
 				<Wrapper>
 					<Title>Login</Title>
 					<form onSubmit={handleLogin}>
 						<Grid container justify="center" spacing={2}>
-							<Grid item md={6}>
-								<TextField
-									required
-									onChange={({ target }) =>
-										setLoginDetails({
-											...loginDetails,
-											usernameOrEmail: target.value
-										})
-									}
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<Face />
-											</InputAdornment>
-										)
-									}}
-									fullWidth
-									id="username-or-email"
-									variant="filled"
-									label="Username/Email"
-								/>
+							{flash.message ? (
+								<Grid item container justify="center">
+									<Alert severity={flash.type}>{flash.message}</Alert>
+								</Grid>
+							) : null}
+							<Grid
+								item
+								xs={12}
+								container
+								spacing={1}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item>
+									<Face />
+								</Grid>
+								<Grid item xs={10}>
+									<TextField
+										required
+										onChange={({ target }) =>
+											setLoginDetails({
+												...loginDetails,
+												usernameOrEmail: target.value
+											})
+										}
+										fullWidth
+										id="username-or-email"
+										variant="standard"
+										label="Username/Email"
+										color="secondary"
+									/>
+								</Grid>
 							</Grid>
-							<Grid item md={6}>
-								<TextField
-									required
-									onChange={({ target }) =>
-										setLoginDetails({ ...loginDetails, password: target.value })
-									}
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<Lock />
-											</InputAdornment>
-										)
-									}}
-									fullWidth
-									id="password"
-									type="password"
-									variant="filled"
-									label="Password"
-								/>
+							<Grid
+								item
+								container
+								spacing={1}
+								xs={12}
+								justify="center"
+								alignItems="flex-end">
+								<Grid item>
+									<Lock />
+								</Grid>
+								<Grid item xs={10}>
+									<TextField
+										required
+										onChange={({ target }) =>
+											setLoginDetails({
+												...loginDetails,
+												password: target.value
+											})
+										}
+										fullWidth
+										id="password"
+										type="password"
+										variant="standard"
+										label="Password"
+										color="secondary"
+									/>
+								</Grid>
 							</Grid>
 						</Grid>
 						<Grid container justify="center">
@@ -132,30 +150,25 @@ const Login = () => {
 							</Button>
 						</Grid>
 						<Grid container justify="center">
-							<Box display="flex" justifyContent="center">
-								<Button
-									color="secondary"
-									type="submit"
-									style={{ marginTop: "1rem" }}
-									variant="contained"
-									size="large">
-									Submit
-									<InputAdornment position="end">
-										<Send />
-									</InputAdornment>
-								</Button>
-							</Box>
+							<Button
+								color="secondary"
+								type="submit"
+								style={{ marginTop: "1rem" }}
+								variant="contained"
+								size="large">
+								Submit
+								<InputAdornment position="end">
+									<Send />
+								</InputAdornment>
+							</Button>
 						</Grid>
 					</form>
 				</Wrapper>
 				<Grid container>
-					<Grid item sm={12}>
-						<ButtonLink to="/signup" info>
-							First time user? Sign up here.
-						</ButtonLink>
-					</Grid>
+					<ButtonLink to="/signup" variant="contained" color="secondary" fullWidth>
+						First time user? Sign up here.
+					</ButtonLink>
 				</Grid>
-				{flash.message ? <Alert severity={flash.type}>{flash.message}</Alert> : null}
 			</Container>
 		</React.Fragment>
 	);
