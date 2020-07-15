@@ -51,7 +51,7 @@ const CreateDialog = ({ open, setOpen }) => {
 				<Button onClick={setOpen(false)} color="secondary">
 					Cancel
 				</Button>
-				<Button onClick={handleClose} variant="contained" color="primary">
+				<Button onClick={handleSubmit} variant="contained" color="primary">
 					Create
 				</Button>
 			</DialogActions>
