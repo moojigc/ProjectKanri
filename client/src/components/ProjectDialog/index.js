@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const ProjectDialog = ({ open, setOpen }) => {
+const ProjectDialog = ({ open, setOpen, reloadProjects }) => {
 	const classes = useStyles();
 
 	const [projectForm, setProjectForm] = useState({});
@@ -39,11 +39,14 @@ const ProjectDialog = ({ open, setOpen }) => {
 		};
 		projectAPI
 			.createProject(newProject)
-			.then((res) => console.log("project created successfully", res))
+			.then((res) => {
+				console.log("project created successfully", res);
+			})
 			.catch((err) => console.error(err));
-			
+
 		setProjectForm({});
 		setOpen(false);
+		reloadProjects();
 	};
 
 	return (

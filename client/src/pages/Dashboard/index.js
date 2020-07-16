@@ -31,21 +31,18 @@ const Dashboard = () => {
 	const [openCreate, setOpenCreate] = useState(false);
 
 	useEffect(() => {
-		// dashboardAPI
-		// 	.getProjects()
-		// 	.then((res) => {
-		// 		let newRes = res.concat(res)
-		// 		setProjects(newRes);
-		// 	})
-		// 	.catch((err) => console.error(err));
+		loadProjects();
+	}, []);
+
+	const loadProjects = () => {
 		projectAPI
 			.getAllProjects()
 			.then((res) => {
-				let newRes = res.concat(res);
-				setProjects(newRes);
+				// let newRes = res.concat(res);
+				setProjects(res);
 			})
 			.catch((err) => console.error(err));
-	}, []);
+	};
 
 	return (
 		<Container maxWidth="lg" component="main">
@@ -85,7 +82,10 @@ const Dashboard = () => {
 					</Grid>
 				</div>
 			</Wrapper>
-			<ProjectDialog open={openCreate} setOpen={setOpenCreate}></ProjectDialog>
+			<ProjectDialog
+				open={openCreate}
+				setOpen={setOpenCreate}
+				reloadProjects={loadProjects}></ProjectDialog>
 			<Fab
 				className={clsx(classes.fab)}
 				color="secondary"
