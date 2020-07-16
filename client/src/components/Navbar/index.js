@@ -167,8 +167,8 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 								<MenuItem component={A} to="/dashboard">
 									Dashboard
 								</MenuItem>
-								<MenuItem component={A} to="/myprofile">
-									My Account
+								<MenuItem component={A} to="/profile">
+									Profile
 								</MenuItem>
 								<MenuItem>
 									<FormGroup row>
