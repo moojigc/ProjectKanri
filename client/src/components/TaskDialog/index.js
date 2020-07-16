@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const TaskDialog = ({ open, setOpen }) => {
+const TaskDialog = ({ open, setOpen, reloadProject }) => {
 
     const classes = useStyles();
     
@@ -32,7 +32,8 @@ const TaskDialog = ({ open, setOpen }) => {
     
     const handleSubmit = () => {
         console.log("submitting task: ", taskForm);
-        console.log("current user", user);
+		console.log("current user", user);
+		reloadProject();
         setTaskForm({});
         setOpen(false);
     }

@@ -97,15 +97,19 @@ const Project = () => {
 	};
 
 	useEffect(() => {
-		projectAPI
-			.getProject(id)
-			.then((res) => {
-				setProject(res);
-				console.log("tasks", res.tasks);
-				setTasks(res.tasks);
-			})
-			.catch((err) => console.error(err));
+		loadProject();
 	}, []);
+
+	const loadProject = () => {
+		projectAPI
+		.getProject(id)
+		.then((res) => {
+			setProject(res);
+			console.log("tasks", res.tasks);
+			setTasks(res.tasks);
+		})
+		.catch((err) => console.error(err));
+	}
 
 	return (
 		<React.Fragment>
@@ -170,7 +174,7 @@ const Project = () => {
 						})}
 					</Grid>
 				</Wrapper>
-				<TaskDialog open={taskOpen} setOpen={setTaskOpen}></TaskDialog>
+				<TaskDialog open={taskOpen} setOpen={setTaskOpen} reloadProject={loadProject}></TaskDialog>
 				<Fab
 					className={clsx(classes.fab)}
 					color="secondary"
