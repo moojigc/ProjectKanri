@@ -9,7 +9,8 @@ import Container from "@material-ui/core/Container";
 import { Grid, Typography } from "@material-ui/core/";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import { shadows } from "@material-ui/system";
-import CreateDialog from "../../components/CreateDialog";
+import ProjectDialog from "../../components/ProjectDialog";
+import TaskDialog from "../../components/TaskDialog"
 import {
 	Assignment,
 	AssignmentInd,
@@ -57,7 +58,7 @@ const Project = () => {
 	const [tasks, setTasks] = useState([]);
 	const { id } = useParams();
 
-	const [openCreate, setOpenCreate] = useState(false);
+	const [taskOpen, setTaskOpen] = useState(false);
 
 	const returnOrganizedTasks = (tasks = []) => {
 		const todoTasks = {
@@ -96,15 +97,19 @@ const Project = () => {
 	};
 
 	useEffect(() => {
-		projectAPI
-			.getProject(id)
-			.then((res) => {
-				setProject(res);
-				console.log("tasks", res.tasks);
-				setTasks(res.tasks);
-			})
-			.catch((err) => console.error(err));
+		loadProject();
 	}, []);
+
+	const loadProject = () => {
+		projectAPI
+		.getProject(id)
+		.then((res) => {
+			setProject(res);
+			console.log("tasks", res.tasks);
+			setTasks(res.tasks);
+		})
+		.catch((err) => console.error(err));
+	}
 
 	return (
 		<React.Fragment>
@@ -169,17 +174,17 @@ const Project = () => {
 						})}
 					</Grid>
 				</Wrapper>
-				<CreateDialog open={openCreate} setOpen={setOpenCreate}></CreateDialog>
+				<TaskDialog open={taskOpen} setOpen={setTaskOpen} reloadProject={loadProject}></TaskDialog>
 				<Fab
 					className={clsx(classes.fab)}
 					color="secondary"
 					variant="extended"
 					onClick={() => {
 						console.log("clicked");
-						setOpenCreate(true);
+						setTaskOpen(true);
 					}}>
 					<Add></Add>
-					New Project
+					New Task
 				</Fab>
 			</Container>
 		</React.Fragment>
