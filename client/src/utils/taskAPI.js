@@ -16,7 +16,7 @@ export default {
 	},
 
 	updateTask: async (id, task) => {
-		console.log(`CALLING routes/task-routes: ${id} AND ${task}`);
+		console.log("CALLING routes/task-routes: " + id + " AND ", task);
 
 		try {
 			let { data } = await axios({
