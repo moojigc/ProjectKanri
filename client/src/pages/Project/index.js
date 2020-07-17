@@ -74,6 +74,43 @@ const Project = () => {
 
 	const [taskOpen, setTaskOpen] = useState(false);
 
+
+	const returnOrganizedTasks = (tasks = []) => {
+		const todoTasks = {
+			status: TASK_TODO,
+			tasks: []
+		};
+		const wipTasks = {
+			status: TASK_WIP,
+			tasks: []
+		};
+		const reviewTasks = {
+			status: TASK_REVIEW,
+			tasks: []
+		};
+		const doneTasks = {
+			status: TASK_DONE,
+			tasks: []
+		};
+		for (let i = 0; i < tasks.length; i++) {
+			switch (tasks[i].status) {
+				case TASK_TODO:
+					todoTasks.tasks.push(tasks[i]);
+					break;
+				case TASK_WIP:
+					wipTasks.tasks.push(tasks[i]);
+					break;
+				case TASK_REVIEW:
+					reviewTasks.tasks.push(tasks[i]);
+					break;
+				case TASK_DONE:
+					doneTasks.tasks.push(tasks[i]);
+					break;
+			}
+		}
+		return [todoTasks, wipTasks, reviewTasks, doneTasks];
+	};
+
 	useEffect(() => {
 		loadProject();
 	}, []);
@@ -116,25 +153,25 @@ const Project = () => {
 				<Wrapper className={clsx(classes.gridBackground)}>
 					<DndProvider backend={HTML5Backend}>
 						<Grid container spacing={2} className={clsx(classes.kanban)}>
-							{STATARR.map((stat) => (
+							{returnOrganizedTasks(tasks).map(({ status, tasks }) => (
 								<KanbanCol
-									key={stat}
-									status={stat}
+									key={status}
+									status={status}
 									changeTaskStatus={changeTaskStatus}>
 									<Typography variant="h6" component="h3">
-										{stat}
+										{status}
 									</Typography>
 									<List dense>
 										{tasks.length ? (
 											tasks
-												.filter((task) => task.status === stat)
+												// .filter((task) => task.status === stat)
 												.map((task) => (
-													<KanbanItem task={task}></KanbanItem>
+													<KanbanItem task={task} key={task._id}></KanbanItem>
 												))
 										) : (
 											<ListItem>
 												<ListItemText
-													primary={"No tasks to do."}></ListItemText>
+													primary={"No tasks."}></ListItemText>
 											</ListItem>
 										)}
 									</List>
