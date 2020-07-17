@@ -88,12 +88,6 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 				onClose={toggleDrawer}>
 				<div className={classes.drawer}>
 					<List>
-						<ListItem button component={A} to="/" key="/">
-							<ListItemIcon>
-								<HomeOutlined />
-							</ListItemIcon>
-							<ListItemText>Home</ListItemText>
-						</ListItem>
 						<ListItem button component={A} to="/dashboard" key="/dashboard">
 							<ListItemIcon>
 								<DashboardOutlined />

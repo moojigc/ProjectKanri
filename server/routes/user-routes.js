@@ -199,4 +199,28 @@ module.exports = (router) => {
 			serverError(res);
 		}
 	});
+	router.put("/api/update-pass", async (req, res) => {
+		if (!req.user) {
+			res.json(flash("Not logged in!", "error"));
+			return;
+		} else if (req.body.password !== req.body.password2) {
+			res.json(flash("Passwords must match.", "error")).end();
+			return;
+		}
+		try {
+			let { password } = await User.findOne({ _id: req.user._id }).select({ password: 1 });
+			console.log(password, req.body.currentPassword);
+			let match = await crypt(req.body.currentPassword, password);
+			if (match) {
+				await User.updateOne(
+					{ _id: req.user._id },
+					{ password: await crypt(req.body.password) }
+				);
+				res.json(flash("Successfully updated password!", "success")).end();
+			} else res.json(flash("Sorry, incorrect password.", "error")).end();
+		} catch (error) {
+			console.error(error);
+			serverError(res);
+		}
+	});
 };

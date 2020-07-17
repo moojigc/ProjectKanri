@@ -42,7 +42,7 @@ export default function Task() {
 		<Container maxWidth="lg" component="main">
 			<Wrapper>
 				<Title>Task</Title>
-				<Grid container  spacing={2}>
+				<Grid container spacing={2}>
 					<Grid item sm={3}>
 						<TextField
 							color="textPrimary"
@@ -53,27 +53,23 @@ export default function Task() {
 						/>
 					</Grid>
 					<Grid item sm={3}>
-					<TextField
+						<TextField
 							id="select-assignee"
 							select
 							label="Assigned To:"
 							value={assignee}
 							onChange={handleChange}
-							fullWidth>	
+							fullWidth>
 							{tempUsers.map((user) => (
 								<MenuItem key={user.value} value={user.value}>
 									{user.label}
 								</MenuItem>
 							))}
 						</TextField>
-						
 					</Grid>
-				<Grid item sm={3}>
-					<TextField
-				label="Updated On:"
-				value= {"7/13/2020 at 5:54 P.M."}
-				/>	
-					</Grid>			
+					<Grid item sm={3}>
+						<TextField label="Updated On:" value={"7/13/2020 at 5:54 P.M."} />
+					</Grid>
 				</Grid>
 
 				<Grid container justify="center" spacing={2}>
@@ -88,19 +84,15 @@ export default function Task() {
 						like Aldus PageMaker including versions of Lorem Ipsum.
 					</Grid>
 				</Grid>
-								
 			</Wrapper>
-				<Grid container justify="flex-end"><Button>Save</Button></Grid>
+			<Grid container justify="flex-end">
+				<Button>Save</Button>
+			</Grid>
 			<Wrapper style={{ marginTop: "1rem" }}>
 				<Grid item sm={12}>
 					{""}
 				</Grid>
-	
 			</Wrapper>
-		
 		</Container>
-
-	
-
 	);
 }
