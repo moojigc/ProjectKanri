@@ -15,3 +15,16 @@ export const TASK_TODO = "To Do";
 export const TASK_WIP = "In Progress";
 export const TASK_REVIEW = "In Review";
 export const TASK_DONE = "Completed";
+export const STATARR = [TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE];
+export const STATMAP = {
+	TASK_NEW,
+	TASK_TODO,
+	TASK_WIP,
+	TASK_REVIEW,
+	TASK_DONE
+};
+
+// REACT DND ITEMS
+export const ItemTypes = {
+	DTASK: "task"
+};

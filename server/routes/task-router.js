@@ -23,10 +23,35 @@ module.exports = (router) => {
 	router.get("/api/task/:id", async (req, res) => {
 		// console.log("IN ROUTE: /api/task/:id" + req.params.id);
 		try {
-			let [project] = await Project.where("tasks").in(req.params.id).select("members").populate("members");
-			let task = await Task.findById(req.params.id).populate("creator").populate("assignedUser");
+			let [project] = await Project.where("tasks")
+				.in(req.params.id)
+				.select("members")
+				.populate("members");
+			let task = await Task.findById(req.params.id)
+				.populate("creator")
+				.populate("assignedUser");
 
 			res.json({ task: task, members: project.members }).end();
+		} catch (error) {
+			console.error(error);
+			serverError(res);
+		}
+	});
+
+	router.put("/api/task/:id", async (req, res) => {
+		console.log("IN PUT ROUTE: /api/task/" + req.params.id + " BODY: ", req.body);
+
+		try {
+			let dbTask = await Task.updateOne(
+				{
+					_id: req.params.id
+				},
+				{
+					...req.body
+				}
+			);
+
+			res.json(dbTask).end();
 		} catch (error) {
 			console.error(error);
 			serverError(res);
