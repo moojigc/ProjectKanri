@@ -146,18 +146,13 @@ module.exports = (router) => {
 	});
 	router.get("/api/myprofile", async (req, res) => {
 		try {
-			let adminProjects = await Project.where("admins")
-				.in(ObjectId(req.user._id))
-				.populate({
-					path: "admins",
-					select: { password: 0 },
-					match: { _id: req.user._id }
-				});
-			let regularProjects = await Project.where("members")
-				.in(ObjectId(req.user._id))
-				.populate("members", { password: 0, email: 0 });
-			res.json({ adminProjects, regularProjects }).end();
+			let user = await User.findOne({ _id: req.user._id }).select({ password: 0 });
+			let projects = await Project.find({
+				$or: [{ admins: req.user._id }, { members: req.user._id }]
+			});
+			res.json({ projects, user }).end();
 		} catch (error) {
+			console.error(error);
 			serverError(res);
 		}
 	});

@@ -56,7 +56,7 @@ app.use(express.urlencoded({ extended: true }))
 require("./server/routes/user-routes")(app);
 // require("./server/routes/dashboard-routes")(app);
 require("./server/routes/project-routes")(app);
-
+require("./server/routes/task-router")(app);
 
 if (productionEnv)
 	app.get("*", (req, res) => {

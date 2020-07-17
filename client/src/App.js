@@ -86,7 +86,7 @@ function App() {
 							<Route exact path="/task">
 								<Task />
 							</Route>
-							<Route exact path="/myprofile">
+							<Route exact path="/profile">
 								{isMounted ? (
 									user.auth ? (
 										<UserProfile />
