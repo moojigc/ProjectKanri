@@ -92,7 +92,7 @@ const ProjectCard = ({
 							{admins
 								? adminNames.map((admin) => {
 										return (
-											<Tooltip arrow title={admin}>
+											<Tooltip arrow title={admin} key={admin}>
 												<Avatar className={classes.avatar} alt={admin}>
 													{admin.charAt(0).toUpperCase()}
 												</Avatar>
@@ -111,7 +111,7 @@ const ProjectCard = ({
 								{members
 									? memberNames.map((mem) => {
 											return (
-												<Tooltip arrow title={mem}>
+												<Tooltip arrow title={mem} key={mem}>
 													<Avatar className={classes.avatar} alt={mem}>
 														{mem.charAt(0).toUpperCase()}
 													</Avatar>
