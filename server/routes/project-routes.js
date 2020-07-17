@@ -41,18 +41,16 @@ module.exports = (router) => {
 	router.post("/api/projects", async ({ body }, res) => {
 		console.log("IN ROUTE: post /api/projects", body);
 
-		let newAdmins = [];
-		newAdmins.push(mongoose.Types.ObjectId(body.creator));
-		let newMembers = [];
-		newMembers.push(mongoose.Types.ObjectId(body.creator));
+		let newUsers = [];
+		newUsers.push(mongoose.Types.ObjectId(body.creator));
 
 		try {
 			let newProject = await Project.create({
 				title: body.title,
 				description: body.description,
 				creator: mongoose.Types.ObjectId(body.creator),
-				admins: newAdmins,
-				members: newMembers
+				admins: newUsers,
+				members: newUsers
 			});
 
 			return res.json(newProject);

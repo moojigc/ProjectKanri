@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef, useCallback } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { makeStyles, Divider } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import moment from "moment";
@@ -7,20 +7,10 @@ import clsx from "clsx";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
 import { Grid, Typography } from "@material-ui/core/";
-import {
-	TASK_NEW,
-	TASK_TODO,
-	TASK_WIP,
-	TASK_REVIEW,
-	TASK_DONE,
-	STATARR,
-	STATMAP
-} from "../../utils/actions";
+import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import { shadows } from "@material-ui/system";
 import ProjectDialog from "../../components/ProjectDialog";
-import TaskDialog from "../../components/TaskDialog";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import TaskDialog from "../../components/TaskDialog"
 import {
 	Assignment,
 	AssignmentInd,
@@ -42,9 +32,8 @@ import {
 	Fab
 } from "@material-ui/core";
 import projectAPI from "../../utils/projectAPI";
-import taskAPI from "../../utils/taskAPI";
-import KanbanCol from "../../components/KanbanCol";
-import KanbanItem from "../../components/KanbanItem";
+import { set } from "mongoose";
+// import taskAPI from "../../utils/taskAPI";
 
 const useStyles = makeStyles((theme) => ({
 	taskOutline: {
@@ -60,9 +49,6 @@ const useStyles = makeStyles((theme) => ({
 		position: "absolute",
 		bottom: theme.spacing(2),
 		right: theme.spacing(2)
-	},
-	kanban: {
-		minHeight: "50vh"
 	}
 }));
 
@@ -73,7 +59,6 @@ const Project = () => {
 	const { id } = useParams();
 
 	const [taskOpen, setTaskOpen] = useState(false);
-
 
 	const returnOrganizedTasks = (tasks = []) => {
 		const todoTasks = {
@@ -117,31 +102,14 @@ const Project = () => {
 
 	const loadProject = () => {
 		projectAPI
-			.getProject(id)
-			.then((res) => {
-				setProject(res);
-				console.log("tasks", res.tasks);
-				setTasks(res.tasks);
-			})
-			.catch((err) => console.error(err));
-	};
-
-	const changeTaskStatus = useCallback(
-		(id, status) => {
-			let task = tasks.find((task) => task._id === id);
-			task = { ...task, status: status };
-
-			//call api to update task
-			taskAPI
-				.updateTask(id, task)
-				.then((res) => {
-					console.log("updated task", res);
-					loadProject();
-				})
-				.catch((err) => console.error(err));
-		},
-		[tasks]
-	);
+		.getProject(id)
+		.then((res) => {
+			setProject(res);
+			console.log("tasks", res.tasks);
+			setTasks(res.tasks);
+		})
+		.catch((err) => console.error(err));
+	}
 
 	return (
 		<React.Fragment>
@@ -151,39 +119,62 @@ const Project = () => {
 					<Typography paragraph>{project.description}</Typography>
 				</Wrapper>
 				<Wrapper className={clsx(classes.gridBackground)}>
-					<DndProvider backend={HTML5Backend}>
-						<Grid container spacing={2} className={clsx(classes.kanban)}>
-							{returnOrganizedTasks(tasks).map(({ status, tasks }) => (
-								<KanbanCol
-									key={status}
-									status={status}
-									changeTaskStatus={changeTaskStatus}>
+					<Grid container spacing={2}>
+						{returnOrganizedTasks(tasks).map(({ status, tasks }) => {
+							return (
+								<Grid item xs={12} sm={6} md={3} key={status}>
 									<Typography variant="h6" component="h3">
 										{status}
 									</Typography>
 									<List dense>
 										{tasks.length ? (
-											tasks
-												// .filter((task) => task.status === stat)
-												.map((task) => (
-													<KanbanItem task={task} key={task._id}></KanbanItem>
-												))
+											tasks.map((task) => {
+												return (
+													<ListItem
+														key={task._id}
+														// boxShadow={1}
+														className={clsx(classes.taskOutline)}>
+														<ListItemAvatar>
+															<Avatar>
+																<Assignment></Assignment>
+															</Avatar>
+														</ListItemAvatar>
+														<ListItemText
+															primary={task.title}
+															secondary={
+																"Updated: " +
+																moment(task.updatedAt).format(
+																	"D-MMM-YYYY"
+																)
+															}></ListItemText>
+														<ListItemSecondaryAction>
+															<IconButton
+																edge="end"
+																aria-label="Go to task"
+																onClick={() =>
+																	window.location.replace(
+																		`/task/${task._id}`
+																	)
+																}>
+																<ArrowForward></ArrowForward>
+															</IconButton>
+														</ListItemSecondaryAction>
+													</ListItem>
+												);
+											})
 										) : (
 											<ListItem>
 												<ListItemText
-													primary={"No tasks."}></ListItemText>
+													primary={"No tasks to do."}></ListItemText>
 											</ListItem>
 										)}
 									</List>
-								</KanbanCol>
-							))}
-						</Grid>
-					</DndProvider>
+								</Grid>
+							);
+						})}
+					</Grid>
 				</Wrapper>
-				<TaskDialog
-					open={taskOpen}
-					setOpen={setTaskOpen}
-					reloadProject={loadProject}></TaskDialog>
+				<TaskDialog open={taskOpen} setOpen={setTaskOpen} reloadProject={loadProject}></TaskDialog>
 				<Fab
 					className={clsx(classes.fab)}
 					color="secondary"
