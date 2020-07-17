@@ -63,7 +63,7 @@ export default function Task() {
 									InputProps={{
 										readOnly: true
 									}}
-									helperText={moment(task.createdAt).format("M/DD/YYYY")}
+									helperText={"Create Date: "+ moment(task.createdAt).format("M/DD/YYYY")}
 									fullWidth
 								/>
 							</Grid>
