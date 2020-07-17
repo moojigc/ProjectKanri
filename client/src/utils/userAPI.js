@@ -2,7 +2,7 @@ import Axios from "axios";
 
 /**
  * Server request handler
- * @param {"login" | "register" | "logout" | "user-status" | "reset-pass"} action
+ * @param {"login" | "register" | "logout" | "user-status" | "reset-pass" | "update-pass"} action
  * @param {"GET" | "POST" | "PUT"} [method]
  * @param {Object} [details]
  * @param {string} [details.username]
@@ -76,6 +76,13 @@ const userAPI = {
 			{ password: newPassword, password2: confirm },
 			"PUT",
 			token
+		);
+	},
+	updatePasswordWithCurrent: async (current, newPassword, confirmNewPassword) => {
+		return await request(
+			"update-pass",
+			{ currentPassword: current, password: newPassword, password2: confirmNewPassword },
+			"PUT"
 		);
 	}
 };
