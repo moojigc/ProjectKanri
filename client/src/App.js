@@ -63,8 +63,7 @@ function App() {
 									) : (
 										<Redirect to="/welcome" />
 									)
-								) : // Temporary fix, page loads before user session from server loads
-								null}
+								) : null}
 							</Route>
 							<Route exact path="/welcome">
 								<ThemeProvider theme={forceLightTheme}>
