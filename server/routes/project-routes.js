@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const { Project } = require("../models");
+const { db } = require("../models/Task");
 
 /**
  * Handles user login, status, registration, etc.
@@ -26,10 +28,32 @@ module.exports = (router) => {
 		try {
 			let projects = await Project.find({})
 				.populate("creator")
-                .populate("admins")
-                .populate("members")
+				.populate("admins")
+				.populate("members")
 				.sort({ _id: -1 });
 			return res.json(projects);
+		} catch (error) {
+			console.error(error);
+			return res.status(400).json(error);
+		}
+	});
+
+	router.post("/api/projects", async ({ body }, res) => {
+		console.log("IN ROUTE: post /api/projects", body);
+
+		let newUsers = [];
+		newUsers.push(mongoose.Types.ObjectId(body.creator));
+
+		try {
+			let newProject = await Project.create({
+				title: body.title,
+				description: body.description,
+				creator: mongoose.Types.ObjectId(body.creator),
+				admins: newUsers,
+				members: newUsers
+			});
+
+			return res.json(newProject);
 		} catch (error) {
 			console.error(error);
 			return res.status(400).json(error);

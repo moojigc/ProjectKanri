@@ -5,8 +5,9 @@ import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import taskAPI from "../../utils/taskAPI";
 import { Wrapper, Title } from "../../components/MiniComponents";
-import { MenuItem, Box, Typography, Button } from "@material-ui/core";
-
+import { MenuItem, Box, Typography, Button, Divider, CircularProgress } from "@material-ui/core";
+import moment from "moment";
+import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 const tempUsers = [
 	{
 		value: "001",
@@ -24,13 +25,21 @@ const tempUsers = [
 ];
 
 export default function Task() {
+	const [projectMembers, setProjectMembers] = useState([])
+	const [isMounted, setMounted] = useState(false);
 	const [task, setTask] = useState({});
-	const [assignee, setAssignee] = useState("001");
+	const [assignee, setAssignee] = useState("");
 	const { id } = useParams();
 	useEffect(() => {
 		taskAPI
 			.getTask(id)
-			.then((res) => setTask(res.data))
+			.then((res) => {
+				console.log(res);
+				setAssignee(res.task.assignedUser?.firstName);
+				setTask(res.task);
+				setProjectMembers(res.members)
+				setMounted(true);
+			})
 			.catch((err) => console.log(err));
 	}, []);
 
@@ -41,49 +50,82 @@ export default function Task() {
 	return (
 		<Container maxWidth="lg" component="main">
 			<Wrapper>
-				<Title>Task</Title>
-				<Grid container spacing={2}>
-					<Grid item sm={3}>
-						<TextField
-							color="textPrimary"
-							value="Pia"
-							label="Created By:"
-							helperText="7/8/2020"
-							fullWidth
-						/>
-					</Grid>
-					<Grid item sm={3}>
-						<TextField
-							id="select-assignee"
-							select
-							label="Assigned To:"
-							value={assignee}
-							onChange={handleChange}
-							fullWidth>
-							{tempUsers.map((user) => (
-								<MenuItem key={user.value} value={user.value}>
-									{user.label}
-								</MenuItem>
-							))}
-						</TextField>
-					</Grid>
-					<Grid item sm={3}>
-						<TextField label="Updated On:" value={"7/13/2020 at 5:54 P.M."} />
-					</Grid>
-				</Grid>
-
-				<Grid container justify="center" spacing={2}>
-					<Grid item sm={12}>
-						Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-						Lorem Ipsum has been the industry's standard dummy text ever since the
-						1500s, when an unknown printer took a galley of type and scrambled it to
-						make a type specimen book. It has survived not only five centuries, but also
-						the leap into electronic typesetting, remaining essentially unchanged. It
-						was popularised in the 1960s with the release of Letraset sheets containing
-						Lorem Ipsum passages, and more recently with desktop publishing software
-						like Aldus PageMaker including versions of Lorem Ipsum.
-					</Grid>
-				</Grid>
+				<Title>Task: {task.title}</Title>
+				{isMounted ? (
+					<div>
+						<Grid container spacing={2}>
+							<Grid item xs={12} sm={6} md={3}>
+								<TextField
+									variant="outlined"
+									color="textPrimary"
+									label="Created By:"
+									value={task.creator?.firstName}
+									InputProps={{
+										readOnly: true
+									}}
+									helperText={"Create Date: "+ moment(task.createdAt).format("M/DD/YYYY")}
+									fullWidth
+								/>
+							</Grid>
+							<Grid item xs={12} sm={6} md={3}>
+								<TextField
+									variant="outlined"
+									id="select-assignee"
+									select
+									label="Assigned To:"
+									value={assignee}
+									onChange={handleChange}
+									fullWidth>
+									{projectMembers.map((user) => (
+										<MenuItem key={user._id} value={user.firstName}>
+											{user.firstName + " " + user.lastName}
+										</MenuItem>
+									))}
+								</TextField>
+							</Grid>
+							<Grid item xs={12} sm={6} md={3}>
+								<TextField
+									fullWidth
+									variant="outlined"
+									label="Updated On:"
+									value={"7/13/2020 at 5:54 P.M."}
+								/>
+							</Grid>
+							<Grid item xs={12} sm={6} md={3}>
+								<TextField
+									variant="outlined"
+									id="select-assignee"
+									select
+									label="Status:"
+									InputProps={{ defaultValue: task.status }}
+									onChange={handleChange}
+									fullWidth>
+									{[TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE].map(
+										(stat) => (
+											<MenuItem key={stat} value={stat}>
+												{stat}
+											</MenuItem>
+										)
+									)}
+								</TextField>
+							</Grid>
+						</Grid>
+						<Divider style={{ margin: "1rem 0" }}></Divider>
+						<Grid container justify="center" spacing={2}>
+							<Grid item sm={12}>
+								<Typography
+									style={{ margin: "1rem 0" }}
+									variant="h4"
+									component="h2">
+									Description
+								</Typography>
+								<Typography paragraph>{task.description}</Typography>
+							</Grid>
+						</Grid>
+					</div>
+				) : (
+					<CircularProgress />
+				)}
 			</Wrapper>
 			<Grid container justify="flex-end">
 				<Button>Save</Button>

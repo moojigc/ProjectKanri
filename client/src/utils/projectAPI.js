@@ -21,5 +21,19 @@ export default {
 		});
 
 		return data;
+	},
+
+	createProject: async (newProject) => {
+		console.log("createProject - calling routes/project-routes");
+		console.log("new project", newProject);
+
+		let {data} = await axios({
+			url: "/api/projects",
+			method: "POST",
+			data: newProject,
+			withCredentials: true
+		});
+
+		return data;
 	}
 };

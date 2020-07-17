@@ -33,7 +33,16 @@ const useStyles = makeStyles((theme) => ({
 	expandOpen: {
 		transform: "rotate(180deg)"
 	},
+	avgroupLabel: {
+		border: "none",
+		paddingRight: ".5rem",
+		marginRight: ".2rem"
+	},
+	avgroup: {
+		marginBottom: ".5rem"
+	},
 	avatar: {
+		// border: "none",
 		backgroundColor: blue[500]
 	}
 }));
@@ -86,52 +95,44 @@ const ProjectCard = ({
 			</CardActions>
 			<Collapse in={expanded} timeout="auto" unmountOnExit>
 				<CardContent>
-					<Typography paragraph display="inline">
-						Admins:
-						<AvatarGroup max={4}>
-							{admins
-								? adminNames.map((admin) => {
-										return (
-											<Tooltip arrow title={admin}>
-												<Avatar className={classes.avatar} alt={admin}>
-													{admin.charAt(0).toUpperCase()}
-												</Avatar>
-											</Tooltip>
-										);
-								  })
-								: ""}
-						</AvatarGroup>
-					</Typography>
-
+					<AvatarGroup max={4} className={clsx(classes.avgroup)}>
+						<Typography component="span" className={clsx(classes.avgroupLabel)}>
+							Admins:
+						</Typography>
+						{admins
+							? adminNames.map((admin) => {
+									return (
+										<Tooltip arrow title={admin} key={admin}>
+											<Avatar className={classes.avatar} alt={admin}>
+												{admin.charAt(0).toUpperCase()}
+											</Avatar>
+										</Tooltip>
+									);
+							  })
+							: ""}
+					</AvatarGroup>
 					{/* <Typography paragraph>{admins ? adminNames.join(", ") : ""}</Typography> */}
-					<Typography gutterBottom>
-						Members:
-						<span>
-							<AvatarGroup max={7}>
-								{members
-									? memberNames.map((mem) => {
-											return (
-												<Tooltip arrow title={mem}>
-													<Avatar className={classes.avatar} alt={mem}>
-														{mem.charAt(0).toUpperCase()}
-													</Avatar>
-												</Tooltip>
-											);
-									  })
-									: ""}
-							</AvatarGroup>
-						</span>
-					</Typography>
-
+					<AvatarGroup max={7} className={clsx(classes.avgroup)}>
+					<Typography  component="span" className={clsx(classes.avgroupLabel)}>Members:</Typography>
+						{members
+							? memberNames.map((mem) => {
+									return (
+										<Tooltip arrow title={mem} key={mem}>
+											<Avatar className={classes.avatar} alt={mem}>
+												{mem.charAt(0).toUpperCase()}
+											</Avatar>
+										</Tooltip>
+									);
+							  })
+							: ""}
+					</AvatarGroup>
 					{/* <Typography paragraph>{members ? memberNames.join(", ") : ""}</Typography> */}
-					<Typography paragraph>
-						Created By:
-						<Tooltip arrow title={creator}>
-							<Avatar className={classes.avatar} alt={creator}>
-								{creator.charAt(0).toUpperCase()}
-							</Avatar>
-						</Tooltip>
-					</Typography>
+					Created By:
+					<Tooltip arrow title={creator}>
+						<Avatar className={classes.avatar} alt={creator}>
+							{creator.charAt(0).toUpperCase()}
+						</Avatar>
+					</Tooltip>
 				</CardContent>
 			</Collapse>
 		</Card>
