@@ -10,55 +10,62 @@ import {
 } from "@material-ui/core";
 import { UserContext } from "../../utils/UserContext";
 import clsx from "clsx";
-import { set } from "mongoose";
+import taskAPI from "../../utils/taskAPI";
 
-const useStyles = makeStyles(theme => ({
-    formfield: {
-        marginBottom: "1rem"
-    }
-}))
+const useStyles = makeStyles((theme) => ({
+	formfield: {
+		marginBottom: "1rem"
+	}
+}));
 
-const TaskDialog = ({ open, setOpen, reloadProject }) => {
+const TaskDialog = ({ open, setOpen, reloadProject, projectId }) => {
+	const classes = useStyles();
 
-    const classes = useStyles();
-    
 	const [taskForm, setTaskForm] = useState({});
 	const { user, setUser } = useContext(UserContext);
 
 	const handleInputChange = (event) => {
 		const { name, value } = event.target;
-        setTaskForm({ ...taskForm, [name]: value });
-    };
-    
-    const handleSubmit = () => {
-        console.log("submitting task: ", taskForm);
+		setTaskForm({ ...taskForm, [name]: value });
+	};
+
+	const handleSubmit = () => {
+		console.log("submitting task: ", taskForm);
 		console.log("current user", user);
-		reloadProject();
-        setTaskForm({});
-        setOpen(false);
-    }
+		taskAPI
+			.createTask(projectId, {
+				...taskForm,
+				creator: user._id
+			})
+			.then((res) => {
+				reloadProject();
+				setTaskForm({});
+				setOpen(false);
+			})
+			.catch((err) => console.error(err));
+	};
 
 	return (
 		<Dialog open={open} onClose={() => setOpen(false)} aria-labelledby="create-dialog-title">
-			<DialogTitle id="create-dialog-title" onClose={() => setOpen(false)}>Create Task</DialogTitle>
+			<DialogTitle id="create-dialog-title" onClose={() => setOpen(false)}>
+				Create Task
+			</DialogTitle>
 			<DialogContent dividers>
-				<DialogContentText>
-					Please enter the required information.
-				</DialogContentText>
+				<DialogContentText>Please enter the required information.</DialogContentText>
 				<form>
 					<TextField
-                        required
-                        size="small"
-                        className= {clsx(classes.formfield)}
+						required
+						size="small"
+						className={clsx(classes.formfield)}
 						label="Task Title"
 						name="title"
 						onChange={handleInputChange}
 						variant="outlined"></TextField>
 					<TextField
-                        required
-                        multiline
-                        fullWidth
-                        size="small"
+						required
+						multiline
+						fullWidth
+						size="small"
 						label="Task Description"
 						rows={6}
 						name="description"

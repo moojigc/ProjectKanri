@@ -74,7 +74,6 @@ const Project = () => {
 
 	const [taskOpen, setTaskOpen] = useState(false);
 
-
 	const returnOrganizedTasks = (tasks = []) => {
 		const todoTasks = {
 			status: TASK_TODO,
@@ -166,12 +165,13 @@ const Project = () => {
 											tasks
 												// .filter((task) => task.status === stat)
 												.map((task) => (
-													<KanbanItem task={task} key={task._id}></KanbanItem>
+													<KanbanItem
+														task={task}
+														key={task._id}></KanbanItem>
 												))
 										) : (
 											<ListItem>
-												<ListItemText
-													primary={"No tasks."}></ListItemText>
+												<ListItemText primary={"No tasks."}></ListItemText>
 											</ListItem>
 										)}
 									</List>
@@ -181,6 +181,7 @@ const Project = () => {
 					</DndProvider>
 				</Wrapper>
 				<TaskDialog
+					projectId={id}
 					open={taskOpen}
 					setOpen={setTaskOpen}
 					reloadProject={loadProject}></TaskDialog>
