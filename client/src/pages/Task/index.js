@@ -5,7 +5,7 @@ import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import taskAPI from "../../utils/taskAPI";
 import { Wrapper, Title } from "../../components/MiniComponents";
-import { MenuItem, Box, Typography, Button, Divider, CircularProgress } from "@material-ui/core";
+import { MenuItem, Box, Typography, Button, Divider, CircularProgress, Select } from "@material-ui/core";
 import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import TaskComments from "../../components/TaskComments";
@@ -48,9 +48,16 @@ export default function Task() {
 			.catch((err) => console.log(err));
 	}, []);
 
-	const handleChange = (event) => {
-		setAssignee(event.target.value);
+	const handleChangeAssignee = (id) => {
+		console.log(id)
+		taskAPI
+			.updateTask(id, { assignedUser: id })
+			.then((res) => console.log(res))
+			.catch((err) => console.log(err));
 	};
+	const handleChangeStatus= (event)=>{
+		console.log(event.target.value)
+	}
 
 	return (
 		<Container maxWidth="lg" component="main">
@@ -75,23 +82,21 @@ export default function Task() {
 								/>
 							</Grid>
 							<Grid item xs={12} sm={6} md={3}>
-								<TextField
+								<Select
 									variant="outlined"
 									id="select-assignee"
-									select
 									label="Assigned To:"
 									value={assignee}
-									onChange={handleChange}
 									fullWidth>
-										<MenuItem key={"None"}value={undefined}>
-											<em>None</em>
-										</MenuItem>
+									<MenuItem key={"None"} value={undefined}>
+										<em>None</em>
+									</MenuItem>
 									{projectMembers.map((user) => (
-										<MenuItem key={user._id} value={user.firstName}>
+										<MenuItem onChange={() => handleChangeAssignee(user._id)} key={user._id}>
 											{user.firstName + " " + user.lastName}
 										</MenuItem>
 									))}
-								</TextField>
+								</Select>
 							</Grid>
 							<Grid item xs={12} sm={6} md={3}>
 								<TextField
@@ -108,7 +113,7 @@ export default function Task() {
 									select
 									label="Status:"
 									InputProps={{ defaultValue: task.status }}
-									onChange={handleChange}
+									onChange={handleChangeStatus}
 									fullWidth>
 									{[TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE].map(
 										(stat) => (
