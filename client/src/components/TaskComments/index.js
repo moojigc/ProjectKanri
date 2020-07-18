@@ -15,11 +15,11 @@ import taskAPI from "../../utils/taskAPI";
  *
  * @param {Object} props
  * @param {{ _id, username }} props.user
- * @param {{ _id, body, createdAt, creator: { _id, username, firstName: string, lastName } }[]} props.initialComments
+ * @param {{ _id, body, createdAt, creator: { _id, username, firstName: string, lastName } }[]} props.comments
+ * @param {Function} props.setComments
  * @param {string} props.taskId
  */
-const TaskComments = ({ user, initialComments = [], taskId }) => {
-	const [comments, setComments] = useState(initialComments);
+const TaskComments = ({ user, comments, setComments, taskId }) => {
 	const [visible, setVisible] = useState(false);
 	const commentField = useRef(null);
 	const handleButtonVis = () => {
@@ -49,49 +49,52 @@ const TaskComments = ({ user, initialComments = [], taskId }) => {
 					{comments.length} COMMENT{comments.length === 1 ? "" : "S"}
 				</T>
 			</Grid>
-			<Box
-				component="ul"
-				width="100%"
-				padding="0.5rem 1rem"
-				border="1px solid darkgray"
-				borderRadius="0.15rem">
-				{comments.map((comment, i, arr) => {
-					console.log(comment);
-					const { creator, body, createdAt } = comment;
-					return (
-						<li style={{ listStyle: "none" }} key={comment._id + i}>
-							<Grid
-								style={{ padding: "0.25rem" }}
-								item
-								container
-								alignItems="flex-end">
-								<Grid item container alignItems="center">
-									<Avatar style={{ marginRight: "1rem", fontSize: "1rem" }}>
-										{creator.firstName.charAt(0) + creator.lastName.charAt(0)}
-									</Avatar>
-									<div>
-										<T
-											variant="subtitle1"
-											component="div"
-											style={{ lineHeight: 1, fontWeight: 700 }}>
-											{creator.firstName + " " + creator.lastName}
-										</T>
-										<T variant="caption" style={{ fontWeight: 100 }}>
-											{moment(createdAt).fromNow()}
-										</T>
-									</div>
+			{comments.length ? (
+				<Box
+					component="ul"
+					width="100%"
+					padding="0.5rem 1rem"
+					border="1px solid darkgray"
+					borderRadius="0.15rem">
+					{comments.map((comment, i, arr) => {
+						console.log(comment);
+						const { creator, body, createdAt } = comment;
+						return (
+							<li style={{ listStyle: "none" }} key={comment._id + i}>
+								<Grid
+									style={{ padding: "0.25rem" }}
+									item
+									container
+									alignItems="flex-end">
+									<Grid item container alignItems="center">
+										<Avatar style={{ marginRight: "1rem", fontSize: "1rem" }}>
+											{creator.firstName.charAt(0) +
+												creator.lastName.charAt(0)}
+										</Avatar>
+										<div>
+											<T
+												variant="subtitle1"
+												component="div"
+												style={{ lineHeight: 1, fontWeight: 700 }}>
+												{creator.firstName + " " + creator.lastName}
+											</T>
+											<T variant="caption" style={{ fontWeight: 100 }}>
+												{moment(createdAt).fromNow()}
+											</T>
+										</div>
+									</Grid>
+									<Grid item container>
+										<T>{body}</T>
+									</Grid>
 								</Grid>
-								<Grid item container>
-									<T>{body}</T>
-								</Grid>
-							</Grid>
-							{i !== arr.length - 1 ? (
-								<Divider style={{ margin: "0.5rem 0" }} />
-							) : null}
-						</li>
-					);
-				})}
-			</Box>
+								{i !== arr.length - 1 ? (
+									<Divider style={{ margin: "0.5rem 0" }} />
+								) : null}
+							</li>
+						);
+					})}
+				</Box>
+			) : null}
 			<form onSubmit={handleCommentSubmit} style={{ width: "100%", padding: "0.5rem 1rem" }}>
 				<Grid
 					item
