@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	appBar: {
-		zIndex: theme.zIndex.drawer + 1
+		zIndex: theme.zIndex.drawer + 1,
+		position: "relative"
 	},
 	paper: {
 		background: theme.palette.background.default
