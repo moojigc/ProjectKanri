@@ -15,6 +15,8 @@ import UserProfile from "./pages/UserProfile";
 import Dashboard from "./pages/Dashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Project from "./pages/Project";
+import sakuraBranch from "./sakura_branch.png";
+import sakuraFlipped from "./sakura_flipped.png";
 
 function App() {
 	const browserDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -51,6 +53,26 @@ function App() {
 				<FlashProvider value={{ flash, setFlash }}>
 					<ThemeProvider theme={theme(preferredTheme)}>
 						<CssBaseline />
+						<img
+							src={sakuraFlipped}
+							style={{
+								zIndex: -1,
+								position: "fixed",
+								width: "15rem",
+								top: "2rem",
+								left: 0
+							}}
+						/>
+						<img
+							src={sakuraBranch}
+							style={{
+								zIndex: -1,
+								position: "fixed",
+								width: "15rem",
+								right: 0,
+								bottom: 0
+							}}
+						/>
 						<Navbar
 							setPreferredTheme={setPreferredTheme}
 							preferredTheme={preferredTheme}

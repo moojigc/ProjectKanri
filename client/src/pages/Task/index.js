@@ -31,6 +31,7 @@ export default function Task() {
 	const [projectMembers, setProjectMembers] = useState([]);
 	const [isMounted, setMounted] = useState(false);
 	const [task, setTask] = useState({});
+	const [comments, setComments] = useState([]);
 	const [assignee, setAssignee] = useState("");
 	const { id } = useParams();
 	useEffect(() => {
@@ -40,6 +41,7 @@ export default function Task() {
 				console.log(res);
 				setAssignee(res.task.assignedUser?.firstName);
 				setTask(res.task);
+				setComments(res.task.comments);
 				setProjectMembers(res.members);
 				setMounted(true);
 			})
@@ -129,23 +131,24 @@ export default function Task() {
 						</Grid>
 					</div>
 				) : (
-					<CircularProgress />
+					<Grid container justify="center">
+						<CircularProgress size="5rem" />
+					</Grid>
 				)}
 			</Wrapper>
 			<Grid container justify="flex-end">
 				<Button>Save</Button>
 			</Grid>
-			{task.comments?.length ? (
-				<Wrapper style={{ marginTop: "1rem" }}>
-					<Grid item sm={12}>
-						<TaskComments
-							taskId={task._id}
-							initialComments={task.comments}
-							user={user}
-						/>
-					</Grid>
-				</Wrapper>
-			) : null}
+			<Wrapper style={{ marginTop: "1rem" }}>
+				<Grid item sm={12}>
+					<TaskComments
+						taskId={task._id}
+						comments={comments}
+						setComments={setComments}
+						user={user}
+					/>
+				</Grid>
+			</Wrapper>
 		</Container>
 	);
 }

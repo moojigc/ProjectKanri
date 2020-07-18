@@ -2,7 +2,7 @@ const { User, Task, Project } = require("../models");
 const { ObjectId } = require("mongoose").Types;
 const { flash, serverError } = require("../config/utils");
 /**
- * Handles user login, status, registration, etc.
+ * Handles tasks
  * @param {import("express").Router} router
  */
 module.exports = (router) => {
