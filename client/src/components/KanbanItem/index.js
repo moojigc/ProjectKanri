@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const KanbanItem = ({ task }) => {
+const KanbanItem = ({ projectId,task }) => {
 	const classes = useStyles();
 	const ref = useRef(null);
 
@@ -66,7 +66,7 @@ const KanbanItem = ({ task }) => {
 					"Updated: " + moment(task.updatedAt).format("D-MMM-YYYY")
 				}></ListItemText>
 			<ListItemSecondaryAction>
-				<RouterLink to={`/task/${task._id}`}>
+				<RouterLink to={`/project/${projectId}/task/${task._id}`}>
 					<IconButton edge="end" aria-label="Go to task">
 						<ArrowForward />
 					</IconButton>

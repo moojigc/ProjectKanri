@@ -21,7 +21,8 @@ import { Tooltip } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		maxWidth: 345
+		maxWidth: 345,
+		backgroundColor: theme.palette.kone.light
 	},
 	expand: {
 		transform: "rotate(0deg)",
@@ -43,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	avatar: {
 		// border: "none",
-		backgroundColor: blue[500]
+		backgroundColor: theme.palette.secondary.main,
+		borderColor: theme.palette.secondary.light
 	}
 }));
 
@@ -72,7 +74,7 @@ const ProjectCard = ({
 	let memberNames = members.map((member) => member.username);
 
 	return (
-		<Card className={classes.root}>
+		<Card className={clsx(classes.root)}>
 			<CardHeader title={title} subheader={moment(updatedAt).format("D-MMM-YYYY")} />
 			<CardContent>
 				<Typography variant="body2" color="textSecondary" component="p">
