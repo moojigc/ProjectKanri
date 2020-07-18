@@ -44,7 +44,7 @@ module.exports = (router) => {
 				}
 			);
 
-			res.json(dbTask).end();
+			res.json(dbTask.toObject()).end();
 		} catch (error) {
 			console.error(error);
 			serverError(res);
