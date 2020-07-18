@@ -17,7 +17,8 @@ const TaskCommentSchema = new Schema({
 	},
 	creator: {
 		type: Types.ObjectId,
-		required: true
+		required: true,
+		ref: "User"
 	}
 });
 const TaskComment = model("TaskComment", TaskCommentSchema);

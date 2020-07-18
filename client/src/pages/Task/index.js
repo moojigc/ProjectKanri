@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -8,24 +8,27 @@ import { Wrapper, Title } from "../../components/MiniComponents";
 import { MenuItem, Box, Typography, Button, Divider, CircularProgress } from "@material-ui/core";
 import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
-const tempUsers = [
-	{
-		value: "001",
-		label: "Pia"
-	},
+import TaskComments from "../../components/TaskComments";
+import { UserContext } from "../../utils/UserContext";
+// const tempUsers = [
+// 	{
+// 		value: "001",
+// 		label: "Pia"
+// 	},
 
-	{
-		value: "002",
-		label: "Moojig"
-	},
-	{
-		value: "003",
-		label: "Sam"
-	}
-];
+// 	{
+// 		value: "002",
+// 		label: "Moojig"
+// 	},
+// 	{
+// 		value: "003",
+// 		label: "Sam"
+// 	}
+// ];
 
 export default function Task() {
-	const [projectMembers, setProjectMembers] = useState([])
+	const { user } = useContext(UserContext);
+	const [projectMembers, setProjectMembers] = useState([]);
 	const [isMounted, setMounted] = useState(false);
 	const [task, setTask] = useState({});
 	const [assignee, setAssignee] = useState("");
@@ -37,7 +40,7 @@ export default function Task() {
 				console.log(res);
 				setAssignee(res.task.assignedUser?.firstName);
 				setTask(res.task);
-				setProjectMembers(res.members)
+				setProjectMembers(res.members);
 				setMounted(true);
 			})
 			.catch((err) => console.log(err));
@@ -57,13 +60,15 @@ export default function Task() {
 							<Grid item xs={12} sm={6} md={3}>
 								<TextField
 									variant="outlined"
-									color="textPrimary"
+									color="secondary"
 									label="Created By:"
 									value={task.creator?.firstName}
 									InputProps={{
 										readOnly: true
 									}}
-									helperText={"Create Date: "+ moment(task.createdAt).format("M/DD/YYYY")}
+									helperText={
+										"Create Date: " + moment(task.createdAt).format("M/DD/YYYY")
+									}
 									fullWidth
 								/>
 							</Grid>
@@ -132,7 +137,7 @@ export default function Task() {
 			</Grid>
 			<Wrapper style={{ marginTop: "1rem" }}>
 				<Grid item sm={12}>
-					{""}
+					<TaskComments comments={task.comments} user={user} />
 				</Grid>
 			</Wrapper>
 		</Container>

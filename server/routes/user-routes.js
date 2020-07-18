@@ -33,6 +33,7 @@ const guestUser = {
  */
 module.exports = (router) => {
 	router.post("/api/register", async ({ body }, res) => {
+		console.log(body);
 		const isInvalid =
 			Object.values(body).filter((field) => field === null || field === "").length > 0;
 		if (isInvalid) {
@@ -41,7 +42,7 @@ module.exports = (router) => {
 				redirect: "/register"
 			});
 			return;
-		} else if (emailRegex.test(body.email)) {
+		} else if (!emailRegex.test(body.email)) {
 			res.json({
 				...flash("Not a valid email.", "error"),
 				redirect: "/register"
@@ -51,18 +52,22 @@ module.exports = (router) => {
 			res.json({ ...flash("Passwords must match!", "error"), redirect: "/register" });
 		} else {
 			let user = new User({
+				firstName: body.firstName,
+				lastName: body.lastName,
 				username: body.username,
 				email: body.email,
 				password: body.password
 			});
 			try {
 				await user.encryptPass();
+				console.log(user);
 				await User.create(user.toObject());
 				res.status(200).json({
 					...flash(`Welcome, ${body.username}!`, "success"),
 					redirect: "/login"
 				});
 			} catch (error) {
+				console.log(error);
 				let fields = error.keyValue ? Object.keys(error.keyValue) : null;
 				let field = fields.length > 0 ? fields[0] : null;
 				field
@@ -126,7 +131,21 @@ module.exports = (router) => {
 	router.get("/api/user-status", (req, res) => {
 		switch (!!req.user) {
 			case true:
-				res.status(200).json({ user: req.user }).end();
+				User.findOne({ _id: req.user._id }, (_err, user) => {
+					if (_err) console.error(_err);
+					res.status(200)
+						.json({
+							user: {
+								_id: user._id,
+								username: user.username,
+								firstName: user.firstName,
+								lastName: user.lastName,
+								email: user.email,
+								auth: true
+							}
+						})
+						.end();
+				});
 				break;
 			default:
 			case false:
