@@ -5,7 +5,15 @@ import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import taskAPI from "../../utils/taskAPI";
 import { Wrapper, Title } from "../../components/MiniComponents";
-import { MenuItem, Box, Typography, Button, Divider, CircularProgress } from "@material-ui/core";
+import {
+	MenuItem,
+	Box,
+	Typography,
+	Button,
+	Divider,
+	CircularProgress,
+	Select
+} from "@material-ui/core";
 import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import TaskComments from "../../components/TaskComments";
@@ -28,6 +36,7 @@ import { UserContext } from "../../utils/UserContext";
 
 export default function Task() {
 	const { user } = useContext(UserContext);
+	const [open, setOpen] = useState(false);
 	const [projectMembers, setProjectMembers] = useState([]);
 	const [isMounted, setMounted] = useState(false);
 	const [task, setTask] = useState({});
@@ -39,7 +48,7 @@ export default function Task() {
 			.getTask(id)
 			.then((res) => {
 				console.log(res);
-				setAssignee(res.task.assignedUser?.firstName);
+				setAssignee(res.task.assignedUser?._id);
 				setTask(res.task);
 				setComments(res.task.comments);
 				setProjectMembers(res.members);
@@ -48,8 +57,15 @@ export default function Task() {
 			.catch((err) => console.log(err));
 	}, []);
 
-	const handleChange = (event) => {
-		setAssignee(event.target.value);
+	const handleChangeAssignee = (event) => {
+		// console.log(id);
+		taskAPI
+			.updateTask(id, { assignedUser: event.target.value })
+			.then((res) => setAssignee(res.assignedUser))
+			.catch((err) => console.log(err));
+	};
+	const handleChangeStatus = (event) => {
+		console.log(event.target.value);
 	};
 
 	return (
@@ -75,20 +91,22 @@ export default function Task() {
 								/>
 							</Grid>
 							<Grid item xs={12} sm={6} md={3}>
-								<TextField
-									variant="outlined"
-									id="select-assignee"
-									select
-									label="Assigned To:"
-									value={assignee}
-									onChange={handleChange}
-									fullWidth>
-									{projectMembers.map((user) => (
-										<MenuItem key={user._id} value={user.firstName}>
-											{user.firstName + " " + user.lastName}
-										</MenuItem>
-									))}
-								</TextField>
+								{projectMembers.length > 0 ? (
+									<TextField
+										variant="outlined"
+										id="select-assignee"
+										select
+										label="Assigned To:"
+										value={assignee}
+										onChange={handleChangeAssignee}
+										fullWidth>
+										{projectMembers.map((user) => (
+											<MenuItem key={user._id} value={user._id}>
+												{user.firstName + " " + user.lastName}
+											</MenuItem>
+										))}
+									</TextField>
+								) : null}
 							</Grid>
 							<Grid item xs={12} sm={6} md={3}>
 								<TextField
@@ -105,7 +123,7 @@ export default function Task() {
 									select
 									label="Status:"
 									InputProps={{ defaultValue: task.status }}
-									onChange={handleChange}
+									onChange={handleChangeStatus}
 									fullWidth>
 									{[TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE].map(
 										(stat) => (
