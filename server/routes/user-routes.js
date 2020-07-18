@@ -133,7 +133,6 @@ module.exports = (router) => {
 			case true:
 				User.findOne({ _id: req.user._id }, (_err, user) => {
 					if (_err) console.error(_err);
-					console.log(user);
 					res.status(200)
 						.json({
 							user: {

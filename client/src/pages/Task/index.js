@@ -135,17 +135,11 @@ export default function Task() {
 			<Grid container justify="flex-end">
 				<Button>Save</Button>
 			</Grid>
-			{task.comments?.length && (
-				<Wrapper style={{ marginTop: "1rem" }}>
-					<Grid item sm={12}>
-						<TaskComments
-							taskId={task._id}
-							initialComments={task.comments}
-							user={user}
-						/>
-					</Grid>
-				</Wrapper>
-			)}
+			<Wrapper style={{ marginTop: "1rem" }}>
+				<Grid item sm={12}>
+					<TaskComments comments={task.comments} user={user} />
+				</Grid>
+			</Wrapper>
 		</Container>
 	);
 }
