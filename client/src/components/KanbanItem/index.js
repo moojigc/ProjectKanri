@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import { makeStyles, Divider } from "@material-ui/core";
 import { ItemTypes } from "../../utils/actions";
 import clsx from "clsx";
@@ -65,12 +66,11 @@ const KanbanItem = ({ task }) => {
 					"Updated: " + moment(task.updatedAt).format("D-MMM-YYYY")
 				}></ListItemText>
 			<ListItemSecondaryAction>
-				<IconButton
-					edge="end"
-					aria-label="Go to task"
-					onClick={() => window.location.replace(`/task/${task._id}`)}>
-					<ArrowForward></ArrowForward>
-				</IconButton>
+				<RouterLink to={`/task/${task._id}`}>
+					<IconButton edge="end" aria-label="Go to task">
+						<ArrowForward />
+					</IconButton>
+				</RouterLink>
 			</ListItemSecondaryAction>
 		</ListItem>
 	);
