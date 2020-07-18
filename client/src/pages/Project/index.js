@@ -168,11 +168,11 @@ const Project = () => {
 		[tasks]
 	);
 
-	if (project.admins.includes(user._id)) {
-		setActions(adminActions);
-	} else {
-		setActions(memActions);
-	}
+	// if (project.admins.includes(user._id)) {
+	// 	setActions(adminActions);
+	// } else {
+	// 	setActions(memActions);
+	// }
 
 	// const handleActions = (action) => {
 	// 	switch (action){
