@@ -41,6 +41,7 @@ const TaskComments = ({ user, comments, setComments, taskId }) => {
 		commentField.current.value = "";
 	};
 
+	React.useEffect(() => console.log(comments), []);
 	return (
 		<Grid container spacing={2}>
 			<Grid item container justify="center">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext, useRef, useCallback } from "react";
 import { makeStyles, Divider } from "@material-ui/core";
 import { useParams } from "react-router-dom";
+import { UserContext } from "../../utils/UserContext";
 import moment from "moment";
 import clsx from "clsx";
 // import { Wrapper } from "../../components/MiniComponents";
@@ -16,18 +17,19 @@ import {
 	STATARR,
 	STATMAP
 } from "../../utils/actions";
-import { shadows } from "@material-ui/system";
-import ProjectDialog from "../../components/ProjectDialog";
 import TaskDialog from "../../components/TaskDialog";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import {
 	Assignment,
-	AssignmentInd,
-	AssignmentLate,
-	AssignmentTurnedIn,
-	ArrowForward,
-	Add
+	// AssignmentInd,
+	// AssignmentLate,
+	// AssignmentTurnedIn,
+	// ArrowForward,
+	Add,
+	PersonAdd,
+	PeopleAlt,
+	SupervisedUserCircle
 } from "@material-ui/icons";
 import {
 	List,
@@ -41,6 +43,9 @@ import {
 	IconButton,
 	Fab
 } from "@material-ui/core";
+
+import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
+
 import projectAPI from "../../utils/projectAPI";
 import taskAPI from "../../utils/taskAPI";
 import KanbanCol from "../../components/KanbanCol";
@@ -66,14 +71,33 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const adminActions = [
+	{
+		icon: <SupervisedUserCircle />,
+		name: "Add Member"
+	},
+	{
+		icon: <Assignment />,
+		name: "Add Task"
+	}
+];
+
+const memActions = [
+	{
+		icon: <Assignment />,
+		name: "Add Task"
+	}
+];
+
 const Project = () => {
 	const classes = useStyles();
 	const [project, setProject] = useState({});
 	const [tasks, setTasks] = useState([]);
 	const { id } = useParams();
+	const { user } = useContext(UserContext);
+	const [actions, setActions] = useState([]);
 
 	const [taskOpen, setTaskOpen] = useState(false);
-
 
 	const returnOrganizedTasks = (tasks = []) => {
 		const todoTasks = {
@@ -94,6 +118,7 @@ const Project = () => {
 		};
 		for (let i = 0; i < tasks.length; i++) {
 			switch (tasks[i].status) {
+				case TASK_NEW:
 				case TASK_TODO:
 					todoTasks.tasks.push(tasks[i]);
 					break;
@@ -143,6 +168,19 @@ const Project = () => {
 		[tasks]
 	);
 
+	if (project.admins.includes(user._id)) {
+		setActions(adminActions);
+	} else {
+		setActions(memActions);
+	}
+
+	// const handleActions = (action) => {
+	// 	switch (action){
+	// 		case: ""
+
+	// 	}
+	// }
+
 	return (
 		<React.Fragment>
 			<Container maxWidth="xl" component="main">
@@ -166,12 +204,13 @@ const Project = () => {
 											tasks
 												// .filter((task) => task.status === stat)
 												.map((task) => (
-													<KanbanItem task={task} key={task._id}></KanbanItem>
+													<KanbanItem
+														task={task}
+														key={task._id}></KanbanItem>
 												))
 										) : (
 											<ListItem>
-												<ListItemText
-													primary={"No tasks."}></ListItemText>
+												<ListItemText primary={"No tasks."}></ListItemText>
 											</ListItem>
 										)}
 									</List>
@@ -181,6 +220,7 @@ const Project = () => {
 					</DndProvider>
 				</Wrapper>
 				<TaskDialog
+					projectId={id}
 					open={taskOpen}
 					setOpen={setTaskOpen}
 					reloadProject={loadProject}></TaskDialog>
@@ -201,3 +241,9 @@ const Project = () => {
 };
 
 export default Project;
+
+/*
+
+
+
+*/

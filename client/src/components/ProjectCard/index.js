@@ -113,7 +113,9 @@ const ProjectCard = ({
 					</AvatarGroup>
 					{/* <Typography paragraph>{admins ? adminNames.join(", ") : ""}</Typography> */}
 					<AvatarGroup max={7} className={clsx(classes.avgroup)}>
-					<Typography  component="span" className={clsx(classes.avgroupLabel)}>Members:</Typography>
+						<Typography component="span" className={clsx(classes.avgroupLabel)}>
+							Members:
+						</Typography>
 						{members
 							? memberNames.map((mem) => {
 									return (
@@ -127,12 +129,16 @@ const ProjectCard = ({
 							: ""}
 					</AvatarGroup>
 					{/* <Typography paragraph>{members ? memberNames.join(", ") : ""}</Typography> */}
-					Created By:
-					<Tooltip arrow title={creator}>
-						<Avatar className={classes.avatar} alt={creator}>
-							{creator.charAt(0).toUpperCase()}
-						</Avatar>
-					</Tooltip>
+					<AvatarGroup max={1} className={clsx(classes.avgroup)}>
+						<Typography component="span" className={clsx(classes.avgroupLabel)}>
+							Created By:
+						</Typography>
+						<Tooltip arrow title={creator}>
+							<Avatar className={classes.avatar} alt={creator}>
+								{creator.charAt(0).toUpperCase()}
+							</Avatar>
+						</Tooltip>
+					</AvatarGroup>
 				</CardContent>
 			</Collapse>
 		</Card>

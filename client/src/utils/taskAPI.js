@@ -23,6 +23,13 @@ export default {
 			method: "GET"
 		});
 	},
+	createTask: async (projectId, task) => {
+		return await request({
+			url: `/api/project/${projectId}/task`,
+			method: "POST",
+			data: task
+		});
+	},
 
 	updateTask: async (id, task) => {
 		console.log("CALLING routes/task-routes: " + id + " AND ", task);
