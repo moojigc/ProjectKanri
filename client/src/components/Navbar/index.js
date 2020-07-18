@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import clsx from "clsx"
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -39,8 +40,14 @@ const useStyles = makeStyles((theme) => ({
 			color: theme.palette.primary.contrastText
 		}
 	},
+	appBar: {
+		zIndex: theme.zIndex.drawer + 1
+	},
 	paper: {
 		background: theme.palette.background.default
+	},
+	homeIcon: {
+		color: theme.palette.primary.contrastText
 	}
 }));
 const Navbar = ({ preferredTheme, setPreferredTheme }) => {
@@ -117,11 +124,11 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 	return location.pathname === "/welcome" ? null : (
 		<div>
 			{/* <AppDrawer /> */}
-			<AppBar className={classes.nav} position="static">
+			<AppBar className={clsx(classes.nav,classes.appBar)} position="static">
 				<Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
 					<A to={"/dashboard"}>
 						<IconButton edge="start" color="inherit" aria-label="Go Home">
-							<HomeOutlined/>
+							<HomeOutlined className={clsx(classes.homeIcon)} />
 						</IconButton>
 					</A>
 					<Typography variant="h6">{navTitle}</Typography>
