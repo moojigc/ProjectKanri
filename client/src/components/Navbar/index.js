@@ -22,7 +22,7 @@ import {
 	FormGroup,
 	Grid
 } from "@material-ui/core";
-import { ExitToApp, HomeOutlined, DashboardOutlined } from "@material-ui/icons";
+import { ExitToApp, HomeOutlined, Home, DashboardOutlined } from "@material-ui/icons";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import userAPI from "../../utils/userAPI";
@@ -53,12 +53,12 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 	const history = useHistory();
 	const classes = useStyles();
 	const [drawerOpen, setDrawerOpen] = useState(false);
-	const toggleDrawer = (event) => {
-		if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-			return;
-		}
-		setDrawerOpen(!drawerOpen);
-	};
+	// const toggleDrawer = (event) => {
+	// 	if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+	// 		return;
+	// 	}
+	// 	setDrawerOpen(!drawerOpen);
+	// };
 	const logout = async () => {
 		let res = await userAPI.logout();
 		setUser(res.user);
@@ -78,35 +78,35 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 		document.title = formattedTitle;
 		setNavTitle(formattedTitle);
 	}, [location.pathname]);
-	const AppDrawer = () => {
-		return (
-			<Drawer
-				variant="temporary"
-				transitionDuration={400}
-				anchor="left"
-				open={drawerOpen}
-				onClose={toggleDrawer}>
-				<div className={classes.drawer}>
-					<List>
-						<ListItem button component={A} to="/dashboard" key="/dashboard">
-							<ListItemIcon>
-								<DashboardOutlined />
-							</ListItemIcon>
-							<ListItemText>Dashboard</ListItemText>
-						</ListItem>
-						{user?.auth ? (
-							<ListItem button key="logout" onClick={logout}>
-								<ListItemIcon>
-									<ExitToApp />
-								</ListItemIcon>
-								<ListItemText>Log Out</ListItemText>
-							</ListItem>
-						) : null}
-					</List>
-				</div>
-			</Drawer>
-		);
-	};
+	// const AppDrawer = () => {
+	// 	return (
+	// 		<Drawer
+	// 			variant="temporary"
+	// 			transitionDuration={400}
+	// 			anchor="left"
+	// 			open={drawerOpen}
+	// 			onClose={toggleDrawer}>
+	// 			<div className={classes.drawer}>
+	// 				<List>
+	// 					<ListItem button component={A} to="/dashboard" key="/dashboard">
+	// 						<ListItemIcon>
+	// 							<DashboardOutlined />
+	// 						</ListItemIcon>
+	// 						<ListItemText>Dashboard</ListItemText>
+	// 					</ListItem>
+	// 					{user?.auth ? (
+	// 						<ListItem button key="logout" onClick={logout}>
+	// 							<ListItemIcon>
+	// 								<ExitToApp />
+	// 							</ListItemIcon>
+	// 							<ListItemText>Log Out</ListItemText>
+	// 						</ListItem>
+	// 					) : null}
+	// 				</List>
+	// 			</div>
+	// 		</Drawer>
+	// 	);
+	// };
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -116,16 +116,14 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 	};
 	return location.pathname === "/welcome" ? null : (
 		<div>
-			<AppDrawer />
+			{/* <AppDrawer /> */}
 			<AppBar className={classes.nav} position="static">
 				<Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
-					<IconButton
-						onClick={toggleDrawer}
-						edge="start"
-						color="inherit"
-						aria-label="menu">
-						<MenuIcon />
-					</IconButton>
+					<A to={"/dashboard"}>
+						<IconButton edge="start" color="inherit" aria-label="Go Home">
+							<HomeOutlined/>
+						</IconButton>
+					</A>
 					<Typography variant="h6">{navTitle}</Typography>
 					{!user.auth ? (
 						<Button color="inherit">
