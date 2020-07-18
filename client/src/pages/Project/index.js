@@ -17,20 +17,12 @@ import {
 	STATARR,
 	STATMAP
 } from "../../utils/actions";
-// import ProjectNav from "../../components/ProjectNav";
+import ProjectNav from "../../components/ProjectNav";
 import TaskDialog from "../../components/TaskDialog";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import {
-	Assignment,
-	// AssignmentInd,
-	// AssignmentLate,
-	// AssignmentTurnedIn,
-	// ArrowForward,
 	Add,
-	PersonAdd,
-	PeopleAlt,
-	SupervisedUserCircle
 } from "@material-ui/icons";
 import {
 	List,
@@ -160,7 +152,7 @@ const Project = () => {
 
 	return (
 		<div className={clsx(classes.root)}>
-			{/* <ProjectNav projectId={id} title={project.title}></ProjectNav> */}
+			<ProjectNav projectId={id} title={project.title}></ProjectNav>
 			<Container maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title}</Title>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-
+import clsx from "clsx"
 import { makeStyles } from "@material-ui/core/styles";
 
 import Grid from "@material-ui/core/Grid";
@@ -21,21 +21,21 @@ import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import TaskComments from "../../components/TaskComments";
 import { UserContext } from "../../utils/UserContext";
-// import ProjectNav from "../../components/ProjectNav";
+import ProjectNav from "../../components/ProjectNav";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex"
 	},
-	
+
 	content: {
 		flexGrow: 1,
 		padding: theme.spacing(3)
 	}
 }));
 
-
 export default function Task() {
+	const classes = useStyles();
 	const { user } = useContext(UserContext);
 	const [open, setOpen] = useState(false);
 	const [projectMembers, setProjectMembers] = useState([]);
@@ -43,7 +43,7 @@ export default function Task() {
 	const [task, setTask] = useState({});
 	const [comments, setComments] = useState([]);
 	const [assignee, setAssignee] = useState("");
-	const { project,id } = useParams();
+	const { projectId, id } = useParams();
 	useEffect(() => {
 		taskAPI
 			.getTask(id)
@@ -70,104 +70,112 @@ export default function Task() {
 	};
 
 	return (
-		<Container maxWidth="lg" component="main">
-			<Wrapper>
-				<Title>Task: {task.title}</Title>
-				{isMounted ? (
-					<div>
-						<Grid container spacing={2}>
-							<Grid item xs={12} sm={6} md={3}>
-								<TextField
-									variant="outlined"
-									color="secondary"
-									label="Created By:"
-									value={task.creator?.firstName}
-									InputProps={{
-										readOnly: true
-									}}
-									helperText={
-										"Create Date: " + moment(task.createdAt).format("M/DD/YYYY")
-									}
-									fullWidth
-								/>
-							</Grid>
-							<Grid item xs={12} sm={6} md={3}>
-								{projectMembers.length > 0 ? (
+		<div className={clsx(classes.root)}>
+			<ProjectNav projectId={projectId}></ProjectNav>
+			<Container maxWidth="lg" component="main" className={clsx(classes.content)}>
+				<Wrapper>
+					<Title>Task: {task.title}</Title>
+					{isMounted ? (
+						<div>
+							<Grid container spacing={2}>
+								<Grid item xs={12} sm={6} md={3}>
+									<TextField
+										variant="outlined"
+										color="secondary"
+										label="Created By:"
+										value={task.creator?.firstName}
+										InputProps={{
+											readOnly: true
+										}}
+										helperText={
+											"Create Date: " +
+											moment(task.createdAt).format("M/DD/YYYY")
+										}
+										fullWidth
+									/>
+								</Grid>
+								<Grid item xs={12} sm={6} md={3}>
+									{projectMembers.length > 0 ? (
+										<TextField
+											variant="outlined"
+											id="select-assignee"
+											select
+											label="Assigned To:"
+											value={assignee}
+											onChange={handleChangeAssignee}
+											fullWidth>
+											{projectMembers.map((user) => (
+												<MenuItem key={user._id} value={user._id}>
+													{user.firstName + " " + user.lastName}
+												</MenuItem>
+											))}
+										</TextField>
+									) : null}
+								</Grid>
+								<Grid item xs={12} sm={6} md={3}>
+									<TextField
+										fullWidth
+										variant="outlined"
+										label="Updated On:"
+										value={"7/13/2020 at 5:54 P.M."}
+									/>
+								</Grid>
+								<Grid item xs={12} sm={6} md={3}>
 									<TextField
 										variant="outlined"
 										id="select-assignee"
 										select
-										label="Assigned To:"
-										value={assignee}
-										onChange={handleChangeAssignee}
+										label="Status:"
+										InputProps={{ defaultValue: task.status }}
+										onChange={handleChangeStatus}
 										fullWidth>
-										{projectMembers.map((user) => (
-											<MenuItem key={user._id} value={user._id}>
-												{user.firstName + " " + user.lastName}
-											</MenuItem>
-										))}
-									</TextField>
-								) : null}
-							</Grid>
-							<Grid item xs={12} sm={6} md={3}>
-								<TextField
-									fullWidth
-									variant="outlined"
-									label="Updated On:"
-									value={"7/13/2020 at 5:54 P.M."}
-								/>
-							</Grid>
-							<Grid item xs={12} sm={6} md={3}>
-								<TextField
-									variant="outlined"
-									id="select-assignee"
-									select
-									label="Status:"
-									InputProps={{ defaultValue: task.status }}
-									onChange={handleChangeStatus}
-									fullWidth>
-									{[TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE].map(
-										(stat) => (
+										{[
+											TASK_NEW,
+											TASK_TODO,
+											TASK_WIP,
+											TASK_REVIEW,
+											TASK_DONE
+										].map((stat) => (
 											<MenuItem key={stat} value={stat}>
 												{stat}
 											</MenuItem>
-										)
-									)}
-								</TextField>
+										))}
+									</TextField>
+								</Grid>
 							</Grid>
-						</Grid>
-						<Divider style={{ margin: "1rem 0" }}></Divider>
-						<Grid container justify="center" spacing={2}>
-							<Grid item sm={12}>
-								<Typography
-									style={{ margin: "1rem 0" }}
-									variant="h4"
-									component="h2">
-									Description
-								</Typography>
-								<Typography paragraph>{task.description}</Typography>
+							<Divider style={{ margin: "1rem 0" }}></Divider>
+							<Grid container justify="center" spacing={2}>
+								<Grid item sm={12}>
+									<Typography
+										style={{ margin: "1rem 0" }}
+										variant="h4"
+										component="h2">
+										Description
+									</Typography>
+									<Typography paragraph>{task.description}</Typography>
+								</Grid>
 							</Grid>
+						</div>
+					) : (
+						<Grid container justify="center">
+							<CircularProgress size="5rem" />
 						</Grid>
-					</div>
-				) : (
-					<Grid container justify="center">
-						<CircularProgress size="5rem" />
-					</Grid>
-				)}
-			</Wrapper>
-			<Grid container justify="flex-end">
-				<Button>Save</Button>
-			</Grid>
-			<Wrapper style={{ marginTop: "1rem" }}>
-				<Grid item sm={12}>
-					<TaskComments
-						taskId={task._id}
-						comments={comments}
-						setComments={setComments}
-						user={user}
-					/>
+					)}
+				</Wrapper>
+				<Grid container justify="flex-end">
+					<Button>Save</Button>
 				</Grid>
-			</Wrapper>
-		</Container>
+				<Wrapper style={{ marginTop: "1rem" }}>
+					<Grid item sm={12}>
+						<TaskComments
+							taskId={task._id}
+							comments={comments}
+							setComments={setComments}
+							user={user}
+						/>
+					</Grid>
+				</Wrapper>
+			</Container>
+		</div>
 	);
 }

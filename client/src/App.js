@@ -98,14 +98,11 @@ function App() {
 							<Route exact path="/resetpass/:token">
 								<ResetPassword />
 							</Route>
-							<Route exact path="/project/:project/task/:id">
+							<Route exact path="/project/:projectId/task/:id">
 								<Task />
 							</Route>
 							<Route exact path="/signup">
 								<Register />
-							</Route>
-							<Route exact path="/project/:project/task/:id">
-								<Task />
 							</Route>
 							<Route exact path="/profile">
 								{isMounted ? (
