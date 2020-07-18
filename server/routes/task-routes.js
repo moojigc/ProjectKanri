@@ -47,4 +47,27 @@ module.exports = (router) => {
 			serverError(res);
 		}
 	});
+
+	router.post("/api/project/:id/task", async (req, res) => {
+		console.log("IN POST ROUTE: /api/task/" + " BODY: ", req.body);
+
+		try {
+			let dbTask = await Task.create(req.body);
+			let dbProject= await Project.updateOne(
+				{
+					_id: req.params.id
+				},
+				{
+					$push:{
+						tasks: dbTask._id
+					}
+				}
+			)
+
+			res.json({project:dbProject,task:dbTask}).end();
+		} catch (error) {
+			console.error(error);
+			serverError(res);
+		}
+	});
 };

@@ -220,6 +220,7 @@ const Project = () => {
 					</DndProvider>
 				</Wrapper>
 				<TaskDialog
+					projectId={id}
 					open={taskOpen}
 					setOpen={setTaskOpen}
 					reloadProject={loadProject}></TaskDialog>
