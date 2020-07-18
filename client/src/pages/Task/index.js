@@ -60,7 +60,7 @@ export default function Task() {
 							<Grid item xs={12} sm={6} md={3}>
 								<TextField
 									variant="outlined"
-									color="textPrimary"
+									color="secondary"
 									label="Created By:"
 									value={task.creator?.firstName}
 									InputProps={{
@@ -135,11 +135,17 @@ export default function Task() {
 			<Grid container justify="flex-end">
 				<Button>Save</Button>
 			</Grid>
-			<Wrapper style={{ marginTop: "1rem" }}>
-				<Grid item sm={12}>
-					<TaskComments comments={task.comments} user={user} />
-				</Grid>
-			</Wrapper>
+			{task.comments?.length && (
+				<Wrapper style={{ marginTop: "1rem" }}>
+					<Grid item sm={12}>
+						<TaskComments
+							taskId={task._id}
+							initialComments={task.comments}
+							user={user}
+						/>
+					</Grid>
+				</Wrapper>
+			)}
 		</Container>
 	);
 }

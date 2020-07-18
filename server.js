@@ -55,7 +55,8 @@ app.use(express.urlencoded({ extended: true }))
 // Set routes
 require("./server/routes/user-routes")(app);
 require("./server/routes/project-routes")(app);
-require("./server/routes/task-router")(app);
+require("./server/routes/task-routes")(app);
+require("./server/routes/taskcomment-routes")(app);
 
 if (productionEnv)
 	app.get("*", (req, res) => {

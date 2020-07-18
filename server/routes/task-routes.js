@@ -1,21 +1,6 @@
-const { User, Task, Project } = require("../models/");
-const passport = require("../config/passport");
+const { User, Task, Project } = require("../models");
 const { ObjectId } = require("mongoose").Types;
-/**
- *
- * @param {string} message
- * @param {"error" | "success"} type
- */
-const flash = (message, type) => {
-	return {
-		flash: {
-			message: message,
-			type: type
-		}
-	};
-};
-const serverError = (res) => res.status(500).json(flash("Internal server error.", "error")).end();
-
+const { flash, serverError } = require("../config/utils");
 /**
  * Handles user login, status, registration, etc.
  * @param {import("express").Router} router

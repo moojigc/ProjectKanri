@@ -33,6 +33,7 @@ const guestUser = {
  */
 module.exports = (router) => {
 	router.post("/api/register", async ({ body }, res) => {
+		console.log(body);
 		const isInvalid =
 			Object.values(body).filter((field) => field === null || field === "").length > 0;
 		if (isInvalid) {
@@ -51,18 +52,22 @@ module.exports = (router) => {
 			res.json({ ...flash("Passwords must match!", "error"), redirect: "/register" });
 		} else {
 			let user = new User({
+				firstName: body.firstName,
+				lastName: body.lastName,
 				username: body.username,
 				email: body.email,
 				password: body.password
 			});
 			try {
 				await user.encryptPass();
+				console.log(user);
 				await User.create(user.toObject());
 				res.status(200).json({
 					...flash(`Welcome, ${body.username}!`, "success"),
 					redirect: "/login"
 				});
 			} catch (error) {
+				console.log(error);
 				let fields = error.keyValue ? Object.keys(error.keyValue) : null;
 				let field = fields.length > 0 ? fields[0] : null;
 				field
@@ -128,6 +133,7 @@ module.exports = (router) => {
 			case true:
 				User.findOne({ _id: req.user._id }, (_err, user) => {
 					if (_err) console.error(_err);
+					console.log(user);
 					res.status(200)
 						.json({
 							user: {
@@ -135,7 +141,8 @@ module.exports = (router) => {
 								username: user.username,
 								firstName: user.firstName,
 								lastName: user.lastName,
-								email: user.email
+								email: user.email,
+								auth: true
 							}
 						})
 						.end();
