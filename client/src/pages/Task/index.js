@@ -21,7 +21,7 @@ import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import TaskComments from "../../components/TaskComments";
 import { UserContext } from "../../utils/UserContext";
-import ProjectNav from "../../components/ProjectNav";
+// import ProjectNav from "../../components/ProjectNav";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
