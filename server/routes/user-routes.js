@@ -41,7 +41,7 @@ module.exports = (router) => {
 				redirect: "/register"
 			});
 			return;
-		} else if (emailRegex.test(body.email)) {
+		} else if (!emailRegex.test(body.email)) {
 			res.json({
 				...flash("Not a valid email.", "error"),
 				redirect: "/register"
@@ -126,7 +126,20 @@ module.exports = (router) => {
 	router.get("/api/user-status", (req, res) => {
 		switch (!!req.user) {
 			case true:
-				res.status(200).json({ user: req.user }).end();
+				User.findOne({ _id: req.user._id }, (_err, user) => {
+					if (_err) console.error(_err);
+					res.status(200)
+						.json({
+							user: {
+								_id: user._id,
+								username: user.username,
+								firstName: user.firstName,
+								lastName: user.lastName,
+								email: user.email
+							}
+						})
+						.end();
+				});
 				break;
 			default:
 			case false:
