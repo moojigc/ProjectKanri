@@ -32,12 +32,15 @@ module.exports = (router) => {
 		console.log("IN PUT ROUTE: /api/task/" + req.params.id + " BODY: ", req.body);
 
 		try {
-			let dbTask = await Task.updateOne(
+			let dbTask = await Task.findOneAndUpdate(
 				{
 					_id: req.params.id
 				},
 				{
 					...req.body
+				},
+				{
+					new: true
 				}
 			);
 
@@ -53,18 +56,18 @@ module.exports = (router) => {
 
 		try {
 			let dbTask = await Task.create(req.body);
-			let dbProject= await Project.updateOne(
+			let dbProject = await Project.updateOne(
 				{
 					_id: req.params.id
 				},
 				{
-					$push:{
+					$push: {
 						tasks: dbTask._id
 					}
 				}
-			)
+			);
 
-			res.json({project:dbProject,task:dbTask}).end();
+			res.json({ project: dbProject, task: dbTask }).end();
 		} catch (error) {
 			console.error(error);
 			serverError(res);
