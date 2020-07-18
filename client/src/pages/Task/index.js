@@ -83,6 +83,9 @@ export default function Task() {
 									value={assignee}
 									onChange={handleChange}
 									fullWidth>
+										<MenuItem key={"None"}value={undefined}>
+											<em>None</em>
+										</MenuItem>
 									{projectMembers.map((user) => (
 										<MenuItem key={user._id} value={user.firstName}>
 											{user.firstName + " " + user.lastName}
