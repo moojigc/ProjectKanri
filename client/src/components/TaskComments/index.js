@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import moment from "moment";
 import {
-	Container,
 	Typography as T,
 	Avatar,
 	Grid,
@@ -9,8 +8,7 @@ import {
 	Box,
 	TextField,
 	Button,
-	Fade,
-	ListItem
+	Fade
 } from "@material-ui/core";
 import taskAPI from "../../utils/taskAPI";
 /**
@@ -29,10 +27,7 @@ const TaskComments = ({ user, initialComments = [], taskId }) => {
 		commentField.current.value = "";
 		commentField.current.blur();
 	};
-	/**
-	 *
-	 * @param {Event} event
-	 */
+
 	const handleCommentSubmit = async (event) => {
 		event.preventDefault();
 		console.log(taskId, commentField.current.value);
@@ -46,6 +41,7 @@ const TaskComments = ({ user, initialComments = [], taskId }) => {
 		commentField.current.value = "";
 	};
 
+	React.useEffect(() => console.log(comments), []);
 	return (
 		<Grid container spacing={2}>
 			<Grid item container justify="center">
@@ -60,9 +56,10 @@ const TaskComments = ({ user, initialComments = [], taskId }) => {
 				border="1px solid darkgray"
 				borderRadius="0.15rem">
 				{comments.map((comment, i, arr) => {
+					console.log(comment);
 					const { creator, body, createdAt } = comment;
 					return (
-						<li style={{ listStyle: "none" }} key={comment._id}>
+						<li style={{ listStyle: "none" }} key={comment._id + i}>
 							<Grid
 								style={{ padding: "0.25rem" }}
 								item
