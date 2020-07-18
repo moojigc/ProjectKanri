@@ -29,9 +29,9 @@ module.exports = (router) => {
 			let projects = await Project.find({
 				$or: [{ admins: req.user._id }, { members: req.user._id }]
 			})
-				.populate("creator")
-				.populate("admins")
-				.populate("members")
+				.populate("creator", { password: 0 })
+				.populate("admins", { password: 0 })
+				.populate("members", { password: 0 })
 				.sort({ _id: -1 });
 			return res.json(projects);
 		} catch (error) {
