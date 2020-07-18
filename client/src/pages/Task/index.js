@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
+
+import { makeStyles } from "@material-ui/core/styles";
+
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
@@ -18,21 +21,19 @@ import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import TaskComments from "../../components/TaskComments";
 import { UserContext } from "../../utils/UserContext";
-// const tempUsers = [
-// 	{
-// 		value: "001",
-// 		label: "Pia"
-// 	},
+import ProjectNav from "../../components/ProjectNav";
 
-// 	{
-// 		value: "002",
-// 		label: "Moojig"
-// 	},
-// 	{
-// 		value: "003",
-// 		label: "Sam"
-// 	}
-// ];
+const useStyles = makeStyles((theme) => ({
+	root: {
+		display: "flex"
+	},
+	
+	content: {
+		flexGrow: 1,
+		padding: theme.spacing(3)
+	}
+}));
+
 
 export default function Task() {
 	const { user } = useContext(UserContext);
@@ -42,7 +43,7 @@ export default function Task() {
 	const [task, setTask] = useState({});
 	const [comments, setComments] = useState([]);
 	const [assignee, setAssignee] = useState("");
-	const { id } = useParams();
+	const { project,id } = useParams();
 	useEffect(() => {
 		taskAPI
 			.getTask(id)

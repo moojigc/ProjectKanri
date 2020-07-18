@@ -17,6 +17,7 @@ import {
 	STATARR,
 	STATMAP
 } from "../../utils/actions";
+// import ProjectNav from "../../components/ProjectNav";
 import TaskDialog from "../../components/TaskDialog";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -52,6 +53,9 @@ import KanbanCol from "../../components/KanbanCol";
 import KanbanItem from "../../components/KanbanItem";
 
 const useStyles = makeStyles((theme) => ({
+	root: {
+		display: "flex"
+	},
 	taskOutline: {
 		border: "1px gray",
 		boxShadow: "1px 2px 2px 1px rgba(97, 108, 153, .3)",
@@ -68,26 +72,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 	kanban: {
 		minHeight: "50vh"
+	},
+	content: {
+		flexGrow: 1,
+		padding: theme.spacing(3)
 	}
 }));
-
-const adminActions = [
-	{
-		icon: <SupervisedUserCircle />,
-		name: "Add Member"
-	},
-	{
-		icon: <Assignment />,
-		name: "Add Task"
-	}
-];
-
-const memActions = [
-	{
-		icon: <Assignment />,
-		name: "Add Task"
-	}
-];
 
 const Project = () => {
 	const classes = useStyles();
@@ -168,22 +158,10 @@ const Project = () => {
 		[tasks]
 	);
 
-	// if (project.admins.includes(user._id)) {
-	// 	setActions(adminActions);
-	// } else {
-	// 	setActions(memActions);
-	// }
-
-	// const handleActions = (action) => {
-	// 	switch (action){
-	// 		case: ""
-
-	// 	}
-	// }
-
 	return (
-		<React.Fragment>
-			<Container maxWidth="xl" component="main">
+		<div className={clsx(classes.root)}>
+			{/* <ProjectNav projectId={id} title={project.title}></ProjectNav> */}
+			<Container maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title}</Title>
 					<Typography paragraph>{project.description}</Typography>
@@ -202,10 +180,10 @@ const Project = () => {
 									<List dense>
 										{tasks.length ? (
 											tasks
-												// .filter((task) => task.status === stat)
 												.map((task) => (
 													<KanbanItem
 														task={task}
+														projectId={id}
 														key={task._id}></KanbanItem>
 												))
 										) : (
@@ -236,7 +214,7 @@ const Project = () => {
 					New Task
 				</Fab>
 			</Container>
-		</React.Fragment>
+		</div>
 	);
 };
 
