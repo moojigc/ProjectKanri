@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
 	content: {
 		flexGrow: 1,
 		padding: theme.spacing(3)
+	},
+	editDescription: {
+		backgroundColor: theme.palette.kone.light
 	}
 }));
 
@@ -38,9 +41,11 @@ export default function Task() {
 	const classes = useStyles();
 	const { user } = useContext(UserContext);
 	const [open, setOpen] = useState(false);
+	const [editMode, setEditMode] = useState(false);
 	const [projectMembers, setProjectMembers] = useState([]);
 	const [isMounted, setMounted] = useState(false);
 	const [task, setTask] = useState({});
+	const [taskDesc, setTaskDesc] = useState("");
 	const [comments, setComments] = useState([]);
 	const [assignee, setAssignee] = useState("");
 	const { projectId, id } = useParams();
@@ -51,6 +56,7 @@ export default function Task() {
 				console.log(res);
 				setAssignee(res.task.assignedUser?._id);
 				setTask(res.task);
+				setTaskDesc(res.task.description);
 				setComments(res.task.comments);
 				setProjectMembers(res.members);
 				setMounted(true);
@@ -75,6 +81,31 @@ export default function Task() {
 				setTask(res);
 			})
 			.catch((err) => console.log(err));
+
+	};
+
+	const handleEditMode = () => {
+		setEditMode(!editMode);
+	};
+
+	const handleDescChange = (event) => {
+		setTaskDesc(event.target.value);
+	};
+
+	const handleDescCancel = () => {
+		setTaskDesc(task.description);
+	};
+
+	const handleDescSubmit = () => {
+		taskAPI
+			.updateTask(id, { description: taskDesc })
+			.then((res) => {
+				console.log(res);
+				setTask(res);
+				setEditMode(!editMode);
+			})
+			.catch((err) => console.log(err));
+
 	};
 
 	return (
@@ -153,15 +184,31 @@ export default function Task() {
 							</Grid>
 							<Divider style={{ margin: "1rem 0" }}></Divider>
 							<Grid container justify="center" spacing={2}>
-								<Grid item sm={12}>
-									<Typography
-										style={{ margin: "1rem 0" }}
-										variant="h4"
-										component="h2">
-										Description
-									</Typography>
-									<Typography paragraph>{task.description}</Typography>
-								</Grid>
+								<Typography
+									gutterbottom
+									style={{ margin: "1rem 0" }}
+									variant="h4"
+									component="h2">
+									Description
+								</Typography>
+								{editMode ? (
+									<Grid item sm={12}>
+										<TextField
+											className={classes.editDescription}
+											id="outlined-multiline-static"
+											value={taskDesc}
+											onChange={handleDescChange}
+											multiline
+											fullWidth
+											rows={5}
+											variant="outlined"
+										/>
+									</Grid>
+								) : (
+									<Grid item sm={12}>
+										<Typography paragraph>{task.description}</Typography>
+									</Grid>
+								)}
 							</Grid>
 						</div>
 					) : (
@@ -171,7 +218,14 @@ export default function Task() {
 					)}
 				</Wrapper>
 				<Grid container justify="flex-end">
-					<Button>Save</Button>
+					{editMode ? (
+						<React.Fragment>
+							<Button onClick={handleDescSubmit}>Submit</Button>
+							<Button onClick={handleEditMode}>Cancel</Button>
+						</React.Fragment>
+					) : (
+						<Button onClick={handleEditMode}>Edit</Button>
+					)}
 				</Grid>
 				<Wrapper style={{ marginTop: "1rem" }}>
 					<Grid item sm={12}>
