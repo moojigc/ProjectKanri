@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import clsx from "clsx"
+import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Grid from "@material-ui/core/Grid";
@@ -61,12 +61,20 @@ export default function Task() {
 	const handleChangeAssignee = (event) => {
 		// console.log(id);
 		taskAPI
-			.updateTask(id, { assignedUser: event.target.value, updatedAt: Date.now() })
+			.updateTask(id, { assignedUser: event.target.value })
 			.then((res) => setAssignee(res.assignedUser))
 			.catch((err) => console.log(err));
 	};
 	const handleChangeStatus = (event) => {
 		console.log(event.target.value);
+
+		taskAPI
+			.updateTask(id, { status: event.target.value })
+			.then((res) => {
+				console.log(res);
+				setTask(res);
+			})
+			.catch((err) => console.log(err));
 	};
 
 	return (
@@ -83,7 +91,7 @@ export default function Task() {
 										variant="outlined"
 										color="secondary"
 										label="Created By:"
-										value={task.creator?.firstName}
+										defaultValue={task.creator?.firstName}
 										InputProps={{
 											readOnly: true
 										}}
