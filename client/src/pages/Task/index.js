@@ -84,13 +84,13 @@ export default function Task() {
 	};
 
 	const handleDescChange = (event) => {
-		setTaskDesc(event.target.value.trim());
+		setTaskDesc(event.target.value);
 	};
 
 	const handleDescSubmit = () => {
 		if (taskDesc) {
 			taskAPI
-				.updateTask(id, { description: taskDesc })
+				.updateTask(id, { description: taskDesc.trim() })
 				.then((res) => {
 					console.log(res);
 					setTask(res);
