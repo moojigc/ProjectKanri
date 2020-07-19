@@ -9,12 +9,10 @@ import taskAPI from "../../utils/taskAPI";
 import { Wrapper, Title } from "../../components/MiniComponents";
 import {
 	MenuItem,
-	Box,
 	Typography,
 	Button,
 	Divider,
 	CircularProgress,
-	Select
 } from "@material-ui/core";
 import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
@@ -39,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Task() {
 	const classes = useStyles();
 	const { user } = useContext(UserContext);
-	const [open, setOpen] = useState(false);
 	const [editMode, setEditMode] = useState(false);
 	const [projectMembers, setProjectMembers] = useState([]);
 	const [isMounted, setMounted] = useState(false);
@@ -61,7 +58,7 @@ export default function Task() {
 				setMounted(true);
 			})
 			.catch((err) => console.log(err));
-	}, []);
+	}, [id]);
 
 	const handleChangeAssignee = (event) => {
 		// console.log(id);
@@ -138,6 +135,9 @@ export default function Task() {
 											value={assignee}
 											onChange={handleChangeAssignee}
 											fullWidth>
+											<MenuItem key="none" value={undefined}>
+												<em>None</em>
+											</MenuItem>
 											{projectMembers.map((user) => (
 												<MenuItem key={user._id} value={user._id}>
 													{user.firstName + " " + user.lastName}
@@ -180,7 +180,7 @@ export default function Task() {
 							<Divider style={{ margin: "1rem 0" }}></Divider>
 							<Grid container justify="center" spacing={2}>
 								<Typography
-									gutterbottom
+									gutterbottom="true"
 									style={{ margin: "1rem 0" }}
 									variant="h4"
 									component="h2">
