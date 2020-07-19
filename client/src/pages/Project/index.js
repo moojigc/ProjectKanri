@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useContext, useRef, useCallback } from "react";
-import { makeStyles, Divider } from "@material-ui/core";
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import { makeStyles } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../utils/UserContext";
-import moment from "moment";
 import clsx from "clsx";
-// import { Wrapper } from "../../components/MiniComponents";
-import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
+import { Title, Wrapper } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
 import { Grid, Typography } from "@material-ui/core/";
 import {
@@ -14,8 +12,6 @@ import {
 	TASK_WIP,
 	TASK_REVIEW,
 	TASK_DONE,
-	STATARR,
-	STATMAP
 } from "../../utils/actions";
 import ProjectNav from "../../components/ProjectNav";
 import TaskDialog from "../../components/TaskDialog";
@@ -27,18 +23,10 @@ import {
 import {
 	List,
 	ListItemText,
-	ListItemIcon,
-	ListItemAvatar,
 	ListItem,
-	Link,
-	Avatar,
-	ListItemSecondaryAction,
-	IconButton,
 	Fab
 } from "@material-ui/core";
-
-import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
-
+// import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
 import projectAPI from "../../utils/projectAPI";
 import taskAPI from "../../utils/taskAPI";
 import KanbanCol from "../../components/KanbanCol";
@@ -77,7 +65,6 @@ const Project = () => {
 	const [tasks, setTasks] = useState([]);
 	const { id } = useParams();
 	const { user } = useContext(UserContext);
-	const [actions, setActions] = useState([]);
 
 	const [taskOpen, setTaskOpen] = useState(false);
 
@@ -112,6 +99,8 @@ const Project = () => {
 					break;
 				case TASK_DONE:
 					doneTasks.tasks.push(tasks[i]);
+					break;
+				default:
 					break;
 			}
 		}
