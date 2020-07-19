@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
@@ -81,7 +80,6 @@ export default function Task() {
 				setTask(res);
 			})
 			.catch((err) => console.log(err));
-
 	};
 
 	const handleEditMode = () => {
@@ -89,11 +87,8 @@ export default function Task() {
 	};
 
 	const handleDescChange = (event) => {
+		let newDesc = event.target.value.trim();
 		setTaskDesc(event.target.value);
-	};
-
-	const handleDescCancel = () => {
-		setTaskDesc(task.description);
 	};
 
 	const handleDescSubmit = () => {
@@ -105,7 +100,6 @@ export default function Task() {
 				setEditMode(!editMode);
 			})
 			.catch((err) => console.log(err));
-
 	};
 
 	return (
@@ -194,6 +188,7 @@ export default function Task() {
 								{editMode ? (
 									<Grid item sm={12}>
 										<TextField
+											required
 											className={classes.editDescription}
 											id="outlined-multiline-static"
 											value={taskDesc}
@@ -220,11 +215,19 @@ export default function Task() {
 				<Grid container justify="flex-end">
 					{editMode ? (
 						<React.Fragment>
-							<Button onClick={handleDescSubmit}>Submit</Button>
-							<Button onClick={handleEditMode}>Cancel</Button>
+							<Button color="secondary" onClick={handleEditMode}>Cancel</Button>
+							<Button
+								variant="contained"
+								color="primary"
+								style={{ marginLeft: "1rem" }}
+								onClick={handleDescSubmit}>
+								Submit
+							</Button>
 						</React.Fragment>
 					) : (
-						<Button onClick={handleEditMode}>Edit</Button>
+						<Button variant="contained" color="primary" onClick={handleEditMode}>
+							Edit
+						</Button>
 					)}
 				</Grid>
 				<Wrapper style={{ marginTop: "1rem" }}>
