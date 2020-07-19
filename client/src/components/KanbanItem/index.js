@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
 	taskOutline: {
 		border: "1px gray",
 		boxShadow: "1px 2px 2px 1px rgba(97, 108, 153, .3)",
-		marginBottom: "1rem"
+		marginBottom: "1rem",
+		backgroundColor: theme.palette.kone.light
 		// padding: theme.spacing(2)
 	}
 }));

@@ -15,7 +15,7 @@ const theme = (darkMode) =>
 				main: darkMode ? "rgb(90, 90, 90)" : "rgb(97, 108, 153)"
 			},
 			kone: {
-				light: darkMode ? "rgb(50,50,50)" : "rgb(252, 221, 242)"
+				light: darkMode ? "rgb(135, 134, 134)" : "rgb(255, 245, 245)"
 			}
 		}
 	});
