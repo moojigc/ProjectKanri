@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, TextField, Button, Typography, Grid, InputAdornment } from "@material-ui/core";
+import { TextField, Button, } from "@material-ui/core";
 import {
 	Dialog,
 	DialogActions,
@@ -23,7 +23,7 @@ const TaskDialog = ({ open, setOpen, reloadProject, projectId }) => {
 
 	const [taskForm, setTaskForm] = useState({});
 	const [errorForm, setErrorForm] = useState({});
-	const { user, setUser } = useContext(UserContext);
+	const { user } = useContext(UserContext);
 
 	const handleInputChange = (event) => {
 		const { name, value } = event.target;
