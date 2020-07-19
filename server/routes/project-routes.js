@@ -26,7 +26,8 @@ module.exports = (router) => {
 	router.get("/api/projects", async (req, res) => {
 		console.log("IN ROUTE: /api/projects");
 		try {
-			let projects = await Project.find({})
+			let projects = await Project.where("members")
+				.in(req.user._id)
 				.populate("creator")
 				.populate("admins")
 				.populate("members")

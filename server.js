@@ -57,6 +57,7 @@ require("./server/routes/user-routes")(app);
 require("./server/routes/project-routes")(app);
 require("./server/routes/task-routes")(app);
 require("./server/routes/taskcomment-routes")(app);
+require("./server/routes/invite-routes")(app);
 
 if (productionEnv)
 	app.get("*", (req, res) => {

@@ -96,6 +96,7 @@ const ModalForm = ({
 								color="secondary">
 								<Typography style={{ color: "white" }}>Submit</Typography>
 							</Button>
+							{otherButtons.length && otherButtons.map((button) => button)}
 						</Grid>
 					</form>
 				</Box>

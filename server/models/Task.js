@@ -43,6 +43,11 @@ const TaskSchema = new Schema({
 		required: true
 	}
 });
+
+TaskSchema.pre("updateOne", function () {
+	this.updatedAt = new Date();
+});
+
 const Task = model("Task", TaskSchema);
 
 module.exports = Task;
