@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { Provider as UserProvider } from "./utils/UserContext";
 import { Provider as FlashProvider } from "./utils/FlashContext";
@@ -55,6 +55,7 @@ function App() {
 						<CssBaseline />
 						<img
 							src={sakuraFlipped}
+							alt=""
 							style={{
 								zIndex: -1,
 								position: "fixed",
@@ -65,6 +66,7 @@ function App() {
 						/>
 						<img
 							src={sakuraBranch}
+							alt=""
 							style={{
 								zIndex: -1,
 								position: "fixed",
