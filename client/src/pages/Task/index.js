@@ -84,7 +84,7 @@ export default function Task() {
 	};
 
 	const handleDescChange = (event) => {
-		setTaskDesc(event.target.value.trim());
+		setTaskDesc(event.target.value);
 	};
 
 	const handleDescSubmit = () => {
