@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useRef } from "react";
-import { makeStyles, Divider } from "@material-ui/core";
+import React, { useRef } from "react";
+import { makeStyles } from "@material-ui/core";
 import { ItemTypes } from "../../utils/actions";
-import { Grid, Typography } from "@material-ui/core/";
+import { Grid } from "@material-ui/core/";
 import clsx from "clsx";
-
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import {useDrop } from "react-dnd";
 
 const useStyles = makeStyles((theme) => ({
 	taskOutline: {
