@@ -82,7 +82,7 @@ const ProjectCard = ({
 				</Typography>
 			</CardContent>
 			<CardActions disableSpacing>
-				<ButtonLink size="small" to={`/project/${id}`} color="secondary">
+				<ButtonLink size="small" to={`/project/${id}`}>
 					View Project
 				</ButtonLink>
 				<IconButton
@@ -105,7 +105,10 @@ const ProjectCard = ({
 							? adminNames.map((admin) => {
 									return (
 										<Tooltip arrow title={admin} key={admin}>
-											<Avatar className={classes.avatar} alt={admin}>
+											<Avatar
+												style={{fontSize: "1rem" }}
+												className={classes.avatar}
+												alt={admin}>
 												{admin.charAt(0).toUpperCase()}
 											</Avatar>
 										</Tooltip>
@@ -122,7 +125,10 @@ const ProjectCard = ({
 							? memberNames.map((mem) => {
 									return (
 										<Tooltip arrow title={mem} key={mem}>
-											<Avatar className={classes.avatar} alt={mem}>
+											<Avatar
+												style={{fontSize: "1rem" }}
+												className={classes.avatar}
+												alt={mem}>
 												{mem.charAt(0).toUpperCase()}
 											</Avatar>
 										</Tooltip>
@@ -136,7 +142,10 @@ const ProjectCard = ({
 							Created By:
 						</Typography>
 						<Tooltip arrow title={creator}>
-							<Avatar className={classes.avatar} alt={creator}>
+							<Avatar
+								className={classes.avatar}
+								style={{ marginRight: "1rem", fontSize: "1rem" }}
+								alt={creator}>
 								{creator.charAt(0).toUpperCase()}
 							</Avatar>
 						</Tooltip>
