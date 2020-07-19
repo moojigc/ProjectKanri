@@ -136,7 +136,7 @@ const Project = () => {
 	const changeTaskStatus = useCallback(
 		(id, status) => {
 			let task = tasks.find((task) => task._id === id);
-			task = { ...task, status: status };
+			task = { ...task, status: status, updatedAt: Date.now() };
 
 			//call api to update task
 			taskAPI

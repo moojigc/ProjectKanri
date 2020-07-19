@@ -61,7 +61,7 @@ export default function Task() {
 	const handleChangeAssignee = (event) => {
 		// console.log(id);
 		taskAPI
-			.updateTask(id, { assignedUser: event.target.value })
+			.updateTask(id, { assignedUser: event.target.value, updatedAt: Date.now() })
 			.then((res) => setAssignee(res.assignedUser))
 			.catch((err) => console.log(err));
 	};
@@ -117,7 +117,7 @@ export default function Task() {
 										fullWidth
 										variant="outlined"
 										label="Updated On:"
-										value={"7/13/2020 at 5:54 P.M."}
+										value={moment(task.updatedAt).format("M/DD/YYYY h:m A")}
 									/>
 								</Grid>
 								<Grid item xs={12} sm={6} md={3}>
