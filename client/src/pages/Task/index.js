@@ -87,19 +87,20 @@ export default function Task() {
 	};
 
 	const handleDescChange = (event) => {
-		let newDesc = event.target.value.trim();
-		setTaskDesc(event.target.value);
+		setTaskDesc(event.target.value.trim());
 	};
 
 	const handleDescSubmit = () => {
-		taskAPI
-			.updateTask(id, { description: taskDesc })
-			.then((res) => {
-				console.log(res);
-				setTask(res);
-				setEditMode(!editMode);
-			})
-			.catch((err) => console.log(err));
+		if (taskDesc) {
+			taskAPI
+				.updateTask(id, { description: taskDesc })
+				.then((res) => {
+					console.log(res);
+					setTask(res);
+					setEditMode(!editMode);
+				})
+				.catch((err) => console.log(err));
+		}
 	};
 
 	return (
@@ -215,7 +216,9 @@ export default function Task() {
 				<Grid container justify="flex-end">
 					{editMode ? (
 						<React.Fragment>
-							<Button color="secondary" onClick={handleEditMode}>Cancel</Button>
+							<Button color="secondary" onClick={handleEditMode}>
+								Cancel
+							</Button>
 							<Button
 								variant="contained"
 								color="primary"
