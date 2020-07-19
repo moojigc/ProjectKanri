@@ -142,7 +142,7 @@ const ProjectCard = ({
 							: ""}
 					</AvatarGroup>
 					{/* <Typography paragraph>{members ? memberNames.join(", ") : ""}</Typography> */}
-					<AvatarGroup max={1} className={clsx(classes.avgroup)}>
+					<AvatarGroup className={clsx(classes.avgroup)}>
 						<Typography component="span" className={clsx(classes.avgroupLabel)}>
 							Created By:
 						</Typography>
