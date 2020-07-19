@@ -1,16 +1,13 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core";
-// import { Wrapper } from "../../components/MiniComponents";
-import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
+import { Title, Wrapper } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
-import { Grid, Card, CardContent, Typography, CardHeader } from "@material-ui/core/";
+import { Grid, Typography } from "@material-ui/core/";
 import ProjectCard from "../../components/ProjectCard";
 import ProjectDialog from "../../components/ProjectDialog";
 import { Add } from "@material-ui/icons";
 import { Fab } from "@material-ui/core";
-
-// import dashboardAPI from "../../utils/dashboardAPI";
 import projectAPI from "../../utils/projectAPI";
 
 const useStyles = makeStyles((theme) => ({
