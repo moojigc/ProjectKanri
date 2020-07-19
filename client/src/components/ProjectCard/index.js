@@ -46,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
 		// border: "none",
 		backgroundColor: theme.palette.secondary.main,
 		borderColor: theme.palette.secondary.light
+	},
+	viewColor: { 
+		backgroundColor: theme.palette.primary.main,
+		padding: ".5rem",
+		boxShadow: theme.shadows[1]
 	}
 }));
 
@@ -82,7 +87,7 @@ const ProjectCard = ({
 				</Typography>
 			</CardContent>
 			<CardActions disableSpacing>
-				<ButtonLink size="small" to={`/project/${id}`}>
+				<ButtonLink size="small" to={`/project/${id}`} className={classes.viewColor}>
 					View Project
 				</ButtonLink>
 				<IconButton
