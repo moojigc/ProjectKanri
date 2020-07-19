@@ -81,6 +81,7 @@ export default function Task() {
 				setTask(res);
 			})
 			.catch((err) => console.log(err));
+
 	};
 
 	const handleEditMode = () => {
@@ -104,6 +105,7 @@ export default function Task() {
 				setEditMode(!editMode);
 			})
 			.catch((err) => console.log(err));
+
 	};
 
 	return (
