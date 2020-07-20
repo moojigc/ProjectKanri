@@ -1,6 +1,11 @@
 const { Schema, model, Types } = require("mongoose");
+const Project = require("./Project");
 
 const TaskSchema = new Schema({
+	project: {
+		type: Schema.Types.ObjectId,
+		required: true
+	},
 	title: {
 		type: String,
 		required: true,
@@ -42,10 +47,6 @@ const TaskSchema = new Schema({
 		default: "New",
 		required: true
 	}
-});
-
-TaskSchema.pre("updateOne", function () {
-	this.updatedAt = new Date();
 });
 
 const Task = model("Task", TaskSchema);

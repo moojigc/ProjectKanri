@@ -46,10 +46,6 @@ const ProjectSchema = new Schema({
 	}
 });
 
-ProjectSchema.pre("updateOne", function () {
-	this.updatedAt = new Date();
-});
-
 const Project = model("Project", ProjectSchema);
 
 module.exports = Project;

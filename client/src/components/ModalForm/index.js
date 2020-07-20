@@ -57,7 +57,8 @@ const ModalForm = ({
 	TextFields,
 	labelledby,
 	describedby,
-	BoxStyle
+	BoxStyle,
+	otherButtons
 }) => {
 	const classes = useStyles();
 	return (
@@ -96,7 +97,7 @@ const ModalForm = ({
 								color="secondary">
 								<Typography style={{ color: "white" }}>Submit</Typography>
 							</Button>
-							{otherButtons.length && otherButtons.map((button) => button)}
+							{otherButtons?.length && otherButtons.map((button) => button)}
 						</Grid>
 					</form>
 				</Box>

@@ -15,17 +15,16 @@ module.exports = (router) => {
 			console.log(body, query);
 			let [key] = Object.keys(body);
 			let [value] = Object.values(body);
+			console.log(key, value);
 			let member = await User.findOne({
 				[key]: value
 			});
-			if (!member) return res.json(flash("No member by that email found, sorry. "));
+			console.log(member);
+			if (!member) return res.json(flash("No member by that email found, sorry.", "error"));
 			let project = await Project.findOne({
 				_id: query.projectId
 			});
-			if (project.members.includes(member._id))
-				return res.json(
-					flash(`${member.username} is already part of this project.`, "error")
-				);
+			if (project.members.includes(member._id)) return res.json(flash(`${member.username} is already part of this project.`, "error"));
 			const admin = new Boolean(query.admin);
 			const token = jwt.sign(
 				{
@@ -43,14 +42,14 @@ module.exports = (router) => {
 				name: user.username
 			});
 
-			res.json(flash(`Invited ${user.username} to this project.`));
+			res.json(flash(`Invited ${member.username} to this project.`));
 		} catch (error) {
 			console.error(error);
 			serverError(res);
 		}
 	});
 	router.put("/api/invite-member/:token", async (req, res) => {
-		if (!user) return res.status(401).json(flash("authentication error", "error"));
+		if (!req.user) return res.status(401).json(flash("authentication error", "error"));
 		try {
 			let { admin, projectId } = jwt.verify(req.params.token, EMAIL_SECRET);
 			if (admin) {
@@ -60,25 +59,25 @@ module.exports = (router) => {
 						$push: {
 							admins: req.user_id,
 							members: req.user._id
-						}
+						},
+						updatedAt: new Date()
 					}
 				);
-				res.json(
-					flash(
-						`You have now been added to ${project.title} as an administrator.`,
-						"success"
-					)
-				).end();
+				res.json(flash(`You have now been added to ${project.title} as an administrator.`, "success")).end();
 			} else {
 				let project = await Project.updateOne(
 					{ _id: projectId },
 					{
 						$push: {
 							members: req.user._id
-						}
+						},
+						updatedAt: new Date()
 					}
 				);
-				res.json(flash(`You have now been added to ${project.title}.`, "success")).end();
+				res.json({
+					...flash(`You have now been added to ${project.title}.`, "success"),
+					redirect: `/project/${project._id}`
+				}).end();
 			}
 		} catch (error) {
 			console.error(error);
@@ -89,7 +88,7 @@ module.exports = (router) => {
 	router.get("/api/all-users", async (req, res) => {
 		if (process.env.NODE_ENV === "production") return;
 		let users = await User.find();
-		let projects = await Project.find();
+		let projects = await Project.find().populate("tasks");
 		res.json({ users: users, projects: projects });
 	});
 };
