@@ -51,9 +51,10 @@ app.use(express.urlencoded({ extended: true }))
 	// Init passport middleware
 	.use(passport.initialize())
 	.use(passport.session())
-	.use(morgan("dev"))
 	// Send compressed files to client
 	.use(compression());
+
+if (!productionEnv) app.use(morgan("dev"));
 // Set routes
 require("./server/routes/user-routes")(app);
 require("./server/routes/project-routes")(app);
