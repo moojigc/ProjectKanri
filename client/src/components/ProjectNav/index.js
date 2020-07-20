@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
 	drawer: {
 		width: drawerWidth,
 		flexShrink: 0,
-		zIndex: theme.zIndex.drawer
+		zIndex: theme.zIndex.drawer,
+		opacity: 0.9
 	},
 	drawerPaper: {
 		width: drawerWidth
