@@ -11,29 +11,28 @@ const jwt = require("jsonwebtoken");
 module.exports = (router) => {
 	router.get("/api/search-members", isAuth, async (req, res) => {
 		try {
-			let users = await User.find({
-				$or: {
-					email: req.query.q,
-					username: req.query.q
-				}
-			}).select({ username: 1 });
-			res.json(users);
+			let users = await User.find().select({ firstName: 1, lastName: 1, email: 1, username: 1 });
+			let filteredUsers = users
+				.filter((u) => new RegExp(req.query.q, "i").test(u.username + u.email))
+				.map(({ firstName, lastName, username, _id }) => {
+					return {
+						_id,
+						firstName,
+						lastName,
+						username
+					};
+				});
+			console.log(filteredUsers);
+			res.json(filteredUsers).end();
 		} catch (error) {
 			console.error(error);
 			serverError(res);
 		}
 	});
-	router.post("/api/invite-member", isAuth, async ({ body, query, user }, res) => {
+	router.get("/api/invite-member", isAuth, async ({ query, user }, res) => {
 		try {
-			console.log(body, query);
-			let [key] = Object.keys(body);
-			let [value] = Object.values(body);
-			console.log(key, value);
-			let member = await User.findOne({
-				[key]: value
-			});
-			console.log(member);
-			if (!member) return res.json(flash("No member by that email found, sorry.", "error"));
+			console.log(query);
+			let member = await User.findOne({ _id: query.user });
 			let project = await Project.findOne({
 				_id: query.projectId
 			});
