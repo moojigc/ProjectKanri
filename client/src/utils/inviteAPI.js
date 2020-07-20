@@ -42,5 +42,11 @@ export default {
 			},
 			token
 		);
+	},
+	searchUsers: async (query) => {
+		return await request({
+			url: `/api/search-members?q=${query}`,
+			method: "GET"
+		});
 	}
 };

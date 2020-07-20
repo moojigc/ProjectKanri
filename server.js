@@ -13,7 +13,7 @@ const express = require("express"),
 
 // Connect to database
 mongoose
-	.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+	.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
 	.then((conn) => {
 		if (conn) console.log(`Connected to ${conn.connections[0].db.databaseName}`);
 	})
