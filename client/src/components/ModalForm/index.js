@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-import { Box, Button, Typography, Grid } from "@material-ui/core";
+import { Box, Button, Typography, Grid, useMediaQuery } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { SendOutlined } from "@material-ui/icons";
 
@@ -46,10 +46,12 @@ const useStyles = makeStyles((theme) => ({
  * @param {{message, type}} props.flash
  * @param {string} props.information
  * @param {import('react').FunctionComponent[]} props.TextFields
- * @param {import("react").CSSProperties} props.style
+ * @param {import("react").CSSProperties} props.BoxStyle
  */
 const ModalForm = ({ open, setOpen, onFormSubmit, flash, information, TextFields, labelledby, describedby, BoxStyle, otherButtons }) => {
 	const classes = useStyles();
+	const mobile = useMediaQuery("(max-width: 960px)");
+
 	return (
 		<Modal
 			aria-labelledby={"transition-modal-" + labelledby}
@@ -65,7 +67,7 @@ const ModalForm = ({ open, setOpen, onFormSubmit, flash, information, TextFields
 		>
 			<Fade in={open}>
 				<Box style={BoxStyle} className={classes.paper}>
-					<form onSubmit={onFormSubmit} className={classes.form}>
+					<form style={{ width: mobile ? "90vw" : "60vw" }} onSubmit={onFormSubmit} className={classes.form}>
 						{information ? (
 							<Grid container justify="center">
 								{flash.type === "success" ? (

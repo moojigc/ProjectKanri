@@ -23,13 +23,12 @@ export default {
 	 * Send an email invite to a user to join your project
 	 * @param {string} id
 	 * @param {boolean} admin
-	 * @param {{ email?, username? }} body
+	 * @param {string} user
 	 */
-	sendInvite: async (id, admin, body) => {
+	sendInvite: async (id, admin, user) => {
 		return await request({
-			data: body,
-			method: "POST",
-			url: `/api/invite-member?projectId=${id}&admin=${admin}`
+			method: "GET",
+			url: `/api/invite-member?projectId=${id}&admin=${admin}&user=${user}`
 		});
 	},
 	/**

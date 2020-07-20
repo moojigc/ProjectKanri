@@ -1,70 +1,162 @@
 import React, { useState, useRef, useEffect } from "react";
 import ModalForm from "../../components/ModalForm";
 import inviteAPI from "../../utils/inviteAPI";
-import { TextField, Switch, FormControlLabel, Grid } from "@material-ui/core";
+import {
+	TextField,
+	Switch,
+	FormControlLabel,
+	Grid,
+	List,
+	ListItem,
+	Box,
+	CircularProgress,
+	Divider,
+	Typography as T,
+	Button,
+	Paper,
+	LinearProgress,
+	useMediaQuery
+} from "@material-ui/core";
 import { emailRegex } from "../../utils/shared";
 import { Alert } from "@material-ui/lab";
+import useDebounce from "../../utils/debounceHook";
+import { TrendingUpOutlined } from "@material-ui/icons";
 
 const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 	const [flash, setFlash] = useState({ message: null, type: null });
 	const [invalid, setInvalid] = useState(true);
-	const [userResults, setUserResults] = useState([
-		{
-			username: ""
-		}
-	]);
+	const [userResults, setUserResults] = useState([]);
+	const [inProgress, setInProgress] = useState(false);
 	const [admin, setAdmin] = useState(false);
-	const input = useRef(null);
-	const handleSearch = async (query) => {
-		const results = await inviteAPI.searchUsers(query);
-		setUserResults(results);
-	};
-	const handleInvite = async (event) => {
-		event.preventDefault();
-		const { value } = input.current;
-		if (/\s/.test(value.trim())) {
+	const [search, setSearch] = useState("");
+	const debouncedSearch = useDebounce(search, 500);
+	// const handleSearch = async (event) => {
+	// 	event.preventDefault();
+	// 	if (event.target.value !== "" && delay === 0) {
+	// 		let results = await inviteAPI.searchUsers(event.target.value.trim());
+	// 		console.log(results);
+	// 		setUserResults(results);
+	// 	}
+	// };
+	const handleInvite = async (id) => {
+		if (/\s/.test(search.trim())) {
 			setFlash({ message: "Not a valid username or email.", type: "error" });
 			return;
 		}
-		let res = await inviteAPI.sendInvite(projectId, admin, { [emailRegex.test(value) ? "email" : "username"]: value });
+		let res = await inviteAPI.sendInvite(projectId, admin, id);
 		setFlash(res.flash);
 		console.log(res);
 	};
 	useEffect(() => {
 		setInvalid(flash.type === "error");
 	}, [flash.type]);
+	useEffect(() => {
+		if (search === "") {
+			setUserResults([]);
+			setInProgress(false);
+			return;
+		}
+		if (debouncedSearch) {
+			setInProgress(true);
+			inviteAPI.searchUsers(search.trim()).then((results) => {
+				setUserResults(results);
+				setInProgress(false);
+			});
+		}
+	}, [debouncedSearch]);
 	return (
 		<ModalForm
-			onFormSubmit={handleInvite}
+			onFormSubmit={(event) => event.preventDefault()}
 			flash={flash}
 			open={openInvite}
 			setOpen={setInviteOpen}
 			information="Enter invitee's username or email address and they will receive an invite to join your project."
-			BoxStyle={{ minWidth: "max-content", width: "50%" }}
+			BoxStyle={{ minWidth: "max-content", maxWidth: "10rem" }}
 			TextFields={[
 				<TextField
 					error={invalid}
+					onChange={({ target }) => setSearch(target.value)}
 					onBlur={() => setInvalid(false)}
 					helperText={invalid ? flash.message : ""}
-					inputRef={input}
+					// inputRef={input}
 					color="secondary"
 					name="email_or_username"
 					fullWidth
-					label="Enter invitee's username or password."
+					label="Search by username or password"
 					type="text"
 				/>,
-				<React.Fragment>
-					{userIsAdmin ? (
+				// <React.Fragment>
+				// 	{userIsAdmin ? (
+				// 		<Grid container justify="center">
+				// 			<FormControlLabel
+				// 				label="Make invitee an admin?"
+				// 				control={
+				// 					<Switch color="secondary" checked={admin} onChange={({ target }) => setAdmin(target.checked)} name="admin" />
+				// 				}
+				// 			/>
+				// 		</Grid>
+				// 	) : null}
+				// </React.Fragment>,
+				search !== "" && (
+					<Box boxShadow={2} borderRadius="0.15rem" border="1px solid white" width="100%">
 						<Grid container justify="center">
-							<FormControlLabel
-								label="Make invitee an admin?"
-								control={
-									<Switch color="secondary" checked={admin} onChange={({ target }) => setAdmin(target.checked)} name="admin" />
-								}
-							/>
+							<T variant="h4">Members found</T>
 						</Grid>
-					) : null}
-				</React.Fragment>
+						<Divider />
+						<Grid container justify="center">
+							{!inProgress ? (
+								userResults.length ? (
+									<List style={{ width: "inherit" }}>
+										{userResults.map((r, i, arr) => (
+											<React.Fragment key={r._id}>
+												<ListItem key={r._id}>
+													<Grid container alignItems="center" justify="space-between">
+														<div>
+															<T>{r.username}</T>
+															<T variant="caption">
+																{r.firstName} {r.lastName}
+															</T>
+														</div>
+														<div>
+															{userIsAdmin && (
+																<FormControlLabel
+																	label="Admin?"
+																	control={
+																		<Switch
+																			color="secondary"
+																			checked={admin}
+																			onChange={({ target }) => setAdmin(target.checked)}
+																			name="admin"
+																		/>
+																	}
+																/>
+															)}
+															<Button variant="outlined" color="secondary" onClick={() => handleInvite(r._id)}>
+																Invite
+															</Button>
+														</div>
+													</Grid>
+												</ListItem>
+												{i !== arr.length - 1 && <Divider />}
+											</React.Fragment>
+										))}
+									</List>
+								) : (
+									<T variant="h5">No results.</T>
+								)
+							) : (
+								<Grid container justify="center">
+									<CircularProgress
+										style={{ margin: "1rem 0" }}
+										aria-busy="true"
+										aria-describedby="Loading results for users"
+										size="2rem"
+									/>
+								</Grid>
+							)}
+						</Grid>
+					</Box>
+				)
 			]}
 		/>
 	);
