@@ -1,6 +1,11 @@
 const { Schema, model, Types } = require("mongoose");
+const Project = require("./Project");
 
 const TaskSchema = new Schema({
+	project: {
+		type: Schema.Types.ObjectId,
+		required: true
+	},
 	title: {
 		type: String,
 		required: true,
@@ -43,6 +48,7 @@ const TaskSchema = new Schema({
 		required: true
 	}
 });
+
 const Task = model("Task", TaskSchema);
 
 module.exports = Task;

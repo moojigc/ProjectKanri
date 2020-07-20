@@ -6,6 +6,7 @@ const express = require("express"),
 	compression = require("compression"),
 	{ join } = require("path"),
 	cors = require("cors"),
+	morgan = require("morgan"),
 	PORT = process.env.PORT || 3500,
 	MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/projectkanri",
 	productionEnv = process.env.NODE_ENV === "production";
@@ -50,6 +51,7 @@ app.use(express.urlencoded({ extended: true }))
 	// Init passport middleware
 	.use(passport.initialize())
 	.use(passport.session())
+	.use(morgan("dev"))
 	// Send compressed files to client
 	.use(compression());
 // Set routes
@@ -57,9 +59,10 @@ require("./server/routes/user-routes")(app);
 require("./server/routes/project-routes")(app);
 require("./server/routes/task-routes")(app);
 require("./server/routes/taskcomment-routes")(app);
+require("./server/routes/invite-routes")(app);
 
 if (productionEnv)
-	app.get("*", (req, res) => {
+	app.get("*", (_req, res) => {
 		res.sendFile(join(__dirname, "client", "build", "index.html"));
 	});
 app.listen(PORT, (error) => {

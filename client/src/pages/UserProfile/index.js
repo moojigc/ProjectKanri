@@ -4,20 +4,12 @@ import Container from "@material-ui/core/Container";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import Axios from "axios";
 import { UserContext } from "../../utils/UserContext";
-import {
-	Typography,
-	Accordion,
-	AccordionSummary,
-	makeStyles,
-	AccordionDetails,
-	Grid,
-	Button,
-	Link
-} from "@material-ui/core";
+import { Typography, Accordion, AccordionSummary, makeStyles, AccordionDetails, Grid, Button, Link } from "@material-ui/core";
 import moment from "moment";
 import { ExpandMore, ArrowForwardRounded } from "@material-ui/icons";
 import UserDetailTable from "./table";
 import UpdatePassword from "./UpdatePassword";
+import InviteModal from "./InviteModal";
 
 const useStyles = makeStyles((theme) => ({
 	accordion: {
@@ -37,8 +29,14 @@ const UserProfile = () => {
 		lastName: ""
 	});
 	const [projects, setProjects] = useState([]);
+	const [projectId, setProjectId] = useState("");
 	const [isMounted, setMounted] = useState(false);
+	const [openInvite, setInviteOpen] = useState(false);
 	const [open, setOpen] = useState(false);
+	const handleOpenInvite = (projectId) => {
+		setProjectId(projectId);
+		setInviteOpen(true);
+	};
 	useEffect(() => {
 		Axios({ url: "/api/myprofile" }).then(({ data }) => {
 			setUserData(data.user);
@@ -50,17 +48,13 @@ const UserProfile = () => {
 	return (
 		<Container maxWidth="md">
 			<UpdatePassword open={open} setOpen={setOpen} />
+			<InviteModal projectId={projectId} openInvite={openInvite} setInviteOpen={setInviteOpen} />
 			<Wrapper boxShadow={2}>
-				<Title>
-					Hi, {isMounted ? userData.firstName + " " + userData.lastName : user.username}
-				</Title>
+				<Title>Hi, {isMounted ? userData.firstName + " " + userData.lastName : user.username}</Title>
 				<Grid container spacing={2}>
 					<Grid item lg={6}>
 						<Accordion className={classes.accordion}>
-							<AccordionSummary
-								aria-controls="panel1a-content"
-								id="panel1a-header"
-								expandIcon={<ExpandMore />}>
+							<AccordionSummary aria-controls="panel1a-content" id="panel1a-header" expandIcon={<ExpandMore />}>
 								Your Personal Details
 							</AccordionSummary>
 							<AccordionDetails>
@@ -78,9 +72,7 @@ const UserProfile = () => {
 										},
 										{
 											key: "Date joined",
-											value: moment(userData.createdAt).format(
-												"MMMM Do, YYYY"
-											)
+											value: moment(userData.createdAt).format("MMMM Do, YYYY")
 										}
 									]}
 									label="personal details"
@@ -90,10 +82,7 @@ const UserProfile = () => {
 					</Grid>
 					<Grid item lg={6}>
 						<Accordion className={classes.accordion}>
-							<AccordionSummary
-								aria-controls="panel2a-content"
-								id="panel2a-header"
-								expandIcon={<ExpandMore />}>
+							<AccordionSummary aria-controls="panel2a-content" id="panel2a-header" expandIcon={<ExpandMore />}>
 								Your Account Details
 							</AccordionSummary>
 							<AccordionDetails>
@@ -112,14 +101,8 @@ const UserProfile = () => {
 										{
 											key: "Password",
 											value: (
-												<Button
-													onClick={() => setOpen(!open)}
-													color="secondary"
-													variant="contained"
-													size="small">
-													<Typography color="textPrimary">
-														Change password
-													</Typography>
+												<Button onClick={() => setOpen(!open)} color="secondary" variant="contained" size="small">
+													<Typography color="textPrimary">Change password</Typography>
 												</Button>
 											)
 										}
@@ -131,10 +114,7 @@ const UserProfile = () => {
 					</Grid>
 					<Grid item lg={12}>
 						<Accordion className={classes.accordion}>
-							<AccordionSummary
-								aria-controls="panel3a-content"
-								id="panel3a-header"
-								expandIcon={<ExpandMore />}>
+							<AccordionSummary aria-controls="panel3a-content" id="panel3a-header" expandIcon={<ExpandMore />}>
 								Your Projects
 							</AccordionSummary>
 							<AccordionDetails>
@@ -143,13 +123,17 @@ const UserProfile = () => {
 										return {
 											key: `${idx + 1}. ${p.title}`,
 											value: (
-												<ButtonLink
-													variant="contained"
-													color="secondary"
-													to={"/project/" + p._id}
-													endIcon={<ArrowForwardRounded />}>
-													{p.tasks.length} Tasks
-												</ButtonLink>
+												<React.Fragment>
+													<Button onClick={() => handleOpenInvite(p._id)}>Invite new member</Button>
+													<ButtonLink
+														variant="contained"
+														color="secondary"
+														to={"/project/" + p._id}
+														endIcon={<ArrowForwardRounded />}
+													>
+														{p.tasks.length} Tasks
+													</ButtonLink>
+												</React.Fragment>
 											)
 										};
 									})}

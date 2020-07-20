@@ -65,4 +65,20 @@ const sendVerifyEmail = async ({ address, token }) => {
 	});
 };
 
-module.exports = { sendResetEmail, sendVerifyEmail };
+const sendInviteEmail = async ({ address, token, name }) => {
+	let body = `
+	<body style="font-family: Helvetica, Arial, sans-serif;">
+		<h1>Hello from ProjectKanri.</h1>
+		<h2>You have been invited to a project by ${name}.</h2>
+		<p>Please click this link to accept the invite: http://localhost:3000/accept-invite/${token}.</p>
+	</body>`;
+	if (!emailRegex.test(address)) throw new Error("Must be valid email address.");
+	return await transporter.sendMail({
+		from: `"ProjectKanri" <projectkanriteam@gmail.com>`,
+		to: address,
+		subject: `Project Invite from ${name}`,
+		html: body
+	});
+};
+
+module.exports = { sendResetEmail, sendVerifyEmail, sendInviteEmail };

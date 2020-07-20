@@ -21,6 +21,11 @@ const TaskCommentSchema = new Schema({
 		ref: "User"
 	}
 });
+
+TaskCommentSchema.pre("updateOne", function () {
+	this.updatedAt = new Date();
+});
+
 const TaskComment = model("TaskComment", TaskCommentSchema);
 
 module.exports = TaskComment;
