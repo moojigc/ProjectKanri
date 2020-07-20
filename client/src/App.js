@@ -18,6 +18,7 @@ import Project from "./pages/Project";
 import sakuraBranch from "./sakura_branch.png";
 import sakuraFlipped from "./sakura_flipped.png";
 import AcceptInvite from "./pages/AcceptInvite";
+import NoMatch from "./pages/NoMatch";
 
 function App() {
 	const browserDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -121,6 +122,9 @@ function App() {
 							</Route>
 							<Route exact path="/accept-invite/:token">
 								<AcceptInvite />
+							</Route>
+							<Route path="*">
+								<NoMatch />
 							</Route>
 						</Switch>
 					</ThemeProvider>
