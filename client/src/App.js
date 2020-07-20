@@ -76,19 +76,12 @@ function App() {
 								bottom: 0
 							}}
 						/>
-						<Navbar
-							setPreferredTheme={setPreferredTheme}
-							preferredTheme={preferredTheme}
-						/>
+						<div style={{ marginBottom: "4rem" }}>
+							<Navbar setPreferredTheme={setPreferredTheme} preferredTheme={preferredTheme} />
+						</div>
 						<Switch>
 							<Route exact path={["/", "/dashboard"]}>
-								{isMounted ? (
-									user.auth ? (
-										<Dashboard />
-									) : (
-										<Redirect to="/welcome" />
-									)
-								) : null}
+								{isMounted ? user.auth ? <Dashboard /> : <Redirect to="/welcome" /> : null}
 							</Route>
 							<Route exact path="/welcome">
 								<ThemeProvider theme={forceLightTheme}>
@@ -108,13 +101,7 @@ function App() {
 								<Register />
 							</Route>
 							<Route exact path="/profile">
-								{isMounted ? (
-									user.auth ? (
-										<UserProfile />
-									) : (
-										<Redirect to="/login" />
-									)
-								) : null}
+								{isMounted ? user.auth ? <UserProfile /> : <Redirect to="/login" /> : null}
 							</Route>
 							<Route exact path="/project/:id">
 								<Project />

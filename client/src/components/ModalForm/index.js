@@ -48,18 +48,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {import('react').FunctionComponent[]} props.TextFields
  * @param {import("react").CSSProperties} props.style
  */
-const ModalForm = ({
-	open,
-	setOpen,
-	onFormSubmit,
-	flash,
-	information,
-	TextFields,
-	labelledby,
-	describedby,
-	BoxStyle,
-	otherButtons
-}) => {
+const ModalForm = ({ open, setOpen, onFormSubmit, flash, information, TextFields, labelledby, describedby, BoxStyle, otherButtons }) => {
 	const classes = useStyles();
 	return (
 		<Modal
@@ -72,14 +61,15 @@ const ModalForm = ({
 			BackdropComponent={Backdrop}
 			BackdropProps={{
 				timeout: 500
-			}}>
+			}}
+		>
 			<Fade in={open}>
 				<Box style={BoxStyle} className={classes.paper}>
 					<form onSubmit={onFormSubmit} className={classes.form}>
 						{information ? (
 							<Grid container justify="center">
-								{flash.message ? (
-									<Alert severity={flash.type}>{flash.message}</Alert>
+								{flash.type === "success" ? (
+									<Alert severity="success">{flash.message}</Alert>
 								) : (
 									<Alert severity="info">{information}</Alert>
 								)}
@@ -89,12 +79,7 @@ const ModalForm = ({
 							return <Grid container>{t}</Grid>;
 						})}
 						<Grid container justify="center">
-							<Button
-								text
-								endIcon={<SendOutlined />}
-								type="submit"
-								variant="contained"
-								color="secondary">
+							<Button endIcon={<SendOutlined />} type="submit" variant="contained" color="secondary">
 								<Typography style={{ color: "white" }}>Submit</Typography>
 							</Button>
 							{otherButtons?.length && otherButtons.map((button) => button)}

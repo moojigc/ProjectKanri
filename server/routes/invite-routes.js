@@ -1,5 +1,5 @@
 const { Project, User } = require("../models");
-const { flash, serverError } = require("../config/utils");
+const { flash, serverError, isAuth } = require("../config/utils");
 const nodemailer = require("../config/nodemailer");
 const EMAIL_SECRET = process.env.EMAIL_SECRET || require("../config/secrets.json").EMAIL_SECRET;
 const jwt = require("jsonwebtoken");
@@ -9,8 +9,21 @@ const jwt = require("jsonwebtoken");
  * @param {import('express').Router} router
  */
 module.exports = (router) => {
-	router.post("/api/invite-member", async ({ body, query, user }, res) => {
-		if (!user) return res.status(401).json(flash("authentication error", "error"));
+	router.get("/api/search-members", isAuth, async (req, res) => {
+		try {
+			let users = await User.find({
+				$or: {
+					email: req.query.q,
+					username: req.query.q
+				}
+			}).select({ username: 1 });
+			res.json(users);
+		} catch (error) {
+			console.error(error);
+			serverError(res);
+		}
+	});
+	router.post("/api/invite-member", isAuth, async ({ body, query, user }, res) => {
 		try {
 			console.log(body, query);
 			let [key] = Object.keys(body);
@@ -42,13 +55,13 @@ module.exports = (router) => {
 				name: user.username
 			});
 
-			res.json(flash(`Invited ${member.username} to this project.`));
+			res.json(flash(`Invited ${member.firstName} ${member.lastName} to this project.`, "success"));
 		} catch (error) {
 			console.error(error);
 			serverError(res);
 		}
 	});
-	router.put("/api/invite-member/:token", async (req, res) => {
+	router.put("/api/invite-member/:token", isAuth, async (req, res) => {
 		if (!req.user) return res.status(401).json(flash("authentication error", "error"));
 		try {
 			let { admin, projectId } = jwt.verify(req.params.token, EMAIL_SECRET);

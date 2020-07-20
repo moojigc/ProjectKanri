@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link as A } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import Axios from "axios";
@@ -14,7 +13,8 @@ import InviteModal from "./InviteModal";
 const useStyles = makeStyles((theme) => ({
 	accordion: {
 		background: theme.palette.secondary.dark,
-		color: theme.palette.secondary.contrastText
+		color: theme.palette.secondary.contrastText,
+		width: "100%"
 	}
 }));
 
@@ -26,15 +26,20 @@ const UserProfile = () => {
 		username: "",
 		email: "",
 		firstName: "",
-		lastName: ""
+		lastName: "",
+		admin: false
 	});
 	const [projects, setProjects] = useState([]);
 	const [projectId, setProjectId] = useState("");
 	const [isMounted, setMounted] = useState(false);
 	const [openInvite, setInviteOpen] = useState(false);
 	const [open, setOpen] = useState(false);
-	const handleOpenInvite = (projectId) => {
+	const handleOpenInvite = (projectId, admins = []) => {
 		setProjectId(projectId);
+		setUserData({
+			...userData,
+			admin: admins.includes(userData._id)
+		});
 		setInviteOpen(true);
 	};
 	useEffect(() => {
@@ -48,11 +53,11 @@ const UserProfile = () => {
 	return (
 		<Container maxWidth="md">
 			<UpdatePassword open={open} setOpen={setOpen} />
-			<InviteModal projectId={projectId} openInvite={openInvite} setInviteOpen={setInviteOpen} />
-			<Wrapper boxShadow={2}>
+			<InviteModal userIsAdmin={userData.admin} projectId={projectId} openInvite={openInvite} setInviteOpen={setInviteOpen} />
+			<Wrapper>
 				<Title>Hi, {isMounted ? userData.firstName + " " + userData.lastName : user.username}</Title>
 				<Grid container spacing={2}>
-					<Grid item lg={6}>
+					<Grid item xs={12} md={6}>
 						<Accordion className={classes.accordion}>
 							<AccordionSummary aria-controls="panel1a-content" id="panel1a-header" expandIcon={<ExpandMore />}>
 								Your Personal Details
@@ -80,7 +85,7 @@ const UserProfile = () => {
 							</AccordionDetails>
 						</Accordion>
 					</Grid>
-					<Grid item lg={6}>
+					<Grid item xs={12} md={6}>
 						<Accordion className={classes.accordion}>
 							<AccordionSummary aria-controls="panel2a-content" id="panel2a-header" expandIcon={<ExpandMore />}>
 								Your Account Details
@@ -112,7 +117,7 @@ const UserProfile = () => {
 							</AccordionDetails>
 						</Accordion>
 					</Grid>
-					<Grid item lg={12}>
+					<Grid item container>
 						<Accordion className={classes.accordion}>
 							<AccordionSummary aria-controls="panel3a-content" id="panel3a-header" expandIcon={<ExpandMore />}>
 								Your Projects
@@ -124,7 +129,7 @@ const UserProfile = () => {
 											key: `${idx + 1}. ${p.title}`,
 											value: (
 												<React.Fragment>
-													<Button onClick={() => handleOpenInvite(p._id)}>Invite new member</Button>
+													<Button onClick={() => handleOpenInvite(p._id, p.admins)}>Invite new member</Button>
 													<ButtonLink
 														variant="contained"
 														color="secondary"

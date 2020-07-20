@@ -17,4 +17,9 @@ const flash = (message, type) => {
  */
 const serverError = (res) => res.status(500).json(flash("Internal server error.", "error")).end();
 
-module.exports = { flash, serverError };
+const isAuth = (req, res, next) => {
+	if (!req.user) return res.status(401).json(flash("Authorization error.", "error")).end();
+	else next();
+};
+
+module.exports = { flash, serverError, isAuth };

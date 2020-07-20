@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import clsx from "clsx"
+import clsx from "clsx";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -41,8 +41,7 @@ const useStyles = makeStyles((theme) => ({
 		}
 	},
 	appBar: {
-		zIndex: theme.zIndex.drawer + 1,
-		position: "relative"
+		zIndex: theme.zIndex.drawer + 1
 	},
 	paper: {
 		background: theme.palette.background.default
@@ -79,10 +78,7 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 	};
 	useEffect(() => {
 		let title = location.pathname.split("/")[1];
-		let formattedTitle =
-			location.pathname !== "/"
-				? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri"
-				: "ProjectKanri";
+		let formattedTitle = location.pathname !== "/" ? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri" : "ProjectKanri";
 		document.title = formattedTitle;
 		setNavTitle(formattedTitle);
 	}, [location.pathname]);
@@ -123,82 +119,73 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 		setAnchorEl(null);
 	};
 	return location.pathname === "/welcome" ? null : (
-		<div>
-			{/* <AppDrawer /> */}
-			<AppBar className={clsx(classes.nav,classes.appBar)} position="static">
-				<Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
-					<A to={"/dashboard"}>
-						<IconButton edge="start" color="inherit" aria-label="Go Home">
-							<HomeOutlined className={clsx(classes.homeIcon)} />
+		<AppBar className={clsx(classes.nav, classes.appBar)} position="fixed">
+			<Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+				<A to={"/dashboard"}>
+					<IconButton edge="start" color="inherit" aria-label="Go Home">
+						<HomeOutlined className={clsx(classes.homeIcon)} />
+					</IconButton>
+				</A>
+				<Typography variant="h6">{navTitle}</Typography>
+				{!user.auth ? (
+					<Button color="inherit">
+						<Link color="textPrimary" component={A} to="/login">
+							Login
+						</Link>
+					</Button>
+				) : (
+					<div>
+						<IconButton
+							aria-label="account of current user"
+							aria-controls="menu-appbar"
+							aria-haspopup="true"
+							onClick={handleMenu}
+							color="inherit"
+						>
+							<AccountCircle />
 						</IconButton>
-					</A>
-					<Typography variant="h6">{navTitle}</Typography>
-					{!user.auth ? (
-						<Button color="inherit">
-							<Link color="textPrimary" component={A} to="/login">
-								Login
-							</Link>
-						</Button>
-					) : (
-						<div>
-							<IconButton
-								aria-label="account of current user"
-								aria-controls="menu-appbar"
-								aria-haspopup="true"
-								onClick={handleMenu}
-								color="inherit">
-								<AccountCircle />
-							</IconButton>
-							<Menu
-								id="menu-appbar"
-								anchorEl={anchorEl}
-								PaperProps={{ className: classes.paper }}
-								anchorOrigin={{
-									vertical: "top",
-									horizontal: "right"
-								}}
-								keepMounted
-								transformOrigin={{
-									vertical: "top",
-									horizontal: "right"
-								}}
-								open={open}
-								onClose={handleClose}>
-								<MenuItem component={A} to="/dashboard">
-									Dashboard
-								</MenuItem>
-								<MenuItem component={A} to="/profile">
-									Profile
-								</MenuItem>
-								<MenuItem>
-									<FormGroup row>
-										<FormControlLabel
-											control={
-												<Switch
-													checked={preferredTheme}
-													onChange={handleChangeTheme}
-												/>
-											}
-											label="Dark Mode"
-										/>
-									</FormGroup>
-								</MenuItem>
-								<MenuItem>
-									<div onClick={logout}>
-										<Grid container spacing={1} alignItems="flex-start">
-											<Grid item>Logout</Grid>
-											<Grid item>
-												<ExitToApp />
-											</Grid>
+						<Menu
+							id="menu-appbar"
+							anchorEl={anchorEl}
+							PaperProps={{ className: classes.paper }}
+							anchorOrigin={{
+								vertical: "top",
+								horizontal: "right"
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "right"
+							}}
+							open={open}
+							onClose={handleClose}
+						>
+							<MenuItem component={A} to="/dashboard">
+								Dashboard
+							</MenuItem>
+							<MenuItem component={A} to="/profile">
+								Profile
+							</MenuItem>
+							<MenuItem>
+								<FormGroup row>
+									<FormControlLabel control={<Switch checked={preferredTheme} onChange={handleChangeTheme} />} label="Dark Mode" />
+								</FormGroup>
+							</MenuItem>
+							<MenuItem>
+								<div onClick={logout}>
+									<Grid container spacing={1} alignItems="flex-start">
+										<Grid item>Logout</Grid>
+										<Grid item>
+											<ExitToApp />
 										</Grid>
-									</div>
-								</MenuItem>
-							</Menu>
-						</div>
-					)}
-				</Toolbar>
-			</AppBar>
-		</div>
+									</Grid>
+								</div>
+							</MenuItem>
+						</Menu>
+					</div>
+				)}
+			</Toolbar>
+		</AppBar>
 	);
 };
 
