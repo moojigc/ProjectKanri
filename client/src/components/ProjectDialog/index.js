@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, TextField, Button, Typography, Grid, InputAdornment } from "@material-ui/core";
+import { TextField, Button } from "@material-ui/core";
 import {
 	Dialog,
 	DialogActions,
@@ -22,31 +22,54 @@ const ProjectDialog = ({ open, setOpen, reloadProjects }) => {
 	const classes = useStyles();
 
 	const [projectForm, setProjectForm] = useState({});
-	const { user, setUser } = useContext(UserContext);
+	const [errorForm, setErrorForm] = useState({});
+	const { user } = useContext(UserContext);
 
 	const handleInputChange = (event) => {
 		const { name, value } = event.target;
-		setProjectForm({ ...projectForm, [name]: value });
+		setProjectForm({ ...projectForm, [name]: value.trim() });
+
+		if (!value.trim()) {
+			setErrorForm({ ...errorForm, [name]: true });
+			// console.log("bad input");
+		} else {
+			// console.log("good input");
+			setErrorForm({ ...errorForm, [name]: false });
+		}
+	};
+
+	const handleCancel = () => {
+		setProjectForm({});
+		setErrorForm({ title: false, description: false });
+		setOpen(false);
 	};
 
 	const handleSubmit = () => {
 		console.log("submitting project: ", projectForm);
 		console.log("current user", user);
-		let newProject = {
-			title: projectForm.title,
-			description: projectForm.description,
-			creator: user._id
-		};
-		projectAPI
-			.createProject(newProject)
-			.then((res) => {
-				console.log("project created successfully", res);
-			})
-			.catch((err) => console.error(err));
 
-		setProjectForm({});
-		setOpen(false);
-		reloadProjects();
+		if (projectForm.title && projectForm.description) {
+			setErrorForm({ title: false, description: false });
+			projectAPI
+				.createProject({
+					title: projectForm.title,
+					description: projectForm.description,
+					creator: user._id
+				})
+				.then((res) => {
+					console.log("project created successfully", res);
+					setProjectForm({});
+					setOpen(false);
+					reloadProjects();
+				})
+				.catch((err) => console.error(err));
+		} else {
+			console.log("bad input on submit");
+			setErrorForm({
+				title: projectForm.title ? false : true,
+				description: projectForm.description ? false : true
+			});
+		}
 	};
 
 	return (
@@ -61,6 +84,10 @@ const ProjectDialog = ({ open, setOpen, reloadProjects }) => {
 				<form>
 					<TextField
 						required
+						error={errorForm.title}
+						helperText={
+							errorForm.title ? "Required Field. Please enter valid data." : ""
+						}
 						size="small"
 						className={clsx(classes.formfield)}
 						label="Project Title"
@@ -69,6 +96,10 @@ const ProjectDialog = ({ open, setOpen, reloadProjects }) => {
 						variant="outlined"></TextField>
 					<TextField
 						required
+						error={errorForm.description}
+						helperText={
+							errorForm.description ? "Required Field. Please enter valid data." : ""
+						}
 						multiline
 						fullWidth
 						size="small"
@@ -80,7 +111,7 @@ const ProjectDialog = ({ open, setOpen, reloadProjects }) => {
 				</form>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={() => setOpen(false)} color="secondary">
+				<Button onClick={handleCancel} color="secondary">
 					Cancel
 				</Button>
 				<Button onClick={handleSubmit} variant="contained" color="primary">

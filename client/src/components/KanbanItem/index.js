@@ -1,42 +1,31 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { makeStyles, Divider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import { ItemTypes } from "../../utils/actions";
 import clsx from "clsx";
 import moment from "moment";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
-
+import { useDrag } from "react-dnd";
+import { Assignment, ArrowForward } from "@material-ui/icons";
 import {
-	Assignment,
-	AssignmentInd,
-	AssignmentLate,
-	AssignmentTurnedIn,
-	ArrowForward,
-	Add
-} from "@material-ui/icons";
-import {
-	List,
 	ListItemText,
-	ListItemIcon,
 	ListItemAvatar,
 	ListItem,
-	Link,
 	Avatar,
 	ListItemSecondaryAction,
-	IconButton,
-	Fab
+	IconButton
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	taskOutline: {
 		border: "1px gray",
 		boxShadow: "1px 2px 2px 1px rgba(97, 108, 153, .3)",
-		marginBottom: "1rem"
+		marginBottom: "1rem",
+		backgroundColor: theme.palette.kone.light
 		// padding: theme.spacing(2)
 	}
 }));
 
-const KanbanItem = ({ projectId,task }) => {
+const KanbanItem = ({ projectId, task }) => {
 	const classes = useStyles();
 	const ref = useRef(null);
 

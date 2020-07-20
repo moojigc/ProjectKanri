@@ -1,18 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React from "react";
 import clsx from "clsx";
 import Toolbar from "@material-ui/core/Toolbar";
-import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
-import {
-	makeStyles,
-	List,
-	ListItemText,
-	Drawer,
-	ListItemIcon,
-	ListItem,
-    Link,
-    Divider 
-} from "@material-ui/core";
-import { WebAsset } from "@material-ui/icons";
+import { Link as RouterLink } from "react-router-dom";
+import { makeStyles, List, ListItemText, Drawer, ListItem, Divider } from "@material-ui/core";
 
 const drawerWidth = 220;
 
@@ -30,20 +20,8 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-{/* <RouterLink to={`/project/${projectId}`}>
-	<ListItem button key={"projecthome"}>
-		<ListItemIcon>
-			<WebAsset></WebAsset>
-		</ListItemIcon>
-		<ListItemText primary={"Project Home"}></ListItemText>
-	</ListItem>
-</RouterLink>; */}
-
 const ProjectNav = ({ projectId, title }) => {
-	const location = useLocation();
-	const history = useHistory();
 	const classes = useStyles();
-	const [drawerOpen, setDrawerOpen] = useState(false);
 
 	return (
 		<Drawer
@@ -55,10 +33,14 @@ const ProjectNav = ({ projectId, title }) => {
 			<Toolbar />
 			<div className={clsx(classes.drawerContainer)}>
 				<List>
-					<ListItem button component={RouterLink} to={`/project/${projectId}`} key={"projecthome"}>
+					<ListItem
+						button
+						component={RouterLink}
+						to={`/project/${projectId}`}
+						key={"projecthome"}>
 						<ListItemText primary={title ? title : "Project Home"}></ListItemText>
 					</ListItem>
-                    <Divider />
+					<Divider />
 				</List>
 			</div>
 		</Drawer>

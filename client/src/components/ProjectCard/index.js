@@ -1,21 +1,17 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Collapse from "@material-ui/core/Collapse";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import { AvatarGroup } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
-import { blue } from "@material-ui/core/colors";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ButtonLink } from "../../components/MiniComponents";
-
 import moment from "moment";
 import { Tooltip } from "@material-ui/core";
 
@@ -46,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
 		// border: "none",
 		backgroundColor: theme.palette.secondary.main,
 		borderColor: theme.palette.secondary.light
+	},
+	viewColor: { 
+		backgroundColor: theme.palette.primary.main,
+		padding: ".5rem",
+		boxShadow: theme.shadows[1]
 	}
 }));
 
@@ -63,7 +64,7 @@ const ProjectCard = ({
 	...props
 }) => {
 	const classes = useStyles();
-	const [projectID, setProjectID] = useState(id);
+	// const [projectID, setProjectID] = useState(id);
 	const [expanded, setExpanded] = useState(false);
 
 	const handleExpandClick = () => {
@@ -82,7 +83,7 @@ const ProjectCard = ({
 				</Typography>
 			</CardContent>
 			<CardActions disableSpacing>
-				<ButtonLink size="small" to={`/project/${id}`} color="secondary">
+				<ButtonLink size="small" to={`/project/${id}`} className={classes.viewColor}>
 					View Project
 				</ButtonLink>
 				<IconButton
@@ -105,7 +106,10 @@ const ProjectCard = ({
 							? adminNames.map((admin) => {
 									return (
 										<Tooltip arrow title={admin} key={admin}>
-											<Avatar className={classes.avatar} alt={admin}>
+											<Avatar
+												style={{fontSize: "1rem" }}
+												className={classes.avatar}
+												alt={admin}>
 												{admin.charAt(0).toUpperCase()}
 											</Avatar>
 										</Tooltip>
@@ -122,7 +126,10 @@ const ProjectCard = ({
 							? memberNames.map((mem) => {
 									return (
 										<Tooltip arrow title={mem} key={mem}>
-											<Avatar className={classes.avatar} alt={mem}>
+											<Avatar
+												style={{fontSize: "1rem" }}
+												className={classes.avatar}
+												alt={mem}>
 												{mem.charAt(0).toUpperCase()}
 											</Avatar>
 										</Tooltip>
@@ -131,12 +138,15 @@ const ProjectCard = ({
 							: ""}
 					</AvatarGroup>
 					{/* <Typography paragraph>{members ? memberNames.join(", ") : ""}</Typography> */}
-					<AvatarGroup max={1} className={clsx(classes.avgroup)}>
+					<AvatarGroup className={clsx(classes.avgroup)}>
 						<Typography component="span" className={clsx(classes.avgroupLabel)}>
 							Created By:
 						</Typography>
 						<Tooltip arrow title={creator}>
-							<Avatar className={classes.avatar} alt={creator}>
+							<Avatar
+								className={classes.avatar}
+								style={{ marginRight: "1rem", fontSize: "1rem" }}
+								alt={creator}>
 								{creator.charAt(0).toUpperCase()}
 							</Avatar>
 						</Tooltip>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, TextField, Button, Typography, Grid, InputAdornment } from "@material-ui/core";
+import { TextField, Button, } from "@material-ui/core";
 import {
 	Dialog,
 	DialogActions,
@@ -22,27 +22,49 @@ const TaskDialog = ({ open, setOpen, reloadProject, projectId }) => {
 	const classes = useStyles();
 
 	const [taskForm, setTaskForm] = useState({});
-	const { user, setUser } = useContext(UserContext);
+	const [errorForm, setErrorForm] = useState({});
+	const { user } = useContext(UserContext);
 
 	const handleInputChange = (event) => {
 		const { name, value } = event.target;
-		setTaskForm({ ...taskForm, [name]: value });
+		setTaskForm({ ...taskForm, [name]: value.trim() });
+		if (!value.trim()) {
+			setErrorForm({ ...errorForm, [name]: true });
+			// console.log("bad input");
+		} else {
+			// console.log("good input");
+			setErrorForm({ ...errorForm, [name]: false });
+		}
 	};
 
 	const handleSubmit = () => {
 		console.log("submitting task: ", taskForm);
 		console.log("current user", user);
-		taskAPI
-			.createTask(projectId, {
-				...taskForm,
-				creator: user._id
-			})
-			.then((res) => {
-				reloadProject();
-				setTaskForm({});
-				setOpen(false);
-			})
-			.catch((err) => console.error(err));
+		if (taskForm.title && taskForm.description) {
+			taskAPI
+				.createTask(projectId, {
+					...taskForm,
+					creator: user._id
+				})
+				.then((res) => {
+					reloadProject();
+					setTaskForm({});
+					setOpen(false);
+				})
+				.catch((err) => console.error(err));
+		} else {
+			console.log("bad input on submit");
+			setErrorForm({
+				title: taskForm.title ? false : true,
+				description: taskForm.description ? false : true
+			});
+		}
+	};
+
+	const handleCancel = () => {
+		setTaskForm({});
+		setErrorForm({ title: false, description: false });
+		setOpen(false);
 	};
 
 	return (
@@ -55,6 +77,10 @@ const TaskDialog = ({ open, setOpen, reloadProject, projectId }) => {
 				<form>
 					<TextField
 						required
+						error={errorForm.title}
+						helperText={
+							errorForm.title ? "Required Field. Please enter valid data." : ""
+						}
 						size="small"
 						className={clsx(classes.formfield)}
 						label="Task Title"
@@ -63,6 +89,10 @@ const TaskDialog = ({ open, setOpen, reloadProject, projectId }) => {
 						variant="outlined"></TextField>
 					<TextField
 						required
+						error={errorForm.description}
+						helperText={
+							errorForm.description ? "Required Field. Please enter valid data." : ""
+						}
 						multiline
 						fullWidth
 						size="small"
@@ -74,7 +104,7 @@ const TaskDialog = ({ open, setOpen, reloadProject, projectId }) => {
 				</form>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={() => setOpen(false)} color="secondary">
+				<Button onClick={handleCancel} color="secondary">
 					Cancel
 				</Button>
 				<Button onClick={handleSubmit} variant="contained" color="primary">

@@ -26,11 +26,12 @@ module.exports = (router) => {
 	router.get("/api/projects", async (req, res) => {
 		console.log("IN ROUTE: /api/projects");
 		try {
-			let projects = await Project.where("members")
-				.in(req.user._id)
-				.populate("creator")
-				.populate("admins")
-				.populate("members")
+			let projects = await Project.find({
+				$or: [{ admins: req.user._id }, { members: req.user._id }]
+			})
+				.populate("creator", { password: 0 })
+				.populate("admins", { password: 0 })
+				.populate("members", { password: 0 })
 				.sort({ _id: -1 });
 			return res.json(projects);
 		} catch (error) {

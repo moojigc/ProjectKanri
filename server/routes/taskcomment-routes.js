@@ -17,6 +17,7 @@ module.exports = (router) => {
 			await Task.updateOne(
 				{ _id: req.params.taskId },
 				{
+					updatedAt: new Date(),
 					$push: {
 						comments: comment._id
 					}

@@ -37,7 +37,7 @@ module.exports = (router) => {
 					_id: req.params.id
 				},
 				{
-					...req.body
+					...req.body, updatedAt: new Date()
 				},
 				{
 					new: true
@@ -61,6 +61,7 @@ module.exports = (router) => {
 					_id: req.params.id
 				},
 				{
+					updatedAt: new Date(),
 					$push: {
 						tasks: dbTask._id
 					}
