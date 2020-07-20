@@ -151,7 +151,7 @@ export default function Task() {
 										fullWidth
 										variant="outlined"
 										label="Updated On:"
-										value={moment(task.updatedAt).format("M/DD/YYYY h:m A")}
+										value={moment(task.updatedAt).format("M/DD/YYYY h:mm A")}
 									/>
 								</Grid>
 								<Grid item xs={12} sm={6} md={3}>

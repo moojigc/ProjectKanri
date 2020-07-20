@@ -141,7 +141,7 @@ const Project = () => {
 
 	return (
 		<div className={clsx(classes.root)}>
-			<ProjectNav projectId={id} title={project.title}></ProjectNav>
+			<ProjectNav projectId={id}></ProjectNav>
 			<Container maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title}</Title>
