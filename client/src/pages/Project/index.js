@@ -6,26 +6,13 @@ import clsx from "clsx";
 import { Title, Wrapper } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
 import { Grid, Typography } from "@material-ui/core/";
-import {
-	TASK_NEW,
-	TASK_TODO,
-	TASK_WIP,
-	TASK_REVIEW,
-	TASK_DONE,
-} from "../../utils/actions";
+import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import ProjectNav from "../../components/ProjectNav";
 import TaskDialog from "../../components/TaskDialog";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import {
-	Add,
-} from "@material-ui/icons";
-import {
-	List,
-	ListItemText,
-	ListItem,
-	Fab
-} from "@material-ui/core";
+import { Add } from "@material-ui/icons";
+import { List, ListItemText, ListItem, Fab } from "@material-ui/core";
 // import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
 import projectAPI from "../../utils/projectAPI";
 import taskAPI from "../../utils/taskAPI";
@@ -46,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: "transparent"
 	},
 	fab: {
-		position: "absolute",
+		position: "fixed",
 		bottom: theme.spacing(2),
 		right: theme.spacing(2)
 	},
@@ -55,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	content: {
 		flexGrow: 1,
-		padding: theme.spacing(3)
+		paddingLeft: theme.spacing(1),
+		paddingRight: theme.spacing(1)
 	}
 }));
 
@@ -141,8 +129,8 @@ const Project = () => {
 
 	return (
 		<div className={clsx(classes.root)}>
-			<ProjectNav projectId={id} title={project.title}></ProjectNav>
-			<Container maxWidth="xl" component="main" className={clsx(classes.content)}>
+			<ProjectNav projectId={id}></ProjectNav>
+			<Container disableGutters maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title}</Title>
 					<Typography paragraph>{project.description}</Typography>
@@ -151,22 +139,13 @@ const Project = () => {
 					<DndProvider backend={HTML5Backend}>
 						<Grid container spacing={2} className={clsx(classes.kanban)}>
 							{returnOrganizedTasks(tasks).map(({ status, tasks }) => (
-								<KanbanCol
-									key={status}
-									status={status}
-									changeTaskStatus={changeTaskStatus}>
+								<KanbanCol key={status} status={status} changeTaskStatus={changeTaskStatus}>
 									<Typography variant="h6" component="h3">
 										{status}
 									</Typography>
 									<List dense>
 										{tasks.length ? (
-											tasks
-												.map((task) => (
-													<KanbanItem
-														task={task}
-														projectId={id}
-														key={task._id}></KanbanItem>
-												))
+											tasks.map((task) => <KanbanItem task={task} projectId={id} key={task._id}></KanbanItem>)
 										) : (
 											<ListItem>
 												<ListItemText primary={"No tasks."}></ListItemText>
@@ -178,11 +157,7 @@ const Project = () => {
 						</Grid>
 					</DndProvider>
 				</Wrapper>
-				<TaskDialog
-					projectId={id}
-					open={taskOpen}
-					setOpen={setTaskOpen}
-					reloadProject={loadProject}></TaskDialog>
+				<TaskDialog projectId={id} open={taskOpen} setOpen={setTaskOpen} reloadProject={loadProject}></TaskDialog>
 				<Fab
 					className={clsx(classes.fab)}
 					color="secondary"
@@ -190,7 +165,8 @@ const Project = () => {
 					onClick={() => {
 						console.log("clicked");
 						setTaskOpen(true);
-					}}>
+					}}
+				>
 					<Add></Add>
 					New Task
 				</Fab>
