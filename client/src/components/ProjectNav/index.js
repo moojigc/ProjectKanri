@@ -31,9 +31,6 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-// <Tooltip title="Project Home" aria-label="Go to project home" placement="right">
-// 	<DeveloperBoard color="textPrimary"></DeveloperBoard>
-// </Tooltip>;
 
 const ProjectNav = ({ projectId, title }) => {
 	const classes = useStyles();
@@ -77,7 +74,7 @@ const ProjectNav = ({ projectId, title }) => {
 						<List>
 							<ListItem button component={RouterLink} to={`/project/${projectId}`} key={"projecthome"}>
 								<Tooltip arrow title={title ? title : "Project Home"} aria-label="Go to project home" placement="right">
-									<DeveloperBoard color="textPrimary"></DeveloperBoard>
+									<DeveloperBoard></DeveloperBoard>
 								</Tooltip>
 							</ListItem>
 							<Divider />
