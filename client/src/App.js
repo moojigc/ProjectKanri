@@ -21,16 +21,16 @@ import AcceptInvite from "./pages/AcceptInvite";
 import NoMatch from "./pages/NoMatch";
 
 function App() {
-	const browserDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-	const getUserDarkMode = (browserDarkMode) => {
-		const storedDarkMode = JSON.parse(localStorage.getItem("darkMode"));
-		if (storedDarkMode !== undefined) return storedDarkMode;
-		else return browserDarkMode;
+	const browserLightMode = useMediaQuery("(prefers-color-scheme: light)");
+	const getUserLightMode = (browserLightMode) => {
+		const storedLightMode = JSON.parse(localStorage.getItem("lightMode"));
+		if (storedLightMode !== undefined) return storedLightMode;
+		else return browserLightMode;
 	};
-	const userPrefersDarkMode = getUserDarkMode(browserDarkMode);
-	const forceLightTheme = theme(false);
+	const userPrefersLightMode = getUserLightMode(browserLightMode);
+	const forceLightTheme = theme(true);
 
-	const [preferredTheme, setPreferredTheme] = useState(browserDarkMode);
+	const [preferredTheme, setPreferredTheme] = useState(browserLightMode);
 	const [isMounted, setMounted] = useState(false);
 	const [user, setUser] = useState({
 		auth: false,
@@ -43,12 +43,12 @@ function App() {
 	});
 
 	useEffect(() => {
-		setPreferredTheme(userPrefersDarkMode);
+		setPreferredTheme(userPrefersLightMode);
 		userAPI.checkStatus().then((res) => {
 			setUser(res.user);
 			setMounted(true);
 		});
-	}, [userPrefersDarkMode]);
+	}, [userPrefersLightMode]);
 	return (
 		<Router>
 			<UserProvider value={{ user, setUser }}>
@@ -57,7 +57,7 @@ function App() {
 						<CssBaseline />
 						<img
 							src={sakuraFlipped}
-							alt=""
+							alt="sakura branch"
 							style={{
 								zIndex: -1,
 								position: "fixed",
@@ -68,7 +68,7 @@ function App() {
 						/>
 						<img
 							src={sakuraBranch}
-							alt=""
+							alt="sakura branch"
 							style={{
 								zIndex: -1,
 								position: "fixed",

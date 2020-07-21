@@ -73,8 +73,8 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 		history.push("/login");
 	};
 	const handleChangeTheme = ({ target }) => {
-		setPreferredTheme(target.checked);
-		localStorage.setItem("darkMode", target.checked);
+		setPreferredTheme(!target.checked);
+		localStorage.setItem("lightMode", !target.checked);
 	};
 	useEffect(() => {
 		let title = location.pathname.split("/")[1];
@@ -168,7 +168,7 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 							</MenuItem>
 							<MenuItem>
 								<FormGroup row>
-									<FormControlLabel control={<Switch checked={preferredTheme} onChange={handleChangeTheme} />} label="Dark Mode" />
+									<FormControlLabel control={<Switch checked={!preferredTheme} onChange={handleChangeTheme} />} label="Dark Mode" />
 								</FormGroup>
 							</MenuItem>
 							<MenuItem>
