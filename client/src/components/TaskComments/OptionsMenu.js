@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles, Menu, MenuItem, Grid } from "@material-ui/core";
 import { Create, DeleteForever } from '@material-ui/icons'
+import taskAPI from "../../utils/taskAPI";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -8,13 +9,31 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const OptionsMenu = ({anchorEl, setAnchorEl, handleUpdateComment, handleDeleteComment}) => {
-    const classes = useStyles();
-    const open = Boolean(anchorEl);
+/**
+ * 
+ * @param {Object} props
+ * @param {string} props.taskId
+ * @param {string} props.commentId
+ * @param {Function} props.setComments
+ * @param {Function} props.handleSetEdit
+ * @param {{}[]} props.comments
+ * @param {number} props.index
+ */
+const OptionsMenu = (props) => {
+	const { taskId, commentId, comments, setComments, index, handleSetEdit, showEdit } = props;
+	const classes = useStyles();
+	const handleDeleteComment = async (taskId, commentId) => {
+		console.log(commentId)
+		let {
+			flash: { type }
+		} = await taskAPI.deleteComment(taskId, commentId);
+		if (type === "success") setComments(comments.filter((c) => c._id !== commentId));
+	};
+
 	return (
 		<Menu
 			id="menu-comment"
-			anchorEl={anchorEl}
+			keepMounted
 			PaperProps={{ className: classes.root }}
 			anchorOrigin={{
 				vertical: "top",
@@ -24,21 +43,22 @@ const OptionsMenu = ({anchorEl, setAnchorEl, handleUpdateComment, handleDeleteCo
 				vertical: "top",
 				horizontal: "right"
 			}}
-			open={open}
-            onClose={() => setAnchorEl(null)}
+			{...props}
 		>
-			<MenuItem key="update-comment">
-				<div onClick={handleUpdateComment}>
-					<Grid container spacing={1} alignItems="flex-start">
-						<Grid item>
-							<Create />
+			{showEdit &&  (
+				<MenuItem key="update-comment">
+					<div onClick={() => handleSetEdit(index)}>
+						<Grid container spacing={1} alignItems="flex-start">
+							<Grid item>
+								<Create />
+							</Grid>
+							<Grid item>Edit</Grid>
 						</Grid>
-						<Grid item>Edit</Grid>
-					</Grid>
-				</div>
-			</MenuItem>
+					</div>
+				</MenuItem>
+			)}
             <MenuItem key="delete-comment">
-				<div onClick={handleDeleteComment}>
+				<div onClick={() => handleDeleteComment(taskId, commentId)}>
 					<Grid container spacing={1} alignItems="flex-start">
 						<Grid item>
 							<DeleteForever />

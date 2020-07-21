@@ -240,6 +240,7 @@ export default function Task() {
 							comments={comments}
 							setComments={setComments}
 							user={user}
+							admins={task.project?.admins}
 						/>
 					</Grid>
 				</Wrapper>

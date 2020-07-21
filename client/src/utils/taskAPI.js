@@ -42,7 +42,7 @@ export default {
 	},
 	postComment: async (taskId, comment) => {
 		return await request({
-			url: `/api/task/comments?taskId=${taskId}`,
+			url: `/api/task-comments?taskId=${taskId}`,
 			method: "POST",
 			data: {
 				comment: comment
@@ -51,7 +51,7 @@ export default {
 	},
 	editComment: async (taskId, commentId, body) => {
 		return await request({
-			url: `/api/task/comment?commentId=${commentId}&taskId=${taskId}`,
+			url: `/api/task-comment?commentId=${commentId}&taskId=${taskId}`,
 			method: "PUT",
 			data: {
 				body: body
@@ -60,7 +60,7 @@ export default {
 	},
 	deleteComment: async (taskId, commentId) => {
 		return await request({
-			url:  `/api/task/comment?commentId=${commentId}&taskId=${taskId}`,
+			url:  `/api/task-comment?commentId=${commentId}&taskId=${taskId}`,
 			method: "DELETE",
 		})
 	}

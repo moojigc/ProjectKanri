@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import moment from "moment";
-import { Typography as T, Avatar, Grid, Divider, Box, TextField, Button, Fade, IconButton } from "@material-ui/core";
+import { Typography as T, Avatar, Grid, Divider, Box, TextField, Button, Fade, IconButton, CircularProgress } from "@material-ui/core";
 import taskAPI from "../../utils/taskAPI";
 import { MoreVert } from "@material-ui/icons";
 import OptionsMenu from "./OptionsMenu";
+import PopupState, {bindTrigger, bindMenu} from 'material-ui-popup-state'
 /**
  *
  * @param {Object} props
@@ -12,9 +13,9 @@ import OptionsMenu from "./OptionsMenu";
  * @param {Function} props.setComments
  * @param {string} props.taskId
  */
-const TaskComments = ({ user, comments, setComments, taskId }) => {
+const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
+	const editCommentField = useRef(null)
 	const [visible, setVisible] = useState(false);
-	const [moreOptionsAnchorEl, setMoreOptionsAnchorEl] = useState(null);
 	const commentField = useRef(null);
 	const handleButtonVis = () => {
 		setVisible(false);
@@ -35,14 +36,6 @@ const TaskComments = ({ user, comments, setComments, taskId }) => {
 		commentField.current.value = "";
 	};
 
-	const handleDeleteComment = async (taskId, commentId) => {
-		setMoreOptionsAnchorEl(null);
-		let {
-			flash: { type }
-		} = await taskAPI.deleteComment(taskId, commentId);
-		if (type === "success") setComments(comments.filter((c) => c._id !== commentId));
-	};
-
 	const handleSetEdit = (index) => {
 		setComments(
 			comments.map((c, i) => {
@@ -54,6 +47,19 @@ const TaskComments = ({ user, comments, setComments, taskId }) => {
 		);
 	};
 
+	const handleSubmitEdit = async (event, id) => {
+		event.preventDefault();
+		let res = await taskAPI.editComment(taskId, id, editCommentField.current.value)
+		setComments(
+			comments.map(c => {
+				return {
+					...c,
+					body: c._id === res._id ? res.body : c.body,
+					editMode: false
+				}
+			})
+		)
+	}
 	return (
 		<Grid container spacing={2}>
 			<Grid item container justify="center">
@@ -98,19 +104,39 @@ const TaskComments = ({ user, comments, setComments, taskId }) => {
 										</div>
 									</Grid>
 									<Grid item container justify="space-between" alignItems="center">
-										<Grid item>
-											<T>{body}</T>
+										<Grid item style={{flexGrow: 1}}>
+											{comment.editMode ? (
+												<form onSubmit={(event) => handleSubmitEdit(event, comment._id)}>
+													<TextField inputRef={editCommentField} defaultValue={body} fullWidth row={1} />
+													<Grid style={{marginTop: "0.25rem"}} container justify="flex-end">
+														<Button onClick={handleSetEdit} style={{marginRight: "0.5rem"}}>Cancel</Button>
+														<Button type="submit" variant="contained" color="secondary">Edit</Button>
+													</Grid>
+												</form>
+											) : (<T>{body}</T>)}
 										</Grid>
-										<Grid item>
-											<IconButton onClick={(event) => setMoreOptionsAnchorEl(event.currentTarget)}>
-												<MoreVert />
-											</IconButton>
-											<OptionsMenu
-												setAnchorEl={setMoreOptionsAnchorEl}
-												anchorEl={moreOptionsAnchorEl}
-												handleDeleteComment={() => handleDeleteComment(taskId, comment._id)}
-											/>
-										</Grid>
+										{(creator._id === user._id || admins.includes(user._id)) && (
+											<Grid item>
+												<PopupState variant="popover" id="more-comment-options">
+													{(popupState) => (
+														<React.Fragment>
+															<IconButton {...bindTrigger(popupState)}>
+																<MoreVert />
+															</IconButton>
+															<OptionsMenu {...bindMenu(popupState)}
+																showEdit={creator._id === user._id}
+																index={i}
+																comments={comments}
+																setComments={setComments}
+																taskId={taskId}
+																commentId={comment._id}
+																handleSetEdit={handleSetEdit}
+															/>
+														</React.Fragment>
+													)}
+												</PopupState>
+											</Grid>
+										)}
 									</Grid>
 								</Grid>
 								{i !== arr.length - 1 ? <Divider style={{ margin: "0.5rem 0" }} /> : null}
@@ -120,7 +146,7 @@ const TaskComments = ({ user, comments, setComments, taskId }) => {
 				</Box>
 			) : null}
 		</Grid>
-	);
+	)
 };
 
 export default TaskComments;

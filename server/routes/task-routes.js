@@ -38,6 +38,7 @@ module.exports = (router) => {
 	});
 
 	router.put("/api/task/:id", async (req, res) => {
+		console.log("actually in this one")
 		try {
 			let dbTask = await Task.findOneAndUpdate(
 				{

@@ -46,6 +46,7 @@ function App() {
 		setPreferredTheme(userPrefersLightMode);
 		userAPI.checkStatus().then((res) => {
 			setUser(res.user);
+			console.log(res.user)
 			setMounted(true);
 		});
 	}, [userPrefersLightMode]);

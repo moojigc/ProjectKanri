@@ -133,7 +133,7 @@ module.exports = (router) => {
 						res.json({
 							user: guestUser
 						});
-					} else
+					} else {
 						res.status(200)
 							.json({
 								user: {
@@ -146,6 +146,7 @@ module.exports = (router) => {
 								}
 							})
 							.end();
+					}
 				});
 				break;
 			default:
