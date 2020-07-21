@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
+const TaskComment = require("./TaskComment")
 
 const TaskSchema = new Schema({
 	project: {
@@ -48,6 +49,15 @@ const TaskSchema = new Schema({
 		required: true
 	}
 });
+
+TaskSchema.post("deleteOne", async function (doc, next) {
+	await TaskComment.deleteMany({
+		_id: {
+			$in: doc.comments
+		}
+	})
+	next();
+})
 
 const Task = model("Task", TaskSchema);
 
