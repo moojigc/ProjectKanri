@@ -4,17 +4,17 @@ import { Typography as T, Avatar, Grid, Divider, Box, TextField, Button, Fade, I
 import taskAPI from "../../utils/taskAPI";
 import { MoreVert } from "@material-ui/icons";
 import OptionsMenu from "./OptionsMenu";
-import PopupState, {bindTrigger, bindMenu} from 'material-ui-popup-state'
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 /**
  *
  * @param {Object} props
  * @param {{ _id, username }} props.user
- * @param {{ _id, body, createdAt, editMode, creator: { _id, username, firstName: string, lastName } }[]} props.comments
+ * @param {{ _id, body, createdAt, editMode, updatedAt, creator: { _id, username, firstName: string, lastName } }[]} props.comments
  * @param {Function} props.setComments
  * @param {string} props.taskId
  */
 const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
-	const editCommentField = useRef(null)
+	const editCommentField = useRef(null);
 	const [visible, setVisible] = useState(false);
 	const commentField = useRef(null);
 	const handleButtonVis = () => {
@@ -49,17 +49,18 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 
 	const handleSubmitEdit = async (event, id) => {
 		event.preventDefault();
-		let res = await taskAPI.editComment(taskId, id, editCommentField.current.value)
+		let res = await taskAPI.editComment(taskId, id, editCommentField.current.value);
 		setComments(
-			comments.map(c => {
+			comments.map((c) => {
 				return {
 					...c,
 					body: c._id === res._id ? res.body : c.body,
+					updatedAt: c._id === res._id ? res.updatedAt : c.updatedAt,
 					editMode: false
-				}
+				};
 			})
-		)
-	}
+		);
+	};
 	return (
 		<Grid container spacing={2}>
 			<Grid item container justify="center">
@@ -86,7 +87,7 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 			{comments.length ? (
 				<Box component="ul" width="100%" padding="0.5rem 1rem" border="1px solid darkgray" borderRadius="0.15rem">
 					{comments.map((comment, i, arr) => {
-						const { creator, body, createdAt } = comment;
+						const { creator, body, createdAt, updatedAt } = comment;
 						return (
 							<li style={{ listStyle: "none" }} key={comment._id + i}>
 								<Grid style={{ padding: "0.25rem" }} item container alignItems="flex-end">
@@ -104,16 +105,27 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 										</div>
 									</Grid>
 									<Grid item container justify="space-between" alignItems="center">
-										<Grid item style={{flexGrow: 1}}>
+										<Grid item style={{ flexGrow: 1 }}>
 											{comment.editMode ? (
 												<form onSubmit={(event) => handleSubmitEdit(event, comment._id)}>
 													<TextField inputRef={editCommentField} defaultValue={body} fullWidth row={1} />
-													<Grid style={{marginTop: "0.25rem"}} container justify="flex-end">
-														<Button onClick={handleSetEdit} style={{marginRight: "0.5rem"}}>Cancel</Button>
-														<Button type="submit" variant="contained" color="secondary">Edit</Button>
+													<Grid style={{ marginTop: "0.25rem" }} container justify="flex-end">
+														<Button onClick={handleSetEdit} style={{ marginRight: "0.5rem" }}>
+															Cancel
+														</Button>
+														<Button type="submit" variant="contained" color="secondary">
+															Edit
+														</Button>
 													</Grid>
 												</form>
-											) : (<T>{body}</T>)}
+											) : (
+												<React.Fragment>
+													<T>{body}</T>
+													{!moment(updatedAt).isSame(createdAt) && (
+														<T component="span" style={{ fontSize: "small" }}><em>Edited {moment(updatedAt).fromNow()}</em></T>
+													)}
+												</React.Fragment>
+											)}
 										</Grid>
 										{(creator._id === user._id || admins.includes(user._id)) && (
 											<Grid item>
@@ -123,7 +135,8 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 															<IconButton {...bindTrigger(popupState)}>
 																<MoreVert />
 															</IconButton>
-															<OptionsMenu {...bindMenu(popupState)}
+															<OptionsMenu
+																{...bindMenu(popupState)}
 																showEdit={creator._id === user._id}
 																index={i}
 																comments={comments}
@@ -146,7 +159,7 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 				</Box>
 			) : null}
 		</Grid>
-	)
+	);
 };
 
 export default TaskComments;
