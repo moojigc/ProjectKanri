@@ -76,12 +76,12 @@ const Navbar = ({ preferredTheme, setPreferredTheme }) => {
 		setPreferredTheme(!target.checked);
 		localStorage.setItem("lightMode", !target.checked);
 	};
-	useEffect(() => {
-		let title = location.pathname.split("/")[1];
-		let formattedTitle = location.pathname !== "/" ? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri" : "ProjectKanri";
-		document.title = formattedTitle;
-		setNavTitle(formattedTitle);
-	}, [location.pathname]);
+	// useEffect(() => {
+		// let title = location.pathname.split("/")[1];
+		// let formattedTitle = location.pathname !== "/" ? title.charAt(0).toUpperCase() + title.substring(1) + " - ProjectKanri" : "ProjectKanri";
+		// document.title = formattedTitle;
+		// setNavTitle(formattedTitle);
+	// }, [location.pathname]);
 	// const AppDrawer = () => {
 	// 	return (
 	// 		<Drawer
