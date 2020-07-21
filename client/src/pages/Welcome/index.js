@@ -6,7 +6,7 @@ import Container from "@material-ui/core/Container";
 import { UserContext } from "../../utils/UserContext";
 import { useHistory } from "react-router-dom";
 import { makeStyles, Box, Typography, useMediaQuery, Paper } from "@material-ui/core";
-import { ButtonLink } from "../../components/MiniComponents";
+import { ButtonLink, SakuraBranches } from "../../components/MiniComponents";
 import { ArrowForward } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,25 +35,20 @@ const Welcome = () => {
 	};
 	return (
 		<Container maxWidth="xl" disableGutters className={classes.welcome}>
-			<Box>
+			<SakuraBranches zIndex={1} opacity="0.5" width={isMobile? "15rem" : "25rem"} />
+			<Box className="welcome" zIndex={2} position="relative">
 				<Grid container>
-					<Typography
-						variant={isMobile ? "h2" : "h1"}
-						component="h1"
-						color="textSecondary">
-						Welcome
+					<Typography variant={isMobile ? "h2" : "h1"} component="h1" color="textSecondary">
+						Welcome to
 					</Typography>
 				</Grid>
 				<Grid container>
-					<Typography
-						variant={isMobile ? "h2" : "h1"}
-						component="h2"
-						color="textSecondary">
-						to ProjectKanri.
+					<Typography variant={isMobile ? "h2" : "h1"} component="h2" color="textSecondary">
+						ProjectKanri.
 					</Typography>
 				</Grid>
 			</Box>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} className="welcome-form">
 				<Grid container>
 					<TextField
 						inputRef={email}
@@ -65,19 +60,26 @@ const Welcome = () => {
 						label="Enter your email address to get started."
 					/>
 				</Grid>
-				<Grid container>
-					<Button
-						style={{ marginRight: "1rem" }}
-						type="submit"
-						variant="contained"
-						color="primary"
-						endIcon={<ArrowForward />}>
-						Continue sign up
-					</Button>
-					<ButtonLink variant="contained" color="secondary" to="/login" type="button">
-						Login with exisiting account
-					</ButtonLink>
-				</Grid>
+				{continueSignUp ? (
+					<Grid container>
+						<TextField 
+							required
+							aria-required
+							label="Username"
+							name="username"
+							fullWidth
+						/>
+					</Grid>
+				) : (
+					<Grid container style={{zIndex: 3}}>
+						<Button style={{ marginRight: "1rem" }} onClick={() => setContinue(true)} variant="contained" color="primary" endIcon={<ArrowForward />}>
+							Continue sign up
+						</Button>
+						<ButtonLink style={{ marginTop: isMobile ? "0.5rem" : "initial" }} variant="contained" color="secondary" to="/login" type="button">
+							Login with exisiting account
+						</ButtonLink>
+					</Grid>
+				)}
 			</form>
 		</Container>
 	);

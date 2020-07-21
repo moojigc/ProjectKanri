@@ -15,10 +15,9 @@ import UserProfile from "./pages/UserProfile";
 import Dashboard from "./pages/Dashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Project from "./pages/Project";
-import sakuraBranch from "./sakura_branch.png";
-import sakuraFlipped from "./sakura_flipped.png";
 import AcceptInvite from "./pages/AcceptInvite";
 import NoMatch from "./pages/NoMatch";
+import { SakuraBranches } from "./components/MiniComponents";
 
 function App() {
 	const browserLightMode = useMediaQuery("(prefers-color-scheme: light)");
@@ -46,7 +45,7 @@ function App() {
 		setPreferredTheme(userPrefersLightMode);
 		userAPI.checkStatus().then((res) => {
 			setUser(res.user);
-			console.log(res.user)
+			console.log(res.user);
 			setMounted(true);
 		});
 	}, [userPrefersLightMode]);
@@ -56,31 +55,8 @@ function App() {
 				<FlashProvider value={{ flash, setFlash }}>
 					<ThemeProvider theme={theme(preferredTheme)}>
 						<CssBaseline />
-						<img
-							src={sakuraFlipped}
-							alt="sakura branch"
-							style={{
-								zIndex: -1,
-								position: "fixed",
-								width: "15rem",
-								top: "2rem",
-								left: 0
-							}}
-						/>
-						<img
-							src={sakuraBranch}
-							alt="sakura branch"
-							style={{
-								zIndex: -1,
-								position: "fixed",
-								width: "15rem",
-								right: 0,
-								bottom: 0
-							}}
-						/>
-						<div style={{ marginBottom: "4rem" }}>
-							<Navbar setPreferredTheme={setPreferredTheme} preferredTheme={preferredTheme} />
-						</div>
+						<SakuraBranches />
+						<Navbar setPreferredTheme={setPreferredTheme} preferredTheme={preferredTheme} />
 						<Switch>
 							<Route exact path={["/", "/dashboard"]}>
 								{isMounted ? user.auth ? <Dashboard /> : <Redirect to="/welcome" /> : null}

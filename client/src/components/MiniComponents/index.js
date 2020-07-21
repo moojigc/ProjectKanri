@@ -1,7 +1,9 @@
 import React from "react";
-import { Link as A, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { makeStyles, Typography } from "@material-ui/core";
-import { Box, Link, Button } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
+import sakuraBranch from "../../sakura_branch.png";
+import sakuraFlipped from "../../sakura_flipped.png";
 
 const useStyles = makeStyles((theme) => ({
 	title: {
@@ -43,14 +45,7 @@ const useStyles = makeStyles((theme) => ({
 export const Title = (props) => {
 	const { component, variant } = props;
 	const { title } = useStyles();
-	return (
-		<Typography
-			component={component || "h1"}
-			variant={variant || "h2"}
-			className={title}
-			{...props}
-		/>
-	);
+	return <Typography component={component || "h1"} variant={variant || "h2"} className={title} {...props} />;
 };
 
 /**
@@ -78,14 +73,18 @@ export const ButtonLink = ({ to, info, color, className, children, ...props }) =
 		history.push(to);
 	};
 	return (
-		<Button
-			color={color}
-			href={to}
-			onClick={handleClick}
-			className={info ? classes.info : className}
-			{...props}>
+		<Button color={color} href={to} onClick={handleClick} className={info ? classes.info : className} {...props}>
 			<Typography>{children}</Typography>
 		</Button>
+	);
+};
+
+export const SakuraBranches = ({ zIndex, width, opacity }) => {
+	return (
+		<React.Fragment>
+			<img style={{ zIndex: zIndex, width: width, opacity: opacity }} src={sakuraFlipped} alt="sakura branch" className="sakura-flipped" />
+			<img style={{ zIndex: zIndex, width: width, opacity: opacity }} src={sakuraBranch} className="sakura-normal" alt="sakura branch" />
+		</React.Fragment>
 	);
 };
 

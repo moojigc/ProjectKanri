@@ -14,6 +14,40 @@ body {
 	// For now, can change later
 	background: rgb(255, 245, 245);
 }
+%sakura {
+	z-index: -1;
+	position: fixed;
+	width: 15rem;
+}
+.sakura-normal {
+	@extend %sakura;
+	right: 0;
+	bottom: 0;
+}
+.sakura-flipped {
+	@extend %sakura;
+	top: 2rem;
+	left: 0;
+}
+.welcome {
+	display: grid;
+	z-index: 2;
+	opacity: 1;
+	h1, h2 {
+		font-weight: 300;
+		color: var(--secondary-main) !important;
+		text-shadow: -2px 2px 10px var(--secondary-light)
+	}
+	h1 {
+		font-weight: 400;
+		color: var(--secondary-dark) !important;
+	} 
+}
+.welcome-form {
+	* {
+		z-index: 3;
+	}
+}
 
 @media screen and (max-width: 997px) {
 	:root {
