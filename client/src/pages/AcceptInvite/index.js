@@ -3,14 +3,18 @@ import { useParams, useHistory } from "react-router-dom";
 import { Wrapper, Title, ButtonLink } from "../../components/MiniComponents";
 import { Typography as T, Button, Container, Grid, Divider } from "@material-ui/core";
 import inviteAPI from "../../utils/inviteAPI";
+import { Alert } from "@material-ui/lab";
 
 const AcceptInvite = () => {
-	const [open, setOpen] = useState(true);
 	const { token } = useParams();
 	const history = useHistory();
+	const [flash, setFlash] = useState({message: null, type: null})
 	const handleAccept = async () => {
 		let res = await inviteAPI.acceptInvite(token);
-		history.push(res.redirect);
+		setFlash(res.flash)
+		setTimeout(() => {
+			history.push(res.redirect);
+		}, 1000)
 	};
 
 	return (
@@ -28,6 +32,7 @@ const AcceptInvite = () => {
 					</Button>
 				</Grid>
 			</Wrapper>
+			{flash.message && <Alert severity={flash.type}>{flash.message}</Alert>}
 		</Container>
 	);
 };

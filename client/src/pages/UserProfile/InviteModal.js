@@ -12,15 +12,11 @@ import {
 	CircularProgress,
 	Divider,
 	Typography as T,
-	Button,
-	Paper,
-	LinearProgress,
-	useMediaQuery
+	Button
 } from "@material-ui/core";
 import { emailRegex } from "../../utils/shared";
 import { Alert } from "@material-ui/lab";
 import useDebounce from "../../utils/debounceHook";
-import { TrendingUpOutlined } from "@material-ui/icons";
 
 const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 	const [flash, setFlash] = useState({ message: null, type: null });
@@ -30,19 +26,7 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 	const [admin, setAdmin] = useState(false);
 	const [search, setSearch] = useState("");
 	const debouncedSearch = useDebounce(search, 500);
-	// const handleSearch = async (event) => {
-	// 	event.preventDefault();
-	// 	if (event.target.value !== "" && delay === 0) {
-	// 		let results = await inviteAPI.searchUsers(event.target.value.trim());
-	// 		console.log(results);
-	// 		setUserResults(results);
-	// 	}
-	// };
 	const handleInvite = async (id) => {
-		if (/\s/.test(search.trim())) {
-			setFlash({ message: "Not a valid username or email.", type: "error" });
-			return;
-		}
 		let res = await inviteAPI.sendInvite(projectId, admin, id);
 		setFlash(res.flash);
 		console.log(res);
@@ -71,7 +55,7 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 			open={openInvite}
 			setOpen={setInviteOpen}
 			information="Enter invitee's username or email address and they will receive an invite to join your project."
-			BoxStyle={{ minWidth: "max-content", maxWidth: "10rem" }}
+			BoxStyle={{ minWidth: "max-content", maxWidth: "90vw" }}
 			TextFields={[
 				<TextField
 					error={invalid}

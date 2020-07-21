@@ -65,7 +65,7 @@ module.exports = (router) => {
 		try {
 			let { admin, projectId } = jwt.verify(req.params.token, EMAIL_SECRET);
 			if (admin) {
-				let project = await Project.updateOne(
+				let project = await Project.findOneAndUpdate(
 					{ _id: projectId },
 					{
 						$push: {
@@ -73,7 +73,8 @@ module.exports = (router) => {
 							members: req.user._id
 						},
 						updatedAt: new Date()
-					}
+					},
+					{ new: true }
 				);
 				res.json({
 					...flash(`You have now been added to ${project.title} as an administrator.`, "success"),
@@ -100,10 +101,10 @@ module.exports = (router) => {
 		}
 	});
 	// for dev
-	router.get("/api/all-users", async (req, res) => {
-		if (process.env.NODE_ENV === "production") return;
-		let users = await User.find();
-		let projects = await Project.find().populate("tasks");
-		res.json({ users: users, projects: projects });
-	});
+	// router.get("/api/all-users", async (req, res) => {
+	// 	if (process.env.NODE_ENV === "production") return;
+	// 	let users = await User.find();
+	// 	let projects = await Project.find().populate("tasks");
+	// 	res.json({ users: users, projects: projects });
+	// });
 };
