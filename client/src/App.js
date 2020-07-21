@@ -40,15 +40,17 @@ function App() {
 		message: "",
 		type: "error" || "success"
 	});
-
 	useEffect(() => {
 		setPreferredTheme(userPrefersLightMode);
+
+	}, [userPrefersLightMode])
+	useEffect(() => {
 		userAPI.checkStatus().then((res) => {
 			setUser(res.user);
 			console.log(res.user);
 			setMounted(true);
 		});
-	}, [userPrefersLightMode]);
+	}, []);
 	return (
 		<Router>
 			<UserProvider value={{ user, setUser }}>

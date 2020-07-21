@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, TextField, Button } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../utils/UserContext";
 import clsx from "clsx";
@@ -19,6 +19,7 @@ import taskAPI from "../../utils/taskAPI";
 import KanbanCol from "../../components/KanbanCol";
 import KanbanItem from "../../components/KanbanItem";
 import Markdown from "react-markdown";
+import { useRef } from "react";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -52,6 +53,8 @@ const Project = () => {
 	const classes = useStyles();
 	const [project, setProject] = useState({});
 	const [tasks, setTasks] = useState([]);
+	const descriptionInput = useRef(null)
+	const [editMode, setEditMode] = useState(false);
 	const { id } = useParams();
 	const { user } = useContext(UserContext);
 
@@ -128,16 +131,63 @@ const Project = () => {
 		[tasks]
 	);
 
+	const handleDescSubmit = async () => {
+		let res = await projectAPI.updateDesc(descriptionInput.current.value, id);
+		setEditMode(false)
+		setProject({
+			...project,
+			description: res.description
+		});
+	}
+
 	return (
 		<div className={clsx(classes.root)}>
 			<ProjectNav projectId={id}></ProjectNav>
 			<Container disableGutters maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title}</Title>
-					<Typography paragraph>
-						<Markdown source={project.description} />
-					</Typography>
+					{editMode ? (
+						<Grid item sm={12}>
+						<TextField
+							autoFocus
+							inputRef={descriptionInput}
+							required
+							className={classes.editDescription}
+							id="outlined-multiline-static"
+							defaultValue={project.description}
+							multiline
+							fullWidth
+							rows={5}
+							variant="outlined"
+						/>
+					</Grid>
+					) : (
+						<Typography paragraph>
+							<Markdown source={project.description} />
+						</Typography>
+					)}
 				</Wrapper>
+				<Grid container justify="flex-end">
+					{editMode ? (
+						<React.Fragment>
+							<Button color="secondary" onClick={() => setEditMode(false)}>
+								Cancel
+							</Button>
+							<Button
+								variant="contained"
+								color="primary"
+								style={{ marginLeft: "1rem" }}
+								onClick={handleDescSubmit}>
+								Submit
+							</Button>
+						</React.Fragment>
+					) : project.admins?.filter(a => a._id === user?._id).length ? (
+						<Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
+							Edit
+						</Button>
+					) : null}
+				</Grid>
+
 				<Wrapper className={clsx(classes.gridBackground)}>
 					<DndProvider backend={HTML5Backend}>
 						<Grid container spacing={2} className={clsx(classes.kanban)}>

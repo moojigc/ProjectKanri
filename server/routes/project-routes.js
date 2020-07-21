@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 const { Project } = require("../models");
 const { db } = require("../models/Task");
+const {flash, serverError, isAuth} = require("../config/utils")
 
 /**
- * Handles user login, status, registration, etc.
+ * Handles project routes
  * @param {import("express").Router} router
  */
 module.exports = (router) => {
 	router.get("/api/projects/:id", async (req, res) => {
-		console.log(`IN ROUTE: /api/projects/:id ${req.params.id}`);
 		try {
 			let projects = await Project.findById(req.params.id)
 				.populate("creator", { password: 0 })
@@ -19,12 +19,11 @@ module.exports = (router) => {
 			return res.json(projects);
 		} catch (error) {
 			console.error(error);
-			return res.status(400).json(error);
+			serverError(res)
 		}
 	});
 
 	router.get("/api/projects", async (req, res) => {
-		console.log("IN ROUTE: /api/projects");
 		try {
 			let projects = await Project.find({
 				$or: [{ admins: req.user._id }, { members: req.user._id }]
@@ -36,13 +35,11 @@ module.exports = (router) => {
 			return res.json(projects);
 		} catch (error) {
 			console.error(error);
-			return res.status(400).json(error);
+			serverError(res)
 		}
 	});
 
 	router.post("/api/projects", async ({ body }, res) => {
-		console.log("IN ROUTE: post /api/projects", body);
-
 		let newUsers = [];
 		newUsers.push(mongoose.Types.ObjectId(body.creator));
 
@@ -58,7 +55,23 @@ module.exports = (router) => {
 			return res.json(newProject);
 		} catch (error) {
 			console.error(error);
-			return res.status(400).json(error);
+			serverError(res)
 		}
 	});
+	router.put("/api/project/:id", isAuth, async ({body, params}, res) => {
+		try {
+			let update = await Project.findOneAndUpdate({
+				_id: params.id
+			}, {
+				updatedAt: new Date(),
+				description: body.description
+			}, {
+				new: true
+			})
+			res.json(update).end();
+		} catch (error) {
+			console.error(error)
+			serverError(res)
+		}
+	})
 };

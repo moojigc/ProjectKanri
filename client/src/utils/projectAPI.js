@@ -27,13 +27,25 @@ export default {
 		console.log("createProject - calling routes/project-routes");
 		console.log("new project", newProject);
 
-		let {data} = await axios({
+		let { data } = await axios({
 			url: "/api/projects",
 			method: "POST",
 			data: newProject,
 			withCredentials: true
 		});
 
+		return data;
+	},
+
+	updateDesc: async (desc, id) => {
+		let { data } = await axios({
+			url: "/api/project/" + id,
+			data: {
+				description: desc
+			},
+			method: "PUT",
+			withCredentials: true
+		});
 		return data;
 	}
 };
