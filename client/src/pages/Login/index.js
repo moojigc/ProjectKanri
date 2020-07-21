@@ -47,13 +47,14 @@ const Login = () => {
 	};
 
 	useEffect(() => {
-		if (params.token) {
+		if ("token" in params) {
 			userAPI.verifyUser(params.token).then(res => {
 				setFlash(res.flash)
-				if (res.flash.type === "success") {
+				setUser(res.user)
+				if (res.user?.auth) {
 					setTimeout(() => {
 						history.push("/dashboard")
-					}, 1500)
+					}, 2000)
 				}
 			})
 		}
@@ -176,7 +177,7 @@ const Login = () => {
 					</form>
 				</Wrapper>
 				<Grid container>
-					<ButtonLink to="/signup" variant="contained" color="secondary" fullWidth>
+					<ButtonLink to="/welcome" variant="contained" color="secondary" fullWidth>
 						First time user? Sign up here.
 					</ButtonLink>
 				</Grid>

@@ -45,7 +45,7 @@ module.exports = (router) => {
 				},
 				EMAIL_SECRET,
 				{
-					expiresIn: "1d"
+					expiresIn: "7d"
 				}
 			);
 			nodemailer.sendInviteEmail({
@@ -97,10 +97,10 @@ module.exports = (router) => {
 		}
 	});
 	// for dev
-	router.get("/api/all-users", async (req, res) => {
-		if (process.env.NODE_ENV === "production") return;
-		let users = await User.find();
-		let projects = await Project.find().populate("tasks");
-		res.json({ users: users, projects: projects });
-	});
+	// router.get("/api/all-users", async (req, res) => {
+	// 	if (process.env.NODE_ENV === "production") return;
+	// 	let users = await User.find();
+	// 	let projects = await Project.find().populate("tasks");
+	// 	res.json({ users: users, projects: projects });
+	// });
 };

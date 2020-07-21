@@ -174,6 +174,7 @@ const Welcome = () => {
 						<Grid container>
 							<TextField
 								variant="filled"
+								color="secondary"
 								fullWidth
 								onChange={handleChangeUserDetails}
 								name="email"

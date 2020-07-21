@@ -74,7 +74,7 @@ module.exports = (router) => {
 						username: newUser.username
 					},
 					EMAIL_SECRET,
-					{ expiresIn: "30d" }
+					{ expiresIn: "1d" }
 				);
 				sendVerifyEmail({ address: newUser.email, token: token });
 			} catch (error) {
@@ -251,7 +251,6 @@ module.exports = (router) => {
 				res.json({ expiredToken: true, ...flash(`Token has expired. If you need to reset your token, please login below.`, "error") });
 			} else {
 				try {
-					console.log(object);
 					let user = await User.findOneAndUpdate(
 						{
 							_id: object._id
@@ -259,7 +258,6 @@ module.exports = (router) => {
 						{ verified: true, updatedAt: new Date() },
 						{ new: true }
 					);
-					console.log(user);
 					req.logIn(user, (err) => {
 						if (err) return next(err);
 						res.json({

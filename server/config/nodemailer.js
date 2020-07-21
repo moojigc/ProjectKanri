@@ -55,7 +55,7 @@ const sendVerifyEmail = async ({ address, token }) => {
 		<h1>Hello from ProjectKanri.</h1>
 		<h2>An account was made at projectkanri.herokuapp.com under the email address <b>${address}</b>.</h2>
 		<p>Please <a href=${LINK}/login/${token}>click this link to verify your account</a>. If this was not you, <strong>please ignore this email</strong>.</p>
-		<p>This link will expire in 1 month.</p>
+		<p>This link will expire in 1 day.</p>
 	</body>
 	`;
 	if (!emailRegex.test(address)) throw new Error("Must be valid email address.");
@@ -73,6 +73,7 @@ const sendInviteEmail = async ({ address, token, name }) => {
 		<h1>Hello from ProjectKanri.</h1>
 		<h2>You have been invited to collaborate in a project by ${name}.</h2>
 		<p>Please <a href=${LINK}/accept-invite/${token}>click this link to accept the invitation.</a></p>
+		<p>This link will expire in 1 week.</p>
 	</body>`;
 	if (!emailRegex.test(address)) throw new Error("Must be valid email address.");
 	return await transporter.sendMail({
