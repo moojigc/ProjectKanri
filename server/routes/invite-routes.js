@@ -75,7 +75,10 @@ module.exports = (router) => {
 						updatedAt: new Date()
 					}
 				);
-				res.json(flash(`You have now been added to ${project.title} as an administrator.`, "success")).end();
+				res.json({
+					...flash(`You have now been added to ${project.title} as an administrator.`, "success"),
+					redirect: `/project/${project._id}`
+				}).end();
 			} else {
 				let project = await Project.updateOne(
 					{ _id: projectId },
@@ -97,10 +100,10 @@ module.exports = (router) => {
 		}
 	});
 	// for dev
-	// router.get("/api/all-users", async (req, res) => {
-	// 	if (process.env.NODE_ENV === "production") return;
-	// 	let users = await User.find();
-	// 	let projects = await Project.find().populate("tasks");
-	// 	res.json({ users: users, projects: projects });
-	// });
+	router.get("/api/all-users", async (req, res) => {
+		if (process.env.NODE_ENV === "production") return;
+		let users = await User.find();
+		let projects = await Project.find().populate("tasks");
+		res.json({ users: users, projects: projects });
+	});
 };

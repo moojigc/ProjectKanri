@@ -116,6 +116,17 @@ module.exports = (router) => {
 					user: guestUser,
 					redirect: "/login"
 				});
+			} else if (!user.verified) {
+				return res
+					.json({
+						...flash(
+							"Please verify your email address. If you did not receive an email from us, please check your spam folder or click the RESEND VERIFICATION button below.",
+							"error"
+						),
+						notVerified: true,
+						user: guestUser
+					})
+					.end();
 			}
 			req.logIn(user, function (err) {
 				if (err) {
@@ -281,5 +292,22 @@ module.exports = (router) => {
 				}
 			}
 		});
+	});
+	router.get("/api/resend-verification/:usernameOrEmail", async (req, res) => {
+		try {
+			if (!req.params.usernameOrEmail) return res.json(flash("No username or email address entered.", "error"))
+			let user = await User.findOne({
+				[emailRegex.test(req.params.usernameOrEmail) ? "email" : "username"]: req.params.usernameOrEmail
+			});
+			if (!user) return res.json(flash("User not found.", "error"));
+			let token = jwt.sign({ _id: user._id, username: user.username }, EMAIL_SECRET, {
+				expiresIn: "1d"
+			});
+			await sendVerifyEmail({ address: user.email, token: token });
+			res.json(flash("Please check your email for the verification. It may take a few minutes for you to receive it.", "success"))
+		} catch (error) {
+			console.error(error)
+			serverError(res)
+		}
 	});
 };

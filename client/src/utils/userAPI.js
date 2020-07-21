@@ -89,6 +89,10 @@ const userAPI = {
 	},
 	verifyUser: async (token) => {
 		return await request("verify", null, "PUT", token);
+	},
+	resendVerification: async (usernameOrEmail) => {
+		console.log(usernameOrEmail)
+		return await request("resend-verification", null, "GET", usernameOrEmail)
 	}
 };
 

@@ -23,8 +23,9 @@ import ForgotModal from "../../components/ForgotModal";
 
 const Login = () => {
 	const history = useHistory();
-	const params = useParams()
+	const params = useParams();
 
+	const [nonVerified, setNonVerified] = useState(false);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [loginDetails, setLoginDetails] = useState({
 		usernameOrEmail: "",
@@ -35,30 +36,34 @@ const Login = () => {
 	const { setUser } = useContext(UserContext);
 	const handleLogin = async (event) => {
 		event.preventDefault();
-		try {
-			let res = await userAPI.login(loginDetails);
-			setUser(res.user);
-			setFlash(res.flash);
-			if (res.user.auth) history.push("/");
-		} catch (error) {
-			console.error(error);
-			setFlash({ message: "Sorry, an error has occurred.", type: "error" });
-		}
+		let res = await userAPI.login(loginDetails);
+		setUser(res.user);
+		setFlash(res.flash);
+		if (res.notVerified) setNonVerified(true);
+		if (res.user.auth) history.push("/");
 	};
+
+	const handleResendVerification = async () => {
+		let res = await userAPI.resendVerification(loginDetails.usernameOrEmail);
+		setFlash(res.flash)
+	}
 
 	useEffect(() => {
 		if ("token" in params) {
-			userAPI.verifyUser(params.token).then(res => {
-				setFlash(res.flash)
-				setUser(res.user)
+			userAPI.verifyUser(params.token).then((res) => {
+				setFlash(res.flash);
+				setUser(res.user);
 				if (res.user?.auth) {
 					setTimeout(() => {
-						history.push("/dashboard")
-					}, 2000)
+						history.push("/dashboard");
+					}, 2000);
 				}
-			})
+			});
 		}
-		return () => setFlash({ message: null, type: null });
+		return () => {
+			setFlash({ message: null, type: null });
+			setNonVerified(false)
+		}
 	}, []);
 	return (
 		<React.Fragment>
@@ -73,13 +78,7 @@ const Login = () => {
 									<Alert severity={flash.type}>{flash.message}</Alert>
 								</Grid>
 							) : null}
-							<Grid
-								item
-								xs={12}
-								container
-								spacing={1}
-								justify="center"
-								alignItems="flex-end">
+							<Grid item xs={12} container spacing={1} justify="center" alignItems="flex-end">
 								<Grid item>
 									<Face />
 								</Grid>
@@ -100,13 +99,7 @@ const Login = () => {
 									/>
 								</Grid>
 							</Grid>
-							<Grid
-								item
-								container
-								spacing={1}
-								xs={12}
-								justify="center"
-								alignItems="flex-end">
+							<Grid item container spacing={1} xs={12} justify="center" alignItems="flex-end">
 								<Grid item>
 									<Lock />
 								</Grid>
@@ -149,12 +142,13 @@ const Login = () => {
 						</Grid>
 						<Grid container justify="center">
 							<Button
-								color="primary"
+								color="secondary"
 								type="button"
 								style={{ marginTop: "1rem" }}
 								variant="contained"
 								size="small"
-								onClick={() => setModalOpen(true)}>
+								onClick={() => setModalOpen(true)}
+							>
 								Forgot Password?
 								<InputAdornment position="end">
 									<HelpOutline />
@@ -162,12 +156,12 @@ const Login = () => {
 							</Button>
 						</Grid>
 						<Grid container justify="center">
-							<Button
-								color="secondary"
-								type="submit"
-								style={{ marginTop: "1rem" }}
-								variant="contained"
-								size="large">
+							{nonVerified && (
+								<Button onClick={handleResendVerification} color="primary" variant="contained" color="primary" style={{margin: '1rem 0.5rem 0 0'}}>
+									Resend Verification
+								</Button>
+							)}
+							<Button color="primary" type="submit" style={{ marginTop: "1rem" }} variant="contained" size="large">
 								Submit
 								<InputAdornment position="end">
 									<Send />

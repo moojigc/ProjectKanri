@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import Dashboard from "../Dashboard";
-import ModalForm from "../../components/ModalForm";
-import { Wrapper, Title } from "../../components/MiniComponents";
-import { Typography as T, Button, Container, Grid } from "@material-ui/core";
+import { Wrapper, Title, ButtonLink } from "../../components/MiniComponents";
+import { Typography as T, Button, Container, Grid, Divider } from "@material-ui/core";
 import inviteAPI from "../../utils/inviteAPI";
 
 const AcceptInvite = () => {
@@ -12,21 +10,21 @@ const AcceptInvite = () => {
 	const history = useHistory();
 	const handleAccept = async () => {
 		let res = await inviteAPI.acceptInvite(token);
-		console.log(res);
 		history.push(res.redirect);
 	};
 
 	return (
-		<Container>
+		<Container maxWidth="md">
 			<Wrapper>
 				<Title>Accept Invite</Title>
-				<Grid container>
-					<T>Accept invite to new project?</T>
+				<Grid container justify="center">
+					<T>Confirm you want to join new project?</T>
 				</Grid>
-				<Grid container>
-					<Button>No</Button>
+				<Divider style={{ margin: "0.75rem 0" }} />
+				<Grid container justify="center">
+					<ButtonLink to="/">Ignore</ButtonLink>
 					<Button onClick={handleAccept} variant="contained">
-						Yes
+						Confirm
 					</Button>
 				</Grid>
 			</Wrapper>

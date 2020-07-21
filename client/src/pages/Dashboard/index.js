@@ -8,6 +8,7 @@ import ProjectCard from "../../components/ProjectCard";
 import ProjectDialog from "../../components/ProjectDialog";
 import { Add } from "@material-ui/icons";
 import { Fab } from "@material-ui/core";
+import Markdown from 'react-markdown'
 import projectAPI from "../../utils/projectAPI";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +36,6 @@ const Dashboard = () => {
 		projectAPI
 			.getAllProjects()
 			.then((res) => {
-				// let newRes = res.concat(res);
 				setProjects(res);
 			})
 			.catch((err) => console.error(err));
@@ -60,7 +60,7 @@ const Dashboard = () => {
 											key={project._id}
 											id={project._id}
 											title={project.title}
-											description={project.description}
+											description={<Markdown source={project.description}/>}
 											createdAt={project.createdAt}
 											updatedAt={project.updatedAt}
 											creator={project.creator.username}

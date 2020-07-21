@@ -98,7 +98,7 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 										</Avatar>
 										<div>
 											<T variant="subtitle1" component="div" style={{ lineHeight: 1, fontWeight: 700 }}>
-												{creator.firstName + " " + creator.lastName}
+												{creator.firstName + " " + creator.lastName} {creator._id === user._id && <em style={{fontSize: 'smaller'}}>(You)</em>}
 											</T>
 											<T variant="caption" style={{ fontWeight: 100 }}>
 												{moment(createdAt).fromNow()}

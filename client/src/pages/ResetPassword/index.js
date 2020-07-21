@@ -1,5 +1,5 @@
 import React, { useRef, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { Typography as T, Grid, TextField, Button, Container } from "@material-ui/core";
 import { Wrapper, Title } from "../../components/MiniComponents";
 import { FlashContext } from "../../utils/FlashContext";
@@ -7,6 +7,7 @@ import { Alert } from "@material-ui/lab";
 import userAPI from "../../utils/userAPI";
 
 const ResetPassword = () => {
+	const history = useHistory()
 	const { token } = useParams();
 	const passwordEl = useRef(null);
 	const password2El = useRef(null);
@@ -21,10 +22,11 @@ const ResetPassword = () => {
 			token
 		);
 		setFlash(res.flash);
+		if (res.flash.type === "success") history.push("/login")
 	};
 
 	return (
-		<Container maxWidth="lg" component="main">
+		<Container maxWidth="sm" component="main">
 			<Wrapper>
 				<Title>Reset Your Password</Title>
 				<form onSubmit={handleSubmit}>
