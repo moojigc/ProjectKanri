@@ -2,7 +2,7 @@ import Axios from "axios";
 
 /**
  * Server request handler
- * @param {"login" | "register" | "logout" | "user-status" | "reset-pass" | "update-pass"} action
+ * @param {"login" | "register" | "logout" | "user-status" | "reset-pass" | "update-pass" | "verify"} action
  * @param {"GET" | "POST" | "PUT"} [method]
  * @param {Object} [details]
  * @param {string} [details.username]
@@ -47,6 +47,8 @@ const userAPI = {
 	 * @param {string} data.email
 	 * @param {string} data.password
 	 * @param {string} data.password2
+	 * @param {string} data.firstName
+	 * @param {string} data.lastName
 	 */
 	register: async (data) => {
 		return await request("register", data, "POST");
@@ -84,6 +86,9 @@ const userAPI = {
 			{ currentPassword: current, password: newPassword, password2: confirmNewPassword },
 			"PUT"
 		);
+	},
+	verifyUser: async (token) => {
+		return await request("verify", null, "PUT", token);
 	}
 };
 

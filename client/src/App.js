@@ -66,7 +66,7 @@ function App() {
 									<Welcome />
 								</ThemeProvider>
 							</Route>
-							<Route exact path="/login">
+							<Route exact path={["/login/:token", "/login"]}>
 								<Login />
 							</Route>
 							<Route exact path="/resetpass/:token">

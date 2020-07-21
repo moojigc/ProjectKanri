@@ -2,7 +2,7 @@ const { User, Project } = require("../models/"),
 	{ ObjectId } = require("mongoose").Types,
 	passport = require("../config/passport"),
 	jwt = require("jsonwebtoken"),
-	{ sendResetEmail } = require("../config/nodemailer"),
+	{ sendResetEmail, sendVerifyEmail } = require("../config/nodemailer"),
 	EMAIL_SECRET = process.env.EMAIL_SECRET || require("../config/secrets.json").EMAIL_SECRET,
 	crypt = require("../config/crypt"),
 	{ emailRegex } = require("../../shared");
@@ -37,7 +37,7 @@ module.exports = (router) => {
 		const isInvalid = Object.values(body).filter((field) => field === null || field === "").length > 0;
 		if (isInvalid) {
 			res.json({
-				...flash("Missing fields.", "error"),
+				...flash("All fields are required.", "error"),
 				redirect: "/register"
 			});
 			return;
@@ -60,11 +60,23 @@ module.exports = (router) => {
 			try {
 				await user.encryptPass();
 				console.log(user);
-				await User.create(user.toObject());
+				let newUser = await User.create(user.toObject());
 				res.status(200).json({
-					...flash(`Welcome, ${body.username}!`, "success"),
+					...flash(
+						`Welcome, ${body.username}! You will shortly receive an email with a link to verify your account. You cannot login until you are verified.`,
+						"success"
+					),
 					redirect: "/login"
 				});
+				let token = jwt.sign(
+					{
+						_id: newUser._id,
+						username: newUser.username
+					},
+					EMAIL_SECRET,
+					{ expiresIn: "30d" }
+				);
+				sendVerifyEmail({ address: newUser.email, token: token });
 			} catch (error) {
 				console.log(error);
 				let fields = error.keyValue ? Object.keys(error.keyValue) : null;
@@ -232,5 +244,44 @@ module.exports = (router) => {
 			console.error(error);
 			serverError(res);
 		}
+	});
+	router.put("/api/verify/:token", async (req, res, next) => {
+		jwt.verify(req.params.token, EMAIL_SECRET, {}, async (err, object) => {
+			if (err) {
+				res.json({ expiredToken: true, ...flash(`Token has expired. If you need to reset your token, please login below.`, "error") });
+			} else {
+				try {
+					console.log(object);
+					let user = await User.findOneAndUpdate(
+						{
+							_id: object._id
+						},
+						{ verified: true, updatedAt: new Date() },
+						{ new: true }
+					);
+					console.log(user);
+					req.logIn(user, (err) => {
+						if (err) return next(err);
+						res.json({
+							...flash(
+								`Thank you for verifying your email, ${object.username}. You will shortly be redirected to your new dashboard.`,
+								"success"
+							),
+							user: {
+								_id: user._id,
+								username: user.username,
+								firstName: user.firstName,
+								lastName: user.lastName,
+								email: user.email,
+								auth: true
+							}
+						}).end();
+					});
+				} catch (error) {
+					console.error(error);
+					serverError(res);
+				}
+			}
+		});
 	});
 };

@@ -15,7 +15,7 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { makeStyles, Box } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
@@ -23,6 +23,7 @@ import ForgotModal from "../../components/ForgotModal";
 
 const Login = () => {
 	const history = useHistory();
+	const params = useParams()
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [loginDetails, setLoginDetails] = useState({
@@ -46,6 +47,16 @@ const Login = () => {
 	};
 
 	useEffect(() => {
+		if (params.token) {
+			userAPI.verifyUser(params.token).then(res => {
+				setFlash(res.flash)
+				if (res.flash.type === "success") {
+					setTimeout(() => {
+						history.push("/dashboard")
+					}, 1500)
+				}
+			})
+		}
 		return () => setFlash({ message: null, type: null });
 	}, []);
 	return (

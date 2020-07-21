@@ -3,17 +3,19 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
-import { UserContext } from "../../utils/UserContext";
+import userAPI from "../../utils/userAPI";
+import { FlashContext } from "../../utils/FlashContext";
 import { useHistory } from "react-router-dom";
 import { makeStyles, Box, Typography, useMediaQuery, Paper } from "@material-ui/core";
 import { ButtonLink, SakuraBranches } from "../../components/MiniComponents";
 import { ArrowForward, Send } from "@material-ui/icons";
+import AlertModal from "./AlertModal";
 
 const useStyles = makeStyles((theme) => ({
 	welcome: {
 		background: "linear-gradient(159deg, rgba(255,222,222,1) 0%, rgba(97,108,153,1) 100%)",
 		width: "100vw",
-		height: "100vh",
+		height: window.innerHeight,
 		padding: "2rem"
 	}
 }));
@@ -21,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 const Welcome = () => {
 	const [continueSignUp, setContinue] = useState(false);
 	const [valid, setValid] = useState(false);
-	const email = useRef(null);
+	const [openModal, setOpenModal] = useState(false);
 	const isMobile = useMediaQuery("(max-width: 997px)");
 	const [signUpDetails, setSignUpDetails] = useState({
 		username: "",
@@ -31,47 +33,32 @@ const Welcome = () => {
 		lastName: "",
 		email: ""
 	});
+	const { flash, setFlash } = useContext(FlashContext);
 	const handleChangeUserDetails = ({ target }) => {
 		let { name, value } = target;
 		setSignUpDetails({
 			...signUpDetails,
 			[name]: value
 		});
-		if (Object.values(signUpDetails).filter((s) => s !== "" || s === null).length === 0) {
+		if (Object.values(signUpDetails).filter((s) => !s).length === 0) {
 			setValid(true);
 		}
 	};
-	const { user, setUser } = useContext(UserContext);
 	const classes = useStyles();
 	const history = useHistory();
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
-		history.push("/signup");
-		setUser({
-			...user,
-			email: email.current.value
-		});
-	};
-	const Input = ({ defaultValue, name, label, type, margin }) => {
-		return (
-			<TextField
-				defaultValue={defaultValue}
-				color="secondary"
-				fullWidth
-				name={name}
-				margin={margin}
-				label={label}
-				variant="filled"
-				required
-				aria-required
-				type={type || "text"}
-				onChange={handleChangeUserDetails}
-			/>
-		);
+		if (Object.values(signUpDetails).filter((s) => !s).length === 0) {
+			let res = await userAPI.register(signUpDetails);
+			setFlash(res.flash);
+			setOpenModal(true);
+		} else {
+			setContinue(true);
+		}
 	};
 	return (
 		<Container maxWidth="xl" disableGutters className={classes.welcome}>
-			<SakuraBranches zIndex={1} opacity="0.5" width={isMobile ? "15rem" : "25rem"} />
+			<AlertModal open={openModal} setOpen={setOpenModal} message={flash?.message || "Default text"} severity={flash?.type} />
 			<Box className="welcome" zIndex={2} position="relative">
 				<Grid container>
 					<Typography variant={isMobile ? "h2" : "h1"} component="h1" color="textSecondary">
@@ -86,41 +73,114 @@ const Welcome = () => {
 			</Box>
 			<form onSubmit={handleSubmit} className="welcome-form">
 				{continueSignUp ? (
-					<Box>
+					<Box width={isMobile ? "95%" : "75%"} boxShadow={4} className="signup-box">
 						<Grid container spacing={2}>
-							<Grid item xs={12} lg={6}>
-								<Input default={signUpDetails.email} label="Email" name="email" type="email" />
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="filled"
+									defaultValue={signUpDetails.email}
+									required
+									fullWidth
+									color="primary"
+									inputProps={{
+										color: "textPrimary"
+									}}
+									aria-required
+									onChange={handleChangeUserDetails}
+									default={signUpDetails.email}
+									label="Email"
+									name="email"
+									type="email"
+								/>
 							</Grid>
-							<Grid item xs={12} lg={6}>
-								<Input label="Username" name="username" />
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="filled"
+									autoFocus
+									required
+									fullWidth
+									color="primary"
+									aria-required
+									onChange={handleChangeUserDetails}
+									label="Username"
+									name="username"
+								/>
 							</Grid>
 						</Grid>
 						<Grid container spacing={2}>
-							<Grid item xs={12} lg={6}>
-								<Input label="Password" name="password" type="password" />
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="filled"
+									required
+									fullWidth
+									color="primary"
+									aria-required
+									onChange={handleChangeUserDetails}
+									label="Password"
+									name="password"
+									type="password"
+								/>
 							</Grid>
-							<Grid item xs={12} lg={6}>
-								<Input label="Confirm password" name="password2" type="password" />
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="filled"
+									required
+									fullWidth
+									color="primary"
+									aria-required
+									onChange={handleChangeUserDetails}
+									label="Confirm password"
+									name="password2"
+									type="password"
+								/>
 							</Grid>
 						</Grid>
 						<Grid container spacing={2}>
-							<Grid item xs={12} lg={6}>
-								<Input label="First Name" name="firstName" />
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="filled"
+									required
+									fullWidth
+									color="primary"
+									aria-required
+									onChange={handleChangeUserDetails}
+									label="First Name"
+									name="firstName"
+								/>
 							</Grid>
-							<Grid item xs={12} lg={6}>
-								<Input label="Last Name" name="lastName" />
+							<Grid item xs={12} md={6}>
+								<TextField
+									variant="filled"
+									required
+									fullWidth
+									color="primary"
+									aria-required
+									onChange={handleChangeUserDetails}
+									label="Last Name"
+									name="lastName"
+								/>
 							</Grid>
 						</Grid>
 						{valid && (
-							<Button variant="contained" endIcon={<Send />}>
-								Sign up
-							</Button>
+							<Grid container justify="flex-end">
+								<Button color="primary" style={{marginTop: '1rem', zIndex: 3}} type="submit" variant="contained" endIcon={<Send />}>
+									Sign up!
+								</Button>
+							</Grid>
 						)}
 					</Box>
 				) : (
 					<React.Fragment>
 						<Grid container>
-							<Input margin="normal" type="email" label="Enter your email address to get started." />
+							<TextField
+								variant="filled"
+								fullWidth
+								onChange={handleChangeUserDetails}
+								name="email"
+								margin="normal"
+								type="email"
+								label="Enter your email address to get started."
+							/>
 						</Grid>
 						<Grid container style={{ zIndex: 3 }}>
 							<Button
@@ -145,6 +205,7 @@ const Welcome = () => {
 					</React.Fragment>
 				)}
 			</form>
+			<SakuraBranches zIndex={0} opacity="0.5" width={isMobile ? "15rem" : "25rem"} />
 		</Container>
 	);
 };
