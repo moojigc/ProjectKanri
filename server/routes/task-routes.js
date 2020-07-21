@@ -7,21 +7,30 @@ const { flash, serverError } = require("../config/utils");
  */
 module.exports = (router) => {
 	router.get("/api/task/:id", async (req, res) => {
-		// console.log("IN ROUTE: /api/task/:id" + req.params.id);
 		try {
-			let [project] = await Project.where("tasks", req.params.id)
-				.select({ members: 1 })
-				.where("tasks", req.params.id)
-				.populate({ path: "members", select: { password: 0 } });
-			let task = await Task.findById(req.params.id)
+			let rawTask = await Task.findById(req.params.id)
 				.populate({ path: "creator", select: { password: 0 } })
 				.populate({ path: "assignedUser", select: { password: 0 } })
 				.populate({
 					path: "comments",
+					options: {
+						sort: { updatedAt: 'desc'}
+					},
 					populate: { path: "creator", select: { password: 0 } }
+				})
+				.populate({
+					path: "project",
+					populate: { path: "members", select: { password: 0 } }
 				});
-
-			res.json({ task: task, members: project.members }).end();
+			let task = rawTask.toObject();
+			task.comments = task.comments.map(c => {
+				return {
+					...c,
+					editMode: false
+				}
+			})
+			console.log(task.comments)
+			res.json({ task: task, members: task.project.members }).end();
 		} catch (error) {
 			console.error(error);
 			serverError(res);
@@ -29,15 +38,14 @@ module.exports = (router) => {
 	});
 
 	router.put("/api/task/:id", async (req, res) => {
-		console.log("IN PUT ROUTE: /api/task/" + req.params.id + " BODY: ", req.body);
-
 		try {
 			let dbTask = await Task.findOneAndUpdate(
 				{
 					_id: req.params.id
 				},
 				{
-					...req.body, updatedAt: new Date()
+					...req.body,
+					updatedAt: new Date()
 				},
 				{
 					new: true
@@ -52,10 +60,11 @@ module.exports = (router) => {
 	});
 
 	router.post("/api/project/:id/task", async (req, res) => {
-		console.log("IN POST ROUTE: /api/task/" + " BODY: ", req.body);
-
 		try {
-			let dbTask = await Task.create(req.body);
+			let dbTask = await Task.create({
+				...req.body,
+				project: req.params.id
+			});
 			let dbProject = await Project.updateOne(
 				{
 					_id: req.params.id

@@ -1,9 +1,9 @@
 const { Schema, model, Types } = require("mongoose");
-const Project = require("./Project");
 
 const TaskSchema = new Schema({
 	project: {
 		type: Schema.Types.ObjectId,
+		ref: "Project",
 		required: true
 	},
 	title: {

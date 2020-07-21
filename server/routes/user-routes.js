@@ -34,8 +34,7 @@ const guestUser = {
 module.exports = (router) => {
 	router.post("/api/register", async ({ body }, res) => {
 		console.log(body);
-		const isInvalid =
-			Object.values(body).filter((field) => field === null || field === "").length > 0;
+		const isInvalid = Object.values(body).filter((field) => field === null || field === "").length > 0;
 		if (isInvalid) {
 			res.json({
 				...flash("Missing fields.", "error"),
@@ -72,12 +71,7 @@ module.exports = (router) => {
 				let field = fields.length > 0 ? fields[0] : null;
 				field
 					? res.json({
-							...flash(
-								`${
-									field.charAt(0).toUpperCase() + field.substring(1)
-								} already taken.`,
-								"error"
-							),
+							...flash(`${field.charAt(0).toUpperCase() + field.substring(1)} already taken.`, "error"),
 							success: false,
 							redirect: "/register"
 					  })
@@ -86,14 +80,13 @@ module.exports = (router) => {
 		}
 	});
 	router.post("/api/login", (req, res, next) => {
+		if (req.user) req.logout();
 		if (!req.body.usernameOrEmail || !req.body.password)
 			return res.json({
 				...flash("Missing fields.", "error"),
 				user: guestUser
 			});
-		req.session.cookie.maxAge = req.body.rememberMe
-			? 60000 * 60 * 24 * 7 * 26
-			: 60000 * 60 * 24;
+		req.session.cookie.maxAge = req.body.rememberMe ? 60000 * 60 * 24 * 7 * 26 : 60000 * 60 * 24;
 		passport.authenticate("local", function (err, user, info) {
 			if (err) {
 				console.log(err);
@@ -120,6 +113,9 @@ module.exports = (router) => {
 					user: {
 						_id: user._id,
 						username: user.username,
+						firstName: user.firstName,
+						lastName: user.lastName,
+						email: user.email,
 						auth: true
 					},
 					...flash(`Welcome, ${user.username}!`, "success"),
@@ -132,19 +128,24 @@ module.exports = (router) => {
 		switch (!!req.user) {
 			case true:
 				User.findOne({ _id: req.user._id }, (_err, user) => {
-					if (_err) console.error(_err);
-					res.status(200)
-						.json({
-							user: {
-								_id: user._id,
-								username: user.username,
-								firstName: user.firstName,
-								lastName: user.lastName,
-								email: user.email,
-								auth: true
-							}
-						})
-						.end();
+					if (_err || !user) {
+						console.error(_err);
+						res.json({
+							user: guestUser
+						});
+					} else
+						res.status(200)
+							.json({
+								user: {
+									_id: user._id,
+									username: user.username,
+									firstName: user.firstName,
+									lastName: user.lastName,
+									email: user.email,
+									auth: true
+								}
+							})
+							.end();
 				});
 				break;
 			default:
@@ -180,8 +181,7 @@ module.exports = (router) => {
 		try {
 			const user = await User.findOne({ email: req.body.email }).select("_id, email");
 			console.log(user);
-			if (!user)
-				return res.json(flash("Account with that email address not found.", "error"));
+			if (!user) return res.json(flash("Account with that email address not found.", "error"));
 			const token = jwt.sign(
 				{
 					user: user._id
@@ -192,12 +192,7 @@ module.exports = (router) => {
 				}
 			);
 			sendResetEmail({ address: user.email, token: token });
-			res.json(
-				flash(
-					`Please check ${user.email} for instructions on resetting your password.`,
-					"success"
-				)
-			).end();
+			res.json(flash(`Please check ${user.email} for instructions on resetting your password.`, "success")).end();
 		} catch (error) {
 			console.error(error);
 			serverError(res);
@@ -205,13 +200,11 @@ module.exports = (router) => {
 	});
 	router.put("/api/reset-pass/:token", async (req, res) => {
 		try {
-			if (req.body.password !== req.body.password2)
-				return res.json(flash("Passwords must match!", "error")).end();
+			if (req.body.password !== req.body.password2) return res.json(flash("Passwords must match!", "error")).end();
 			const { user } = jwt.verify(req.params.token, EMAIL_SECRET);
 			const hashedPass = await crypt(req.body.password);
 			let update = await User.updateOne({ _id: user }, { password: hashedPass });
-			if (update.nModified === 1)
-				res.json(flash("Password successfully updated.", "success"));
+			if (update.nModified === 1) res.json(flash("Password successfully updated.", "success"));
 			else throw new Error("Could not update password");
 		} catch (error) {
 			console.error(error);
@@ -231,10 +224,7 @@ module.exports = (router) => {
 			console.log(password, req.body.currentPassword);
 			let match = await crypt(req.body.currentPassword, password);
 			if (match) {
-				await User.updateOne(
-					{ _id: req.user._id },
-					{ password: await crypt(req.body.password) }
-				);
+				await User.updateOne({ _id: req.user._id }, { password: await crypt(req.body.password) });
 				res.json(flash("Successfully updated password!", "success")).end();
 			} else res.json(flash("Sorry, incorrect password.", "error")).end();
 		} catch (error) {

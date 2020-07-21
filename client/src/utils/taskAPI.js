@@ -42,11 +42,26 @@ export default {
 	},
 	postComment: async (taskId, comment) => {
 		return await request({
-			url: `/api/task/${taskId}/comments`,
+			url: `/api/task/comments?taskId=${taskId}`,
 			method: "POST",
 			data: {
 				comment: comment
 			}
 		});
+	},
+	editComment: async (taskId, commentId, body) => {
+		return await request({
+			url: `/api/task/comment?commentId=${commentId}&taskId=${taskId}`,
+			method: "PUT",
+			data: {
+				body: body
+			}
+		})
+	},
+	deleteComment: async (taskId, commentId) => {
+		return await request({
+			url:  `/api/task/comment?commentId=${commentId}&taskId=${taskId}`,
+			method: "DELETE",
+		})
 	}
 };

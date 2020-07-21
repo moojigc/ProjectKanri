@@ -42,7 +42,7 @@ const users = [
 	{
 		firstName: "Moojig",
 		lastName: "B",
-		email: "user.moojig@test.com",
+		email: "moojig@nyu.edu",
 		username: "user.moojig",
 		password: "password"
 	}
@@ -67,7 +67,7 @@ const comments = (userOne, userTwo) => {
 const tasks = (creators, theComments) => {
 	let newTasks = [];
 
-	for (let i = 1; i < 17; i++) {
+	for (let i = 0; i < 17; i++) {
 		let randCreate = Math.floor(Math.random() * creators.length);
 		let randAssign = Math.floor(Math.random() * creators.length);
 		let rand1 = Math.floor(Math.random() * theComments.length);
@@ -86,12 +86,23 @@ const tasks = (creators, theComments) => {
 		newTasks.push(tmpObj);
 	}
 
-	return newTasks;
+	return newTasks.slice(0, 8).map(t => {
+		return {
+			...t,
+			project: mongoose.Types.ObjectId("5f09ccf5d7876449bc981718")
+		}
+	}).concat(newTasks.slice(9, 17).map(t => {
+		return {
+			...t,
+			project: mongoose.Types.ObjectId("5f09ccf5d7876449bc981714"),
+		}
+	}))
 };
 
 const projects = (theUsers, theTasks) => {
 	return [
 		{
+			_id: mongoose.Types.ObjectId("5f09ccf5d7876449bc981718"),
 			title: "Keikaku",
 			description: "Project to do projects",
 			tasks: theTasks.slice(0, 8),
@@ -100,9 +111,10 @@ const projects = (theUsers, theTasks) => {
 			creator: theUsers[0]._id
 		},
 		{
+			_id: mongoose.Types.ObjectId("5f09ccf5d7876449bc981714"),
 			title: "Sakusen",
 			description: "Project for tactics",
-			tasks: theTasks.slice(8, 16),
+			tasks: theTasks.slice(9, 17),
 			admins: [theUsers[1]._id],
 			members: theUsers.slice(0, 4).map((u) => u._id),
 			creator: theUsers[1]._id
