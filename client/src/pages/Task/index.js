@@ -19,6 +19,7 @@ import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../uti
 import TaskComments from "../../components/TaskComments";
 import { UserContext } from "../../utils/UserContext";
 import ProjectNav from "../../components/ProjectNav";
+import Markdown from 'react-markdown'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -202,7 +203,9 @@ export default function Task() {
 									</Grid>
 								) : (
 									<Grid item sm={12}>
-										<Typography paragraph>{task.description}</Typography>
+										<Typography paragraph>
+											<Markdown source={task.description} />
+										</Typography>
 									</Grid>
 								)}
 							</Grid>

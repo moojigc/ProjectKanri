@@ -5,6 +5,7 @@ import taskAPI from "../../utils/taskAPI";
 import { MoreVert } from "@material-ui/icons";
 import OptionsMenu from "./OptionsMenu";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import Markdown from 'react-markdown'
 /**
  *
  * @param {Object} props
@@ -120,7 +121,9 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 												</form>
 											) : (
 												<React.Fragment>
-													<T>{body}</T>
+													<T>
+														<Markdown source={body}/>
+													</T>
 													{!moment(updatedAt).isSame(createdAt) && (
 														<T component="span" style={{ fontSize: "small" }}><em>Edited {moment(updatedAt).fromNow()}</em></T>
 													)}

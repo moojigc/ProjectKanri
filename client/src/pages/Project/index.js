@@ -18,6 +18,7 @@ import projectAPI from "../../utils/projectAPI";
 import taskAPI from "../../utils/taskAPI";
 import KanbanCol from "../../components/KanbanCol";
 import KanbanItem from "../../components/KanbanItem";
+import Markdown from "react-markdown";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -133,7 +134,9 @@ const Project = () => {
 			<Container disableGutters maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title}</Title>
-					<Typography paragraph>{project.description}</Typography>
+					<Typography paragraph>
+						<Markdown source={project.description} />
+					</Typography>
 				</Wrapper>
 				<Wrapper className={clsx(classes.gridBackground)}>
 					<DndProvider backend={HTML5Backend}>
