@@ -7,19 +7,13 @@ import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import taskAPI from "../../utils/taskAPI";
 import { Wrapper, Title } from "../../components/MiniComponents";
-import {
-	MenuItem,
-	Typography,
-	Button,
-	Divider,
-	CircularProgress,
-} from "@material-ui/core";
+import { MenuItem, Typography, Button, Divider, CircularProgress } from "@material-ui/core";
 import moment from "moment";
 import { TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE } from "../../utils/actions";
 import TaskComments from "../../components/TaskComments";
 import { UserContext } from "../../utils/UserContext";
 import ProjectNav from "../../components/ProjectNav";
-import Markdown from 'react-markdown'
+import Markdown from "react-markdown";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -43,6 +37,7 @@ export default function Task() {
 	const [isMounted, setMounted] = useState(false);
 	const [task, setTask] = useState({});
 	const [taskDesc, setTaskDesc] = useState("");
+	const [updateDt, setUpdateDt] = useState("");
 	const [comments, setComments] = useState([]);
 	const [assignee, setAssignee] = useState("");
 	const { projectId, id } = useParams();
@@ -55,6 +50,7 @@ export default function Task() {
 				setTask(res.task);
 				setTaskDesc(res.task.description);
 				setComments(res.task.comments);
+				setUpdateDt(res.updatedAt);
 				setProjectMembers(res.members);
 				setMounted(true);
 			})
@@ -65,7 +61,10 @@ export default function Task() {
 		// console.log(id);
 		taskAPI
 			.updateTask(id, { assignedUser: event.target.value })
-			.then((res) => setAssignee(res.assignedUser))
+			.then((res) => {
+				setAssignee(res.assignedUser);
+				setUpdateDt(res.updatedAt);
+			})
 			.catch((err) => console.log(err));
 	};
 	const handleChangeStatus = (event) => {
@@ -74,8 +73,8 @@ export default function Task() {
 		taskAPI
 			.updateTask(id, { status: event.target.value })
 			.then((res) => {
-				console.log(res);
-				setTask(res);
+				console.log("response", res);
+				setUpdateDt(res.updatedAt);
 			})
 			.catch((err) => console.log(err));
 	};
@@ -119,10 +118,7 @@ export default function Task() {
 										InputProps={{
 											readOnly: true
 										}}
-										helperText={
-											"Create Date: " +
-											moment(task.createdAt).format("M/DD/YYYY")
-										}
+										helperText={"Create Date: " + moment(task.createdAt).format("M/DD/YYYY")}
 										fullWidth
 									/>
 								</Grid>
@@ -135,7 +131,8 @@ export default function Task() {
 											label="Assigned To:"
 											value={assignee}
 											onChange={handleChangeAssignee}
-											fullWidth>
+											fullWidth
+										>
 											<MenuItem key="none" value={undefined}>
 												<em>None</em>
 											</MenuItem>
@@ -148,12 +145,7 @@ export default function Task() {
 									) : null}
 								</Grid>
 								<Grid item xs={12} sm={6} md={3}>
-									<TextField
-										fullWidth
-										variant="outlined"
-										label="Updated On:"
-										value={moment(task.updatedAt).format("M/DD/YYYY h:mm A")}
-									/>
+									<TextField fullWidth variant="outlined" label="Updated On:" value={moment(updateDt).format("M/DD/YYYY h:mm A")} />
 								</Grid>
 								<Grid item xs={12} sm={6} md={3}>
 									<TextField
@@ -163,14 +155,9 @@ export default function Task() {
 										label="Status:"
 										InputProps={{ defaultValue: task.status }}
 										onChange={handleChangeStatus}
-										fullWidth>
-										{[
-											TASK_NEW,
-											TASK_TODO,
-											TASK_WIP,
-											TASK_REVIEW,
-											TASK_DONE
-										].map((stat) => (
+										fullWidth
+									>
+										{[TASK_NEW, TASK_TODO, TASK_WIP, TASK_REVIEW, TASK_DONE].map((stat) => (
 											<MenuItem key={stat} value={stat}>
 												{stat}
 											</MenuItem>
@@ -180,11 +167,7 @@ export default function Task() {
 							</Grid>
 							<Divider style={{ margin: "1rem 0" }}></Divider>
 							<Grid container justify="center" spacing={2}>
-								<Typography
-									gutterbottom="true"
-									style={{ margin: "1rem 0" }}
-									variant="h4"
-									component="h2">
+								<Typography gutterbottom="true" style={{ margin: "1rem 0" }} variant="h4" component="h2">
 									Description
 								</Typography>
 								{editMode ? (
@@ -203,9 +186,7 @@ export default function Task() {
 									</Grid>
 								) : (
 									<Grid item sm={12}>
-										<Typography paragraph>
-											<Markdown source={task.description} />
-										</Typography>
+										<Markdown source={task.description} />
 									</Grid>
 								)}
 							</Grid>
@@ -222,11 +203,7 @@ export default function Task() {
 							<Button color="secondary" onClick={handleEditMode}>
 								Cancel
 							</Button>
-							<Button
-								variant="contained"
-								color="primary"
-								style={{ marginLeft: "1rem" }}
-								onClick={handleDescSubmit}>
+							<Button variant="contained" color="primary" style={{ marginLeft: "1rem" }} onClick={handleDescSubmit}>
 								Submit
 							</Button>
 						</React.Fragment>
@@ -238,13 +215,7 @@ export default function Task() {
 				</Grid>
 				<Wrapper style={{ marginTop: "1rem" }}>
 					<Grid item sm={12}>
-						<TaskComments
-							taskId={task._id}
-							comments={comments}
-							setComments={setComments}
-							user={user}
-							admins={task.project?.admins}
-						/>
+						<TaskComments taskId={task._id} comments={comments} setComments={setComments} user={user} admins={task.project?.admins} />
 					</Grid>
 				</Wrapper>
 			</Container>
