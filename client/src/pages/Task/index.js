@@ -94,7 +94,10 @@ export default function Task() {
 				.updateTask(id, { description: taskDesc })
 				.then((res) => {
 					console.log(res);
-					setTask(res);
+					setTask({
+						...task,
+						description: res.description
+					});
 					setEditMode(!editMode);
 				})
 				.catch((err) => console.log(err));
