@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext } from "react";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -6,7 +6,7 @@ import Container from "@material-ui/core/Container";
 import userAPI from "../../utils/userAPI";
 import { FlashContext } from "../../utils/FlashContext";
 import { useHistory } from "react-router-dom";
-import { makeStyles, Box, Typography, useMediaQuery, Paper } from "@material-ui/core";
+import { makeStyles, Box, Typography, useMediaQuery } from "@material-ui/core";
 import { ButtonLink, SakuraBranches } from "../../components/MiniComponents";
 import { ArrowForward, Send } from "@material-ui/icons";
 import AlertModal from "./AlertModal";

@@ -1,29 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import clsx from "clsx";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as A, useHistory, useLocation } from "react-router-dom";
 import {
 	Menu,
 	MenuItem,
 	makeStyles,
-	List,
-	ListItemText,
-	Drawer,
-	ListItemIcon,
-	ListItem,
 	Link,
 	Switch,
 	FormControlLabel,
 	FormGroup,
 	Grid
 } from "@material-ui/core";
-import { ExitToApp, HomeOutlined, Home, DashboardOutlined } from "@material-ui/icons";
+import { ExitToApp, HomeOutlined } from "@material-ui/icons";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import userAPI from "../../utils/userAPI";

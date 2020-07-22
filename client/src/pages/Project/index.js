@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
 		flexGrow: 1,
 		paddingLeft: theme.spacing(1),
 		paddingRight: theme.spacing(1)
+	},
+	editDescription: {
+		backgroundColor: theme.palette.kone.light
 	}
 }));
 
@@ -53,7 +56,7 @@ const Project = () => {
 	const classes = useStyles();
 	const [project, setProject] = useState({});
 	const [tasks, setTasks] = useState([]);
-	const descriptionInput = useRef(null)
+	const descriptionInput = useRef(null);
 	const [editMode, setEditMode] = useState(false);
 	const { id } = useParams();
 	const { user } = useContext(UserContext);
@@ -133,12 +136,12 @@ const Project = () => {
 
 	const handleDescSubmit = async () => {
 		let res = await projectAPI.updateDesc(descriptionInput.current.value, id);
-		setEditMode(false)
+		setEditMode(false);
 		setProject({
 			...project,
 			description: res.description
 		});
-	}
+	};
 
 	return (
 		<div className={clsx(classes.root)}>
@@ -148,23 +151,21 @@ const Project = () => {
 					<Title>{project.title}</Title>
 					{editMode ? (
 						<Grid item sm={12}>
-						<TextField
-							autoFocus
-							inputRef={descriptionInput}
-							required
-							className={classes.editDescription}
-							id="outlined-multiline-static"
-							defaultValue={project.description}
-							multiline
-							fullWidth
-							rows={5}
-							variant="outlined"
-						/>
-					</Grid>
+							<TextField
+								autoFocus
+								inputRef={descriptionInput}
+								required
+								className={classes.editDescription}
+								id="outlined-multiline-static"
+								defaultValue={project.description}
+								multiline
+								fullWidth
+								rows={5}
+								variant="outlined"
+							/>
+						</Grid>
 					) : (
-						<Typography paragraph>
-							<Markdown source={project.description} />
-						</Typography>
+						<Markdown source={project.description} />
 					)}
 				</Wrapper>
 				<Grid container justify="flex-end">
@@ -173,15 +174,11 @@ const Project = () => {
 							<Button color="secondary" onClick={() => setEditMode(false)}>
 								Cancel
 							</Button>
-							<Button
-								variant="contained"
-								color="primary"
-								style={{ marginLeft: "1rem" }}
-								onClick={handleDescSubmit}>
+							<Button variant="contained" color="primary" style={{ marginLeft: "1rem" }} onClick={handleDescSubmit}>
 								Submit
 							</Button>
 						</React.Fragment>
-					) : project.admins?.filter(a => a._id === user?._id).length ? (
+					) : project.admins?.filter((a) => a._id === user?._id).length ? (
 						<Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
 							Edit
 						</Button>

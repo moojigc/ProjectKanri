@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles, Menu, MenuItem, Grid } from "@material-ui/core";
 import { Create, DeleteForever } from '@material-ui/icons'
 import taskAPI from "../../utils/taskAPI";
