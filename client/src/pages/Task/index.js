@@ -92,12 +92,13 @@ export default function Task() {
 			taskAPI
 				.updateTask(id, { description: taskDesc })
 				.then((res) => {
-					console.log(res);
+					console.log(res);					
 					setTask({
 						...task,
 						description: res.description
 					});
 					setEditMode(!editMode);
+					setUpdateDt(res.updatedAt);
 				})
 				.catch((err) => console.log(err));
 		}
