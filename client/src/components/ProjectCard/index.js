@@ -78,7 +78,7 @@ const ProjectCard = ({
 		<Card className={clsx(classes.root)}>
 			<CardHeader title={title} subheader={moment(updatedAt).format("D-MMM-YYYY")} />
 			<CardContent>
-				<Typography variant="body2" color="textSecondary" component="p">
+				<Typography variant="body2" color="textSecondary" component="div">
 					{description}
 				</Typography>
 			</CardContent>
