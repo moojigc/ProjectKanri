@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ModalForm from "../../components/ModalForm";
 import inviteAPI from "../../utils/inviteAPI";
 import {
@@ -14,8 +14,6 @@ import {
 	Typography as T,
 	Button
 } from "@material-ui/core";
-import { emailRegex } from "../../utils/shared";
-import { Alert } from "@material-ui/lab";
 import useDebounce from "../../utils/debounceHook";
 
 const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {

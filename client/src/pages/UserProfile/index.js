@@ -3,7 +3,7 @@ import Container from "@material-ui/core/Container";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import Axios from "axios";
 import { UserContext } from "../../utils/UserContext";
-import { Typography, Accordion, AccordionSummary, makeStyles, AccordionDetails, Grid, Button, Link } from "@material-ui/core";
+import { Typography, Accordion, AccordionSummary, makeStyles, AccordionDetails, Grid, Button } from "@material-ui/core";
 import moment from "moment";
 import { ExpandMore, ArrowForwardRounded } from "@material-ui/icons";
 import UserDetailTable from "./table";

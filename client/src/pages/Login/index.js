@@ -6,9 +6,7 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import HelpOutline from "@material-ui/icons/HelpOutline";
-import Face from "@material-ui/icons/Face";
-import Lock from "@material-ui/icons/Lock";
-import Send from "@material-ui/icons/Send";
+import { Face, Lock, Send } from "@material-ui/icons";
 import userAPI from "../../utils/userAPI";
 import Switch from "@material-ui/core/Switch";
 import FormGroup from "@material-ui/core/FormGroup";
@@ -16,7 +14,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { UserContext } from "../../utils/UserContext";
 import { FlashContext } from "../../utils/FlashContext";
 import { useHistory, useParams } from "react-router-dom";
-import { makeStyles, Box } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Title, Wrapper, ButtonLink } from "../../components/MiniComponents";
 import ForgotModal from "../../components/ForgotModal";
@@ -45,8 +42,8 @@ const Login = () => {
 
 	const handleResendVerification = async () => {
 		let res = await userAPI.resendVerification(loginDetails.usernameOrEmail);
-		setFlash(res.flash)
-	}
+		setFlash(res.flash);
+	};
 
 	useEffect(() => {
 		if ("token" in params) {
@@ -62,8 +59,8 @@ const Login = () => {
 		}
 		return () => {
 			setFlash({ message: null, type: null });
-			setNonVerified(false)
-		}
+			setNonVerified(false);
+		};
 	}, []);
 	return (
 		<React.Fragment>
@@ -157,7 +154,7 @@ const Login = () => {
 						</Grid>
 						<Grid container justify="center">
 							{nonVerified && (
-								<Button onClick={handleResendVerification} color="primary" variant="contained" color="primary" style={{margin: '1rem 0.5rem 0 0'}}>
+								<Button onClick={handleResendVerification} color="primary" variant="contained" style={{ margin: "1rem 0.5rem 0 0" }}>
 									Resend Verification
 								</Button>
 							)}

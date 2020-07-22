@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import moment from "moment";
-import { Typography as T, Avatar, Grid, Divider, Box, TextField, Button, Fade, IconButton, CircularProgress } from "@material-ui/core";
+import { Typography as T, Avatar, Grid, Divider, Box, TextField, Button, Fade, IconButton } from "@material-ui/core";
 import taskAPI from "../../utils/taskAPI";
 import { MoreVert } from "@material-ui/icons";
 import OptionsMenu from "./OptionsMenu";
