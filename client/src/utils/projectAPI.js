@@ -47,5 +47,24 @@ export default {
 			withCredentials: true
 		});
 		return data;
+	},
+	/**
+	 * @param {"makeAdminNew" | "makeAdminExisiting" | "removeAdminRights" | "removeMember"} action
+	 */
+	membersDispatch: async (action, pId, userId) => {
+		let { data } = await axios({
+			url: `/api/project/${pId}/members?userId=${userId}&action=${action}`,
+			method: "PUT",
+			withCredentials: true
+		})
+		return data;
+	},
+	delete: async (id) => {
+		let { data } = await axios({
+			url: `/api/project/${id}`,
+			method: "DELETE",
+			withCredentials: true
+		})
+		return data;
 	}
 };

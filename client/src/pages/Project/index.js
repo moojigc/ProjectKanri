@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { makeStyles, TextField, Button, CircularProgress, Menu, MenuItem, Divider } from "@material-ui/core";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { UserContext } from "../../utils/UserContext";
 import clsx from "clsx";
 import { Title, Wrapper } from "../../components/MiniComponents";
@@ -11,7 +11,7 @@ import ProjectNav from "../../components/ProjectNav";
 import TaskDialog from "../../components/TaskDialog";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Add, Settings } from "@material-ui/icons";
+import { Add, Settings, EditOutlined, PersonAdd, People, StarBorderOutlined, Delete } from "@material-ui/icons";
 import { List, ListItemText, ListItem, Fab } from "@material-ui/core";
 // import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
 import projectAPI from "../../utils/projectAPI";
@@ -24,6 +24,7 @@ import moment from "moment";
 import InviteModal from "../../components/InviteModal";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import OptionsMenu from "../../components/TaskComments/OptionsMenu";
+import DeleteModal from './DeleteModal'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -53,15 +54,21 @@ const useStyles = makeStyles((theme) => ({
 	},
 	editDescription: {
 		backgroundColor: theme.palette.kone.light
+	},
+	paper: {
+		background: theme.palette.background.default
 	}
 }));
 
 const Project = () => {
+	const history = useHistory()
 	const classes = useStyles();
 	const [project, setProject] = useState({});
 	const [tasks, setTasks] = useState([]);
 	const descriptionInput = useRef(null);
 	const [editMode, setEditMode] = useState(false);
+	const [flash, setFlash] = useState({message: null, type: null})
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 	const { id } = useParams();
 	const { user } = useContext(UserContext);
 
@@ -138,6 +145,12 @@ const Project = () => {
 		},
 		[tasks]
 	);
+	const handleDelete = async (event) => {
+		event.preventDefault();
+		let res = await projectAPI.delete(project._id);
+		console.log(res)
+		res.success ? history.push("/") : setFlash(res.flash);
+	}
 
 	const handleDescSubmit = async () => {
 		let res = await projectAPI.updateDesc(descriptionInput.current.value, id);
@@ -147,7 +160,6 @@ const Project = () => {
 			description: res.description
 		});
 	};
-
 	const [open, setOpen] = useState(false);
 	const handleInvites = () => {
 		setOpen(true);
@@ -157,6 +169,7 @@ const Project = () => {
 		<div className={clsx(classes.root)}>
 			<ProjectNav projectId={id} />
 			<InviteModal openInvite={open} setInviteOpen={setOpen} projectId={id} userIsAdmin={project.userIsAdmin} />
+			<DeleteModal flash={flash} setOpen={setDeleteModalOpen} open={deleteModalOpen} onFormSubmit={handleDelete}/>
 			<Container disableGutters maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title || "Loading..."}</Title>
@@ -182,8 +195,7 @@ const Project = () => {
 							</Typography>
 							<Divider />
 							<Typography variant="caption">
-								Started on{" "}
-								<b>{moment(project.createdAt).format("M/DD/YYYY, h:mm A")}</b>
+								Started on <b>{moment(project.createdAt).format("M/DD/YYYY, h:mm A")}</b>
 							</Typography>
 							<Markdown source={project.description} />
 						</Grid>
@@ -204,44 +216,112 @@ const Project = () => {
 							</Button>
 						</React.Fragment>
 					) : project.userIsAdmin ? (
-						// <Grid item>
-						// 	<PopupState variant="popover" id="more-comment-options">
-						// 		{(popupState) => (
-						// 			<React.Fragment>
-						// 				<Button {...bindTrigger(popupState)} startIcon={<Settings />}>
-						// 					Options
-						// 				</Button>
-						// 				<Menu
-						// 					id="menu-comment"
-						// 					keepMounted
-						// 					PaperProps={{ className: classes.root }}
-						// 					anchorOrigin={{
-						// 						vertical: "top",
-						// 						horizontal: "right"
-						// 					}}
-						// 					transformOrigin={{
-						// 						vertical: "top",
-						// 						horizontal: "right"
-						// 					}}
-						// 				>
-						// 					<MenuItem>
-						// 						<div
-						// 					</MenuItem>
-						// 				</Menu>
-						// 			</React.Fragment>
-						// 		)}
-						// 	</PopupState>
-						// </Grid>
-						<React.Fragment>
-							<Button style={{ marginRight: "1rem" }} variant="contained" color="primary" onClick={() => setEditMode(true)}>
-								Edit
-							</Button>
-							<Button variant="contained" color="secondary" onClick={handleInvites}>
-								Invite
-							</Button>
-						</React.Fragment>
+						<Grid item>
+							<PopupState variant="popper" id="members">
+								{(popupState) => (
+									<React.Fragment>
+										<Button style={{ marginRight: "1rem" }} {...bindTrigger(popupState)} startIcon={<People />}>
+											Members
+										</Button>
+										<Menu
+											id="menu-members"
+											keepMounted
+											anchorOrigin={{
+												vertical: "bottom",
+												horizontal: "right"
+											}}
+											PaperProps={{ className: classes.paper }}
+											transformOrigin={{
+												vertical: "top",
+												horizontal: "right"
+											}}
+											{...bindMenu(popupState)}
+										>
+											{project.members?.map((m) => (
+												<MenuItem>
+													<Grid container>
+														{m.isAdmin ? (
+															<React.Fragment>
+																<Grid item>
+																	<StarBorderOutlined />
+																</Grid>
+																<Grid item>{m.firstName + " " + m.lastName}</Grid>
+															</React.Fragment>
+														) : (
+															<Grid item>{m.firstName + " " + m.lastName}</Grid>
+														)}
+													</Grid>
+												</MenuItem>
+											))}
+										</Menu>
+									</React.Fragment>
+								)}
+							</PopupState>
+							<PopupState variant="popover" id="more-project-options">
+								{(popupState) => (
+									<React.Fragment>
+										<Button color="secondary" variant="contained" {...bindTrigger(popupState)} startIcon={<Settings />}>
+											Options
+										</Button>
+										<Menu
+											id="menu-comment"
+											keepMounted
+											anchorOrigin={{
+												vertical: "top",
+												horizontal: "right"
+											}}
+											PaperProps={{ className: classes.paper }}
+											transformOrigin={{
+												vertical: "top",
+												horizontal: "right"
+											}}
+											{...bindMenu(popupState)}
+										>
+											<MenuItem>
+												<div onClick={() => setEditMode(true)}>
+													<Grid container spacing={1} alignItems="flex-start">
+														<Grid item>
+															<EditOutlined />
+														</Grid>
+														<Grid item>Edit</Grid>
+													</Grid>
+												</div>
+											</MenuItem>
+											<MenuItem>
+												<div onClick={handleInvites}>
+													<Grid container spacing={1} alignItems="flex-start">
+														<Grid item>
+															<PersonAdd />
+														</Grid>
+														<Grid item>Invite</Grid>
+													</Grid>
+												</div>
+											</MenuItem>
+											{project.creator === user._id && <MenuItem>
+												<div onClick={() => setDeleteModalOpen(true)}>
+													<Grid container spacing={1} alignItems="flex-start">
+														<Grid item>
+															<Delete />
+														</Grid>
+														<Grid item>Delete</Grid>
+													</Grid>
+												</div>
+											</MenuItem>}
+										</Menu>
+									</React.Fragment>
+								)}
+							</PopupState>
+						</Grid>
 					) : (
-						<Button variant="contained" color="secondary" onClick={handleInvites}>
+						// <React.Fragment>
+						// 	<Button style={{ marginRight: "1rem" }} variant="contained" color="primary" onClick={() => setEditMode(true)}>
+						// 		Edit
+						// 	</Button>
+						// 	<Button variant="contained" color="secondary" onClick={handleInvites}>
+						// 		Invite
+						// 	</Button>
+						// </React.Fragment>
+						<Button startIcon={<PersonAdd />} variant="contained" color="secondary" onClick={handleInvites}>
 							Invite
 						</Button>
 					)}

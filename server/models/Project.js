@@ -1,6 +1,6 @@
 const { Schema, model, Types } = require("mongoose");
 const Task = require('./Task');
-const { TaskComment } = require(".");
+const TaskComment = require("./TaskComment");
 
 const ProjectSchema = new Schema({
 	title: {

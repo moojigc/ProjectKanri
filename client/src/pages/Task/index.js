@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -14,6 +14,7 @@ import TaskComments from "../../components/TaskComments";
 import { UserContext } from "../../utils/UserContext";
 import ProjectNav from "../../components/ProjectNav";
 import Markdown from "react-markdown";
+import DeleteModal from "../Project/DeleteModal";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -39,7 +40,9 @@ export default function Task() {
 	const [taskDesc, setTaskDesc] = useState("");
 	const [comments, setComments] = useState([]);
 	const [assignee, setAssignee] = useState("");
+	const [openDelete, setDeleteModalOpen] = useState(false)
 	const { projectId, id } = useParams();
+	const [flash, setFlash] = useState({message: null, type: null})
 	useEffect(() => {
 		taskAPI
 			.getTask(id)
@@ -64,7 +67,7 @@ export default function Task() {
 				setTask({
 					...task,
 					updatedAt: res.updatedAt
-				})
+				});
 			})
 			.catch((err) => console.log(err));
 	};
@@ -78,11 +81,11 @@ export default function Task() {
 				setTask({
 					...task,
 					updatedAt: res.updatedAt
-				})
+				});
 			})
 			.catch((err) => console.log(err));
 	};
-
+	const history = useHistory()
 	const handleEditMode = () => {
 		setEditMode(!editMode);
 	};
@@ -90,7 +93,12 @@ export default function Task() {
 	const handleDescChange = (event) => {
 		setTaskDesc(event.target.value);
 	};
-
+	const handleDelete = async event => {
+		event.preventDefault();
+		let res = await taskAPI.deleteTask(task._id);
+		res.success ? history.push(`/project/${task.project._id}`) : setFlash(res.flash)
+	}
+	
 	const handleDescSubmit = () => {
 		if (taskDesc) {
 			taskAPI
@@ -111,6 +119,7 @@ export default function Task() {
 	return (
 		<div className={clsx(classes.root)}>
 			<ProjectNav projectId={projectId}></ProjectNav>
+			<DeleteModal task flash={flash} open={openDelete} setOpen={setDeleteModalOpen} onFormSubmit={handleDelete} />
 			<Container maxWidth="lg" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>Task: {task.title}</Title>
@@ -173,13 +182,15 @@ export default function Task() {
 									</TextField>
 								</Grid>
 							</Grid>
-									<Typography style={{marginTop: "0.8rem"}} variant="h5" component="h2">
-										Details
-									</Typography>
+							<Typography style={{ marginTop: "0.8rem" }} variant="h5" component="h2">
+								Details
+							</Typography>
 							<Divider />
 							<Grid container spacing={2}>
 								<Grid item>
-									<Typography variant="caption">Last updated: <b>{moment(task.updatedAt).format("M/DD/YYYY, h:mm A")}</b></Typography>
+									<Typography variant="caption">
+										Last updated: <b>{moment(task.updatedAt).format("M/DD/YYYY, h:mm A")}</b>
+									</Typography>
 								</Grid>
 								{editMode ? (
 									<Grid item sm={12}>
@@ -208,7 +219,7 @@ export default function Task() {
 						</Grid>
 					)}
 				</Wrapper>
-				<Grid container justify="flex-end">
+				<Grid container justify={task.creator === user._id || task.project?.admins.includes(user._id) ? "space-between" : "flex-end"}>
 					{editMode ? (
 						<React.Fragment>
 							<Button color="secondary" onClick={handleEditMode}>
@@ -219,14 +230,28 @@ export default function Task() {
 							</Button>
 						</React.Fragment>
 					) : (
-						<Button variant="contained" color="primary" onClick={handleEditMode}>
-							Edit
-						</Button>
+						<React.Fragment>
+							{task.creator === user._id || task.project?.admins.includes(user._id) && (
+								<Button variant="outlined" color="secondary" onClick={() => setDeleteModalOpen(true)}>
+									Delete
+								</Button>
+							)}
+							<Button variant="contained" color="primary" onClick={handleEditMode}>
+								Edit
+							</Button>
+						</React.Fragment>
 					)}
 				</Grid>
 				<Wrapper style={{ marginTop: "1rem" }}>
 					<Grid item sm={12}>
-						<TaskComments projectId={projectId} taskId={task._id} comments={comments} setComments={setComments} user={user} admins={task.project?.admins} />
+						<TaskComments
+							projectId={projectId}
+							taskId={task._id}
+							comments={comments}
+							setComments={setComments}
+							user={user}
+							admins={task.project?.admins}
+						/>
 					</Grid>
 				</Wrapper>
 			</Container>

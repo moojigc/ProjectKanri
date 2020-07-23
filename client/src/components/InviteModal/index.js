@@ -74,9 +74,10 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 			setOpen={setInviteOpen}
 			noSubmitButton
 			information="Enter invitee's username or email address and they will receive an invite to join your project."
-			BoxStyle={{ minWidth: "max-content", width: isMobile ? "95vw" : "600px" }}
+			BoxStyle={{ minWidth: "50vw", width: isMobile ? "90%" : "600px" }}
 			TextFields={[
 				<TextField
+				variant="outlined"
 					error={invalid}
 					onChange={({ target }) => setSearch(target.value)}
 					onBlur={() => setInvalid(false)}
@@ -84,7 +85,7 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 					color="secondary"
 					name="email_or_username"
 					fullWidth
-					label="Search by username or email address."
+					label="Search member"
 					type="text"
 				/>,
 				search !== "" && (

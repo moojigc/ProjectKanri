@@ -17,6 +17,12 @@ const request = async (options) => {
 };
 
 export default {
+	deleteTask: async (id) => {
+		return await request({
+			url: `/api/task/${id}`,
+			method: "DELETE",
+		})
+	},
 	getTask: async (id) => {
 		return await request({
 			url: `/api/task/${id}`,

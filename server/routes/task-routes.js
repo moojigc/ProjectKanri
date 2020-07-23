@@ -1,6 +1,8 @@
 const { User, Task, Project } = require("../models");
 const { ObjectId } = require("mongoose").Types;
 const { flash, serverError } = require("../config/utils");
+const compareIds = (id1, id2) => ObjectId(id1).equals(ObjectId(id2));
+
 /**
  * Handles tasks
  * @param {import("express").Router} router
@@ -101,4 +103,14 @@ module.exports = (router) => {
 			serverError(res);
 		}
 	});
+	router.delete("/api/task/:id", async (req, res) => {
+		let task = await Task.findOne({_id: req.params.id}).populate("project")
+		if (compareIds(req.user._id, task.creator) || task.project.admins.includes(ObjectId(req.user._id))) {
+			await task.deleteOne();
+			res.json({
+				success: true,
+				...flash("Task deleted", "success")
+			})
+		} else res.json(flash("You cannot do that.", "error"))
+	})
 };
