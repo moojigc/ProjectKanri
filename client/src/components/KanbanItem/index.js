@@ -6,14 +6,7 @@ import clsx from "clsx";
 import moment from "moment";
 import { useDrag } from "react-dnd";
 import { Assignment, ArrowForward } from "@material-ui/icons";
-import {
-	ListItemText,
-	ListItemAvatar,
-	ListItem,
-	Avatar,
-	ListItemSecondaryAction,
-	IconButton
-} from "@material-ui/core";
+import { ListItemText, ListItemAvatar, ListItem, Avatar, ListItemSecondaryAction, IconButton, Tooltip } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	taskOutline: {
@@ -22,6 +15,14 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: "1rem",
 		backgroundColor: theme.palette.kone.light
 		// padding: theme.spacing(2)
+	},
+	inline: {
+		display: "inline"
+	},
+	avatar: {
+		// border: "none",
+		backgroundColor: theme.palette.secondary.main,
+		borderColor: theme.palette.secondary.light
 	}
 }));
 
@@ -35,6 +36,9 @@ const KanbanItem = ({ projectId, task }) => {
 			isDragging: monitor.isDragging()
 		})
 	});
+
+	// console.log(task.assignedUser);
+
 	const opacity = isDragging ? 0 : 1;
 	drag(ref);
 	return (
@@ -43,17 +47,22 @@ const KanbanItem = ({ projectId, task }) => {
 			style={{ opacity }}
 			key={task._id}
 			// boxShadow={1}
-			className={clsx(classes.taskOutline)}>
+			className={clsx(classes.taskOutline)}
+		>
 			<ListItemAvatar>
-				<Avatar>
-					<Assignment></Assignment>
-				</Avatar>
+				{task.assignedUser ? (
+					<Tooltip arrow title={`${task.assignedUser.firstName} ${task.assignedUser.lastName} `}>
+						<Avatar style={{ fontSize: "1rem" }} className={classes.avatar} alt={`${task.assignedUser.firstName} ${task.assignedUser.lastName} `}>
+						{task.assignedUser.firstName.charAt(0) + task.assignedUser.lastName.charAt(0)}
+						</Avatar>
+					</Tooltip>
+				) : (
+					<Avatar>
+						<Assignment></Assignment>
+					</Avatar>
+				)}
 			</ListItemAvatar>
-			<ListItemText
-				primary={task.title}
-				secondary={
-					"Updated: " + moment(task.updatedAt).format("D-MMM-YYYY")
-				}></ListItemText>
+			<ListItemText primary={task.title} secondary={"Updated: " + moment(task.updatedAt).format("D-MMM-YYYY")}></ListItemText>
 			<ListItemSecondaryAction>
 				<RouterLink to={`/project/${projectId}/task/${task._id}`}>
 					<IconButton edge="end" aria-label="Go to task">

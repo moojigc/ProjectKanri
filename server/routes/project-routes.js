@@ -14,7 +14,7 @@ module.exports = (router) => {
 				.populate("creator", { password: 0 })
 				.populate("admins", { password: 0 })
 				.populate("members", { password: 0 })
-				.populate("tasks");
+				.populate({path: "tasks", populate: {path: "assignedUser", select: {password: 0 }}} );
 
 			return res.json(projects);
 		} catch (error) {
