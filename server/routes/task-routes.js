@@ -40,20 +40,37 @@ module.exports = (router) => {
 	router.put("/api/task/:id", async (req, res) => {
 		console.log("actually in this one")
 		try {
-			let dbTask = await Task.findOneAndUpdate(
-				{
-					_id: req.params.id
-				},
-				{
-					...req.body,
-					updatedAt: new Date()
-				},
-				{
-					new: true
-				}
-			);
-
-			res.json(dbTask.toObject()).end();
+			if (req.body.assignedUser === "NONE") {
+				let dbTask = await Task.findOneAndUpdate(
+					{
+						_id: req.params.id
+					},
+					{
+						...req.body,
+						assignedUser: null,
+						updatedAt: new Date()
+					},
+					{
+						new: true
+					}
+				)
+				res.json(dbTask.toObject()).end();
+			} else {
+				let dbTask = await Task.findOneAndUpdate(
+					{
+						_id: req.params.id
+					},
+					{
+						...req.body,
+						updatedAt: new Date()
+					},
+					{
+						new: true
+					}
+				);
+	
+				res.json(dbTask.toObject()).end();
+			}
 		} catch (error) {
 			console.error(error);
 			serverError(res);

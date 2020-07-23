@@ -141,7 +141,7 @@ export default function Task() {
 											onChange={handleChangeAssignee}
 											fullWidth
 										>
-											<MenuItem key="none" value={undefined}>
+											<MenuItem key="none" value={"NONE"}>
 												<em>None</em>
 											</MenuItem>
 											{projectMembers.map((user) => (

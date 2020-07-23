@@ -6,13 +6,16 @@ import { useEffect } from "react";
 const Footer = () => {
 	const theme = useTheme();
 	const location = useLocation();
-	const [isDocScrollable, setScrollable] = useState(false);
+    const [isDocScrollable, setScrollable] = useState(false);
+    const [noFooter, setNoFooter] = useState(
+        
+    )
 	const footerPosition = isDocScrollable ? "static" : "fixed";
 	useEffect(() => {
         setScrollable(document.body.scrollHeight > window.innerHeight);
-	}, [location.pathname]);
+    }, [location.pathname]);
 	return (
-		!location.pathname.split("/").includes("project", "task", "dashboard") &&
+		!location.pathname.split("/").includes("project") && !location.pathname.split("/").includes("task") && !location.pathname.split("/").includes("dashboard") &&
 		location.pathname !==
 			"/" && (
 				<footer
