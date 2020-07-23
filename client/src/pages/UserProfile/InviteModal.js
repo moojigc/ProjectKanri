@@ -66,7 +66,7 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 					color="secondary"
 					name="email_or_username"
 					fullWidth
-					label="Search by username or password"
+					label="Search by username or email address."
 					type="text"
 				/>,
 				// <React.Fragment>

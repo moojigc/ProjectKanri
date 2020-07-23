@@ -18,6 +18,7 @@ import Project from "./pages/Project";
 import AcceptInvite from "./pages/AcceptInvite";
 import NoMatch from "./pages/NoMatch";
 import { SakuraBranches } from "./components/MiniComponents";
+import Footer from './components/Footer'
 
 function App() {
 	const browserLightMode = useMediaQuery("(prefers-color-scheme: light)");
@@ -93,6 +94,7 @@ function App() {
 								<NoMatch />
 							</Route>
 						</Switch>
+						{/* <Footer /> */}
 					</ThemeProvider>
 				</FlashProvider>
 			</UserProvider>
