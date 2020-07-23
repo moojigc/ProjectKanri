@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Project } = require("../models");
 const { db } = require("../models/Task");
-const {flash, serverError, isAuth} = require("../config/utils")
+const { flash, serverError, isAuth } = require("../config/utils");
 
 /**
  * Handles project routes
@@ -11,15 +11,13 @@ module.exports = (router) => {
 	router.get("/api/projects/:id", async (req, res) => {
 		try {
 			let projects = await Project.findById(req.params.id)
-				.populate("creator", { password: 0 })
-				.populate("admins", { password: 0 })
-				.populate("members", { password: 0 })
-				.populate("tasks");
+				.populate({ path: "tasks", populate: { path: "assignedUser", select: { password: 0 } } })
+				.populate("members", { password: 0 });
 
-			return res.json(projects);
+			res.json(projects);
 		} catch (error) {
 			console.error(error);
-			serverError(res)
+			serverError(res);
 		}
 	});
 
@@ -32,10 +30,10 @@ module.exports = (router) => {
 				.populate("admins", { password: 0 })
 				.populate("members", { password: 0 })
 				.sort({ _id: -1 });
-			return res.json(projects);
+			res.json(projects);
 		} catch (error) {
 			console.error(error);
-			serverError(res)
+			serverError(res);
 		}
 	});
 
@@ -52,26 +50,30 @@ module.exports = (router) => {
 				members: newUsers
 			});
 
-			return res.json(newProject);
+			res.json(newProject);
 		} catch (error) {
 			console.error(error);
-			serverError(res)
+			serverError(res);
 		}
 	});
-	router.put("/api/project/:id", isAuth, async ({body, params}, res) => {
+	router.put("/api/project/:id", isAuth, async ({ body, params }, res) => {
 		try {
-			let update = await Project.findOneAndUpdate({
-				_id: params.id
-			}, {
-				updatedAt: new Date(),
-				description: body.description
-			}, {
-				new: true
-			})
+			let update = await Project.findOneAndUpdate(
+				{
+					_id: params.id
+				},
+				{
+					updatedAt: new Date(),
+					description: body.description
+				},
+				{
+					new: true
+				}
+			);
 			res.json(update).end();
 		} catch (error) {
-			console.error(error)
-			serverError(res)
+			console.error(error);
+			serverError(res);
 		}
-	})
+	});
 };

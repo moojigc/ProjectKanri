@@ -1,7 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import ModalForm from "../../components/ModalForm";
 import userAPI from "../../utils/userAPI";
-import { FlashContext } from "../../utils/FlashContext";
 import { TextField } from "@material-ui/core";
 
 const UpdatePassword = ({ open, setOpen }) => {

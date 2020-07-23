@@ -9,42 +9,48 @@ const users = [
 		lastName: "Battsogt",
 		email: "moojigc@gmail.com",
 		username: "admin.moojig",
-		password: "password"
+		password: "password",
+		verified: true
 	},
 	{
 		firstName: "Pia",
 		lastName: "Rahman",
 		email: "admin.pia@test.com",
 		username: "admin.pia",
-		password: "password"
+		password: "password",
+		verified: true
 	},
 	{
 		firstName: "Sam",
 		lastName: "Taddonio",
 		email: "admin.sam@test.com",
 		username: "admin.sam",
-		password: "password"
+		password: "password",
+		verified: true
 	},
 	{
 		firstName: "Sam",
 		lastName: "T",
 		email: "user.sam@test.com",
 		username: "user.sam",
-		password: "password"
+		password: "password",
+		verified: true
 	},
 	{
 		firstName: "Pia",
 		lastName: "R",
 		email: "user.pia@test.com",
 		username: "user.pia",
-		password: "password"
+		password: "password",
+		verified: true
 	},
 	{
 		firstName: "Moojig",
 		lastName: "B",
 		email: "moojig@nyu.edu",
 		username: "user.moojig",
-		password: "password"
+		password: "password",
+		verified: true
 	}
 ];
 
