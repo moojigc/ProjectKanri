@@ -28,7 +28,7 @@ export default {
 	sendInvite: async (id, admin, user) => {
 		return await request({
 			method: "GET",
-			url: `/api/invite-member?projectId=${id}&admin=${admin}&user=${user}`
+			url: `/api/invite-member?projectId=${id}&admin=${admin}&userId=${user}`
 		});
 	},
 	/**

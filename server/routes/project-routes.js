@@ -10,10 +10,10 @@ const { flash, serverError, isAuth } = require("../config/utils");
 module.exports = (router) => {
 	router.get("/api/projects/:id", async (req, res) => {
 		try {
-			console.log(req.user)
 			let project = await Project.findById(req.params.id)
-				.populate({ path: "tasks", populate: { path: "assignedUser", select: { password: 0 } } })
-				.populate("members", { password: 0 });
+			.populate({ path: "tasks", populate: { path: "assignedUser", select: { password: 0 } } })
+			.populate("members", { password: 0 });
+			console.log(project)
 	
 			let userIsAdmin = project.admins.filter(a => ObjectId(a).equals(req.user._id)).length > 0;
 			let projectObj = project.toObject();
@@ -84,4 +84,63 @@ module.exports = (router) => {
 			serverError(res);
 		}
 	});
+	router.put("/api/project/:id/members", isAuth, async (req, res) => {
+		try {
+			let project = await Project.findOne({_id: req.params.id});
+			if (project.admins.includes(ObjectId(req.user._id))) {
+				switch (req.query.action) {
+					case "makeAdminNew": {
+						let project = await Project.findOneAndUpdate({ _id: req.params.id }, {
+							$push: {
+								admins: req.query.userId,
+								members: req.query.userId 
+							}
+						}, {
+							new: true
+						})
+						res.json(project).end();
+					}
+					break
+					case "makeAdminExisiting": {
+						let project = await Project.findOneAndUpdate({ _id: req.params.id }, {
+							$push: {
+								admins: req.query.userId 
+							}
+						}, {
+							new: true
+						})
+						res.json(project).end();
+					}
+					break
+					case "removeAdminRights": {
+						if (!ObjectId(req.user._id).equals(project.creator)) return res.json(flash("Can't do that.", "error"))
+						let update = await Project.findOneAndUpdate({ _id: req.params.id }, {
+							$pull: {
+								admins: req.query.userId 
+							}
+						}, {
+							new: true
+						})
+						res.json(update).end();
+					}
+					break
+					case "removeMember": {
+						if (!ObjectId(req.user._id).equals(project.creator)) return res.json(flash("Can't do that.", "error"))
+						let update = await Project.findOneAndUpdate({ _id: req.params.id }, {
+							$pull: {
+								admins: req.query.userId,
+								member: req.query.userId
+							}
+						}, {
+							new: true
+						})
+						res.json(update).end();
+					}
+				}
+			} else return res.json(flash("auth error", "error"))
+		} catch (error) {
+			console.error(error);
+			serverError(res);
+		}
+	})
 };

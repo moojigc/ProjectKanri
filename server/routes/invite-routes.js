@@ -3,6 +3,8 @@ const { flash, serverError, isAuth } = require("../config/utils");
 const nodemailer = require("../config/nodemailer");
 const EMAIL_SECRET = process.env.EMAIL_SECRET || require("../config/secrets.json").EMAIL_SECRET;
 const jwt = require("jsonwebtoken");
+const { ObjectId } = require("mongoose").Types;
+const compareIds = (id1, id2) => ObjectId(id1).equals(ObjectId(id2));
 
 /**
  *
@@ -32,7 +34,7 @@ module.exports = (router) => {
 	router.get("/api/invite-member", isAuth, async ({ query, user }, res) => {
 		try {
 			console.log(query);
-			let member = await User.findOne({ _id: query.user });
+			let member = await User.findOne({ _id: query.userId });
 			let project = await Project.findOne({
 				_id: query.projectId
 			});
@@ -41,7 +43,9 @@ module.exports = (router) => {
 			const token = jwt.sign(
 				{
 					admin: admin,
-					projectId: project._id
+					projectId: project._id,
+					userId: query.userId,
+					projectTitle: project.title
 				},
 				EMAIL_SECRET,
 				{
@@ -60,18 +64,32 @@ module.exports = (router) => {
 			serverError(res);
 		}
 	});
+	router.get("/api/invite-member/:token", async (req, res) => {
+		try {
+			let { projectTitle } = jwt.verify(req.params.token, EMAIL_SECRET);
+			res.json({ projectTitle: projectTitle }).end();
+		} catch (error) {
+			console.error(error);
+			serverError(res);
+		}
+	});
 	router.put("/api/invite-member/:token", isAuth, async (req, res) => {
 		try {
-			let { admin, projectId } = jwt.verify(req.params.token, EMAIL_SECRET);
+			let { admin, projectId, userId } = jwt.verify(req.params.token, EMAIL_SECRET);
+			console.log(userId);
+			if (!compareIds(userId, req.user._id))
+				return res.json(flash(`Sorry, ${req.user.username}, you are not the intended recipient of this invite.`, "error"));
+			let { members } = await Project.findOne({ _id: projectId });
+			if (members.filter((m) => compareIds(m, userId)).length > 0) return res.json(flash("You are already in this project.", "error"));
 			if (admin) {
+				console.log(req.query.userId);
 				let project = await Project.findOneAndUpdate(
 					{ _id: projectId },
 					{
 						$push: {
-							admins: req.user_id,
-							members: req.user._id
-						},
-						updatedAt: new Date()
+							admins: userId,
+							members: userId
+						}
 					},
 					{ new: true }
 				);
@@ -84,7 +102,7 @@ module.exports = (router) => {
 					{ _id: projectId },
 					{
 						$push: {
-							members: req.user._id
+							members: req.userId
 						},
 						updatedAt: new Date()
 					}
