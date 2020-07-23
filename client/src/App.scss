@@ -66,6 +66,28 @@ blockquote {
 	padding: 0 10px;
 }
 
+footer {
+	color: whitesmoke;
+	width: 100%;
+	padding: 0.5rem;
+	margin-top: 3rem;
+	z-index: -1 !important;
+	border-top: 0.2rem solid var(--secondary-light);
+	box-shadow: inset -4px 0 13px -2px rgba(0, 0, 0, 0.575);
+	background: var(--secondary-dark);
+	a {
+		text-decoration: underline !important;
+		// color: lightpink;
+		// &:hover {
+		// 	color: darken(lightpink, 4)
+		// }
+	}
+}
+
+.title {
+	box-shadow: inset 0 -2px 13px -4px rgba(0, 0, 0, 0.62)
+}
+
 @media screen and (max-width: 960px) {
 	:root {
 		font-size: 16px;

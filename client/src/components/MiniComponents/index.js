@@ -4,6 +4,7 @@ import { makeStyles, Typography } from "@material-ui/core";
 import { Box, Button } from "@material-ui/core";
 import sakuraBranch from "../../sakura_branch.png";
 import sakuraFlipped from "../../sakura_flipped.png";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
 	title: {
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export const Title = (props) => {
 	const { component, variant } = props;
 	const { title } = useStyles();
-	return <Typography component={component || "h1"} variant={variant || "h2"} className={title} {...props} />;
+	return <Typography component={component || "h1"} variant={variant || "h3"} className={clsx(title, "title")} {...props} />;
 };
 
 /**

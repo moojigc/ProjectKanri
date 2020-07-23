@@ -19,6 +19,7 @@ import AcceptInvite from "./pages/AcceptInvite";
 import NoMatch from "./pages/NoMatch";
 import { SakuraBranches } from "./components/MiniComponents";
 import Footer from "./components/Footer";
+import projectAPI from "./utils/projectAPI";
 
 function App() {
 	const browserLightMode = useMediaQuery("(prefers-color-scheme: light)");
@@ -40,6 +41,17 @@ function App() {
 		message: "",
 		type: "error" || "success"
 	});
+
+	const [projects, setProjects] = useState([]);
+	const loadProjects = (setMounted) => {
+		projectAPI
+			.getAllProjects()
+			.then((res) => {
+				setProjects(res);
+				setMounted(true)
+			})
+			.catch((err) => console.error(err));
+	};
 	useEffect(() => {
 		setPreferredTheme(userPrefersLightMode);
 	}, [userPrefersLightMode]);
@@ -61,7 +73,7 @@ function App() {
 						{isMounted ? (
 							<Switch>
 								<Route exact path={["/", "/dashboard"]}>
-									{user.auth ? <Dashboard /> : <Redirect to="/welcome" />}
+									{user.auth ? <Dashboard loadProjects={loadProjects} setProjects={setProjects} projects={projects} /> : <Redirect to="/welcome" />}
 								</Route>
 								<Route exact path="/welcome">
 									<ThemeProvider theme={forceLightTheme}>
@@ -98,7 +110,7 @@ function App() {
 								<CircularProgress aria-describedby="loading page" aria-busy={!isMounted} size="10rem" />
 							</Grid>
 						)}
-						{/* <Footer /> */}
+						<Footer />
 					</ThemeProvider>
 				</FlashProvider>
 			</UserProvider>
