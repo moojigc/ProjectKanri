@@ -178,7 +178,7 @@ const Project = () => {
 								Submit
 							</Button>
 						</React.Fragment>
-					) : project.admins?.filter((a) => a._id === user?._id).length ? (
+					) : project.admins?.filter((a) => a === user?._id).length ? (
 						<Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
 							Edit
 						</Button>
