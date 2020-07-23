@@ -7,7 +7,7 @@ import userAPI from "./utils/userAPI";
 import Task from "./pages/Task";
 import Register from "./pages/Register";
 import theme from "./utils/theme";
-import { ThemeProvider, useMediaQuery, CssBaseline } from "@material-ui/core";
+import { ThemeProvider, useMediaQuery, CssBaseline, Grid, CircularProgress } from "@material-ui/core";
 import Navbar from "./components/Navbar";
 import "./App.scss";
 import Welcome from "./pages/Welcome";
@@ -18,16 +18,15 @@ import Project from "./pages/Project";
 import AcceptInvite from "./pages/AcceptInvite";
 import NoMatch from "./pages/NoMatch";
 import { SakuraBranches } from "./components/MiniComponents";
-import Footer from './components/Footer'
+import Footer from "./components/Footer";
 
 function App() {
 	const browserLightMode = useMediaQuery("(prefers-color-scheme: light)");
-	const getUserLightMode = (browserLightMode) => {
+	const getUserLightMode = () => {
 		const storedLightMode = JSON.parse(localStorage.getItem("lightMode"));
-		if (storedLightMode !== undefined) return storedLightMode;
-		else return browserLightMode;
+		return storedLightMode !== undefined ? storedLightMode : browserLightMode
 	};
-	const userPrefersLightMode = getUserLightMode(browserLightMode);
+	const userPrefersLightMode = getUserLightMode()
 	const forceLightTheme = theme(true);
 
 	const [preferredTheme, setPreferredTheme] = useState(browserLightMode);
@@ -43,8 +42,7 @@ function App() {
 	});
 	useEffect(() => {
 		setPreferredTheme(userPrefersLightMode);
-
-	}, [userPrefersLightMode])
+	}, [userPrefersLightMode]);
 	useEffect(() => {
 		userAPI.checkStatus().then((res) => {
 			setUser(res.user);
@@ -60,40 +58,46 @@ function App() {
 						<CssBaseline />
 						<SakuraBranches />
 						<Navbar setPreferredTheme={setPreferredTheme} preferredTheme={preferredTheme} />
-						<Switch>
-							<Route exact path={["/", "/dashboard"]}>
-								{isMounted ? user.auth ? <Dashboard /> : <Redirect to="/welcome" /> : null}
-							</Route>
-							<Route exact path="/welcome">
-								<ThemeProvider theme={forceLightTheme}>
-									<Welcome />
-								</ThemeProvider>
-							</Route>
-							<Route exact path={["/login/:token", "/login"]}>
-								<Login />
-							</Route>
-							<Route exact path="/resetpass/:token">
-								<ResetPassword />
-							</Route>
-							<Route exact path="/project/:projectId/task/:id">
-								<Task />
-							</Route>
-							<Route exact path="/signup">
-								<Register />
-							</Route>
-							<Route exact path="/profile">
-								{isMounted ? user.auth ? <UserProfile /> : <Redirect to="/login" /> : null}
-							</Route>
-							<Route exact path="/project/:id">
-								<Project />
-							</Route>
-							<Route exact path="/accept-invite/:token">
-								<AcceptInvite />
-							</Route>
-							<Route path="*">
-								<NoMatch />
-							</Route>
-						</Switch>
+						{isMounted ? (
+							<Switch>
+								<Route exact path={["/", "/dashboard"]}>
+									{user.auth ? <Dashboard /> : <Redirect to="/welcome" />}
+								</Route>
+								<Route exact path="/welcome">
+									<ThemeProvider theme={forceLightTheme}>
+										<Welcome />
+									</ThemeProvider>
+								</Route>
+								<Route exact path={["/login/:token", "/login"]}>
+									<Login />
+								</Route>
+								<Route exact path="/resetpass/:token">
+									<ResetPassword />
+								</Route>
+								<Route exact path="/project/:projectId/task/:id">
+									{user.auth ? <Task /> : <Redirect to="/login" />}
+								</Route>
+								<Route exact path="/signup">
+									<Register />
+								</Route>
+								<Route exact path="/profile">
+									{user.auth ? <UserProfile /> : <Redirect to="/login" />}
+								</Route>
+								<Route exact path="/project/:id">
+									{user.auth ? <Project /> : <Redirect to="/login" />}
+								</Route>
+								<Route exact path="/accept-invite/:token">
+									<AcceptInvite user={user} setUser={setUser} />
+								</Route>
+								<Route path="*">
+									<NoMatch />
+								</Route>
+							</Switch>
+						) : (
+							<Grid container justify="center" style={{ padding: "10rem 0" }}>
+								<CircularProgress aria-describedby="loading page" aria-busy={!isMounted} size="10rem" />
+							</Grid>
+						)}
 						{/* <Footer /> */}
 					</ThemeProvider>
 				</FlashProvider>

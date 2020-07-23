@@ -61,7 +61,6 @@ module.exports = (router) => {
 		}
 	});
 	router.put("/api/invite-member/:token", isAuth, async (req, res) => {
-		if (!req.user) return res.status(401).json(flash("authentication error", "error"));
 		try {
 			let { admin, projectId } = jwt.verify(req.params.token, EMAIL_SECRET);
 			if (admin) {

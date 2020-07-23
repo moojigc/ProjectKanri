@@ -1,5 +1,6 @@
 const { Schema, model, Types } = require("mongoose");
-const Task = require('./Task')
+const Task = require('./Task');
+const { TaskComment } = require(".");
 
 const ProjectSchema = new Schema({
 	title: {
@@ -49,6 +50,7 @@ const ProjectSchema = new Schema({
 
 ProjectSchema.post("deleteOne", async function (doc, next) {
 	await Task.deleteMany({ project: doc._id })
+	await TaskComment.deleteMany({ project: doc._id })
 	next();
 })
 

@@ -2,7 +2,7 @@ import Axios from "axios";
 
 /**
  * Server request handler
- * @param {"login" | "register" | "logout" | "user-status" | "reset-pass" | "update-pass" | "verify"} action
+ * @param {"login" | "register" | "logout" | "user-status" | "reset-pass" | "update-pass" | "verify" | "myprofile"} action
  * @param {"GET" | "POST" | "PUT"} [method]
  * @param {Object} [details]
  * @param {string} [details.username]
@@ -73,26 +73,20 @@ const userAPI = {
 	 * @param {string} token
 	 */
 	updatePassword: async (newPassword, confirm, token) => {
-		return await request(
-			"reset-pass",
-			{ password: newPassword, password2: confirm },
-			"PUT",
-			token
-		);
+		return await request("reset-pass", { password: newPassword, password2: confirm }, "PUT", token);
 	},
 	updatePasswordWithCurrent: async (current, newPassword, confirmNewPassword) => {
-		return await request(
-			"update-pass",
-			{ currentPassword: current, password: newPassword, password2: confirmNewPassword },
-			"PUT"
-		);
+		return await request("update-pass", { currentPassword: current, password: newPassword, password2: confirmNewPassword }, "PUT");
 	},
 	verifyUser: async (token) => {
 		return await request("verify", null, "PUT", token);
 	},
 	resendVerification: async (usernameOrEmail) => {
-		console.log(usernameOrEmail)
-		return await request("resend-verification", null, "GET", usernameOrEmail)
+		console.log(usernameOrEmail);
+		return await request("resend-verification", null, "GET", usernameOrEmail);
+	},
+	getProfile: async (id) => {
+		return await request("myprofile");
 	}
 };
 

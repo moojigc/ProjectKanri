@@ -162,8 +162,9 @@ const Welcome = () => {
 							</Grid>
 						</Grid>
 						{valid && (
-							<Grid container justify="flex-end">
-								<Button color="primary" style={{marginTop: '1rem', zIndex: 3}} type="submit" variant="contained" endIcon={<Send />}>
+							<Grid style={{marginTop: "1rem"}} container justify="flex-end">
+								<Button style={{color: "white"}} onClick={() => setContinue(false)}>Cancel</Button>
+								<Button color="primary" style={{marginLeft: "1rem"}} type="submit" variant="contained" endIcon={<Send />}>
 									Sign up!
 								</Button>
 							</Grid>

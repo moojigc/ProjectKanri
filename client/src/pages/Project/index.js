@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { makeStyles, TextField, Button } from "@material-ui/core";
+import { makeStyles, TextField, Button, CircularProgress, Menu, MenuItem, Divider } from "@material-ui/core";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../utils/UserContext";
 import clsx from "clsx";
@@ -11,7 +11,7 @@ import ProjectNav from "../../components/ProjectNav";
 import TaskDialog from "../../components/TaskDialog";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Add } from "@material-ui/icons";
+import { Add, Settings } from "@material-ui/icons";
 import { List, ListItemText, ListItem, Fab } from "@material-ui/core";
 // import { SpeedDial, SpeedDialAction, SpeedDialIcon } from "@material-ui/lab";
 import projectAPI from "../../utils/projectAPI";
@@ -20,6 +20,10 @@ import KanbanCol from "../../components/KanbanCol";
 import KanbanItem from "../../components/KanbanItem";
 import Markdown from "react-markdown";
 import { useRef } from "react";
+import moment from "moment";
+import InviteModal from "../../components/InviteModal";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import OptionsMenu from "../../components/TaskComments/OptionsMenu";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -101,7 +105,7 @@ const Project = () => {
 		}
 		return [todoTasks, wipTasks, reviewTasks, doneTasks];
 	};
-
+	const [mounted, setMounted] = useState(false);
 	useEffect(() => {
 		loadProject();
 	}, []);
@@ -113,6 +117,7 @@ const Project = () => {
 				setProject(res);
 				console.log("tasks", res.tasks);
 				setTasks(res.tasks);
+				setMounted(true);
 			})
 			.catch((err) => console.error(err));
 	};
@@ -143,14 +148,20 @@ const Project = () => {
 		});
 	};
 
+	const [open, setOpen] = useState(false);
+	const handleInvites = () => {
+		setOpen(true);
+	};
+
 	return (
 		<div className={clsx(classes.root)}>
-			<ProjectNav projectId={id}></ProjectNav>
+			<ProjectNav projectId={id} />
+			<InviteModal openInvite={open} setInviteOpen={setOpen} projectId={id} userIsAdmin={project.userIsAdmin} />
 			<Container disableGutters maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
-					<Title>{project.title}</Title>
+					<Title>{project.title || "Loading..."}</Title>
 					{editMode ? (
-						<Grid item sm={12}>
+						<Grid container>
 							<TextField
 								autoFocus
 								inputRef={descriptionInput}
@@ -164,8 +175,22 @@ const Project = () => {
 								variant="outlined"
 							/>
 						</Grid>
+					) : mounted ? (
+						<Grid container direction="column">
+							<Typography variant="h5">
+								Admins: <b>{project.admins?.map((a) => a.firstName + " " + a.lastName).join(", ")}</b>
+							</Typography>
+							<Divider />
+							<Typography variant="caption">
+								Started on{" "}
+								<b>{moment(project.createdAt).format("M/DD/YYYY, h:mm A")}</b>
+							</Typography>
+							<Markdown source={project.description} />
+						</Grid>
 					) : (
-						<Markdown source={project.description} />
+						<Grid container justify="center">
+							<CircularProgress aria-describedby="loading project" aria-busy={!mounted} color="secondary" size="6rem" />
+						</Grid>
 					)}
 				</Wrapper>
 				<Grid container justify="flex-end">
@@ -178,32 +203,75 @@ const Project = () => {
 								Submit
 							</Button>
 						</React.Fragment>
-					) : project.admins?.filter((a) => a === user?._id).length ? (
-						<Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
-							Edit
+					) : project.userIsAdmin ? (
+						// <Grid item>
+						// 	<PopupState variant="popover" id="more-comment-options">
+						// 		{(popupState) => (
+						// 			<React.Fragment>
+						// 				<Button {...bindTrigger(popupState)} startIcon={<Settings />}>
+						// 					Options
+						// 				</Button>
+						// 				<Menu
+						// 					id="menu-comment"
+						// 					keepMounted
+						// 					PaperProps={{ className: classes.root }}
+						// 					anchorOrigin={{
+						// 						vertical: "top",
+						// 						horizontal: "right"
+						// 					}}
+						// 					transformOrigin={{
+						// 						vertical: "top",
+						// 						horizontal: "right"
+						// 					}}
+						// 				>
+						// 					<MenuItem>
+						// 						<div
+						// 					</MenuItem>
+						// 				</Menu>
+						// 			</React.Fragment>
+						// 		)}
+						// 	</PopupState>
+						// </Grid>
+						<React.Fragment>
+							<Button style={{ marginRight: "1rem" }} variant="contained" color="primary" onClick={() => setEditMode(true)}>
+								Edit
+							</Button>
+							<Button variant="contained" color="secondary" onClick={handleInvites}>
+								Invite
+							</Button>
+						</React.Fragment>
+					) : (
+						<Button variant="contained" color="secondary" onClick={handleInvites}>
+							Invite
 						</Button>
-					) : null}
+					)}
 				</Grid>
 
 				<Wrapper className={clsx(classes.gridBackground)}>
 					<DndProvider backend={HTML5Backend}>
 						<Grid container spacing={2} className={clsx(classes.kanban)}>
-							{returnOrganizedTasks(tasks).map(({ status, tasks }) => (
-								<KanbanCol key={status} status={status} changeTaskStatus={changeTaskStatus}>
-									<Typography variant="h6" component="h3">
-										{status}
-									</Typography>
-									<List dense>
-										{tasks.length ? (
-											tasks.map((task) => <KanbanItem task={task} projectId={id} key={task._id}></KanbanItem>)
-										) : (
-											<ListItem>
-												<ListItemText primary={"No tasks."}></ListItemText>
-											</ListItem>
-										)}
-									</List>
-								</KanbanCol>
-							))}
+							{mounted ? (
+								returnOrganizedTasks(tasks).map(({ status, tasks }) => (
+									<KanbanCol key={status} status={status} changeTaskStatus={changeTaskStatus}>
+										<Typography variant="h6" component="h3">
+											{status}
+										</Typography>
+										<List dense>
+											{tasks.length ? (
+												tasks.map((task) => <KanbanItem task={task} projectId={id} key={task._id}></KanbanItem>)
+											) : (
+												<ListItem>
+													<ListItemText primary={"No tasks."}></ListItemText>
+												</ListItem>
+											)}
+										</List>
+									</KanbanCol>
+								))
+							) : (
+								<Grid container justify="center">
+									<CircularProgress aria-labelledby="loading tasks" aria-busy={!mounted} size="6rem" />
+								</Grid>
+							)}
 						</Grid>
 					</DndProvider>
 				</Wrapper>

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const { ObjectId } = require("mongoose").Types;
 const { Project } = require("../models");
 const { db } = require("../models/Task");
 const { flash, serverError, isAuth } = require("../config/utils");
@@ -10,11 +10,19 @@ const { flash, serverError, isAuth } = require("../config/utils");
 module.exports = (router) => {
 	router.get("/api/projects/:id", async (req, res) => {
 		try {
-			let projects = await Project.findById(req.params.id)
+			console.log(req.user)
+			let project = await Project.findById(req.params.id)
 				.populate({ path: "tasks", populate: { path: "assignedUser", select: { password: 0 } } })
 				.populate("members", { password: 0 });
-
-			res.json(projects);
+	
+			let userIsAdmin = project.admins.filter(a => ObjectId(a).equals(req.user._id)).length > 0;
+			let projectObj = project.toObject();
+			projectObj.admins = project.members.filter((m) => project.admins.includes(ObjectId(m._id)));
+			console.log(projectObj, `User is admin: ${userIsAdmin}`);
+			res.json({
+				...projectObj,
+				userIsAdmin: userIsAdmin
+			});
 		} catch (error) {
 			console.error(error);
 			serverError(res);
@@ -39,13 +47,13 @@ module.exports = (router) => {
 
 	router.post("/api/projects", async ({ body }, res) => {
 		let newUsers = [];
-		newUsers.push(mongoose.Types.ObjectId(body.creator));
+		newUsers.push(ObjectId(body.creator));
 
 		try {
 			let newProject = await Project.create({
 				title: body.title,
 				description: body.description,
-				creator: mongoose.Types.ObjectId(body.creator),
+				creator: ObjectId(body.creator),
 				admins: newUsers,
 				members: newUsers
 			});

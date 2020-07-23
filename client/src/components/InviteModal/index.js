@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ModalForm from "../../components/ModalForm";
+import ModalForm from "../ModalForm";
 import inviteAPI from "../../utils/inviteAPI";
 import {
 	TextField,
@@ -12,23 +12,25 @@ import {
 	CircularProgress,
 	Divider,
 	Typography as T,
-	Button
+	Button,
+	useTheme,
+	useMediaQuery
 } from "@material-ui/core";
 import useDebounce from "../../utils/debounceHook";
 
 const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
-	const [flash, setFlash] = useState({ message: null, type: null });
-	const [invalid, setInvalid] = useState(true);
-	const [userResults, setUserResults] = useState([]);
-	const [inProgress, setInProgress] = useState(false);
-	const [admin, setAdmin] = useState(false);
-	const [search, setSearch] = useState("");
-	const debouncedSearch = useDebounce(search, 500);
-	const handleInvite = async (id) => {
-		let res = await inviteAPI.sendInvite(projectId, admin, id);
-		setFlash(res.flash);
-		console.log(res);
-	};
+	const [flash, setFlash] = useState({ message: null, type: null }),
+		[invalid, setInvalid] = useState(true),
+		[userResults, setUserResults] = useState([]),
+		[inProgress, setInProgress] = useState(false),
+		[search, setSearch] = useState(""),
+		debouncedSearch = useDebounce(search, 500),
+		isMobile = useMediaQuery("(max-width: 960px)"),
+		theme = useTheme(),
+		handleInvite = async (id, admin) => {
+			let res = await inviteAPI.sendInvite(projectId, admin, id);
+			setFlash(res.flash);
+		};
 	useEffect(() => {
 		setInvalid(flash.type === "error");
 	}, [flash.type]);
@@ -41,46 +43,52 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 		if (debouncedSearch) {
 			setInProgress(true);
 			inviteAPI.searchUsers(search.trim()).then((results) => {
-				setUserResults(results);
+				setUserResults(
+					results.map((r) => {
+						return {
+							...r,
+							admin: false
+						};
+					})
+				);
 				setInProgress(false);
 			});
 		}
 	}, [debouncedSearch]);
+
+	const handleSetAdmin = (id, admin) => {
+		setUserResults(
+			userResults.map((r) => {
+				return {
+					...r,
+					admin: r._id === id ? admin : r.admin
+				};
+			})
+		);
+	};
 	return (
 		<ModalForm
 			onFormSubmit={(event) => event.preventDefault()}
 			flash={flash}
 			open={openInvite}
 			setOpen={setInviteOpen}
+			noSubmitButton
 			information="Enter invitee's username or email address and they will receive an invite to join your project."
-			BoxStyle={{ minWidth: "max-content", maxWidth: "90vw" }}
+			BoxStyle={{ minWidth: "max-content", width: isMobile ? "95vw" : "600px" }}
 			TextFields={[
 				<TextField
 					error={invalid}
 					onChange={({ target }) => setSearch(target.value)}
 					onBlur={() => setInvalid(false)}
 					helperText={invalid ? flash.message : ""}
-					// inputRef={input}
 					color="secondary"
 					name="email_or_username"
 					fullWidth
 					label="Search by username or email address."
 					type="text"
 				/>,
-				// <React.Fragment>
-				// 	{userIsAdmin ? (
-				// 		<Grid container justify="center">
-				// 			<FormControlLabel
-				// 				label="Make invitee an admin?"
-				// 				control={
-				// 					<Switch color="secondary" checked={admin} onChange={({ target }) => setAdmin(target.checked)} name="admin" />
-				// 				}
-				// 			/>
-				// 		</Grid>
-				// 	) : null}
-				// </React.Fragment>,
 				search !== "" && (
-					<Box boxShadow={2} borderRadius="0.15rem" border="1px solid white" width="100%">
+					<Box boxShadow={4} style={{background: theme.palette.secondary.main, color: "#fff" }} borderRadius="0.15rem" width="100%">
 						<Grid container justify="center">
 							<T variant="h4">Members found</T>
 						</Grid>
@@ -105,15 +113,15 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 																	label="Admin?"
 																	control={
 																		<Switch
-																			color="secondary"
-																			checked={admin}
-																			onChange={({ target }) => setAdmin(target.checked)}
+																			color="primary"
+																			checked={r.admin}
+																			onChange={({ target }) => handleSetAdmin(r._id, target.checked)}
 																			name="admin"
 																		/>
 																	}
 																/>
 															)}
-															<Button variant="outlined" color="secondary" onClick={() => handleInvite(r._id)}>
+															<Button variant="contained" color="primary" onClick={() => handleInvite(r._id, r.admin)}>
 																Invite
 															</Button>
 														</div>

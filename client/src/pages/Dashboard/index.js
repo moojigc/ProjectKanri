@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, CircularProgress, LinearProgress } from "@material-ui/core";
 import { Title, Wrapper } from "../../components/MiniComponents";
 import Container from "@material-ui/core/Container";
 import { Grid, Typography } from "@material-ui/core/";
@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Dashboard = () => {
+	const [mounted, setMounted] = useState(false)
 	const classes = useStyles();
 	const [projects, setProjects] = useState([]);
 	const [openCreate, setOpenCreate] = useState(false);
@@ -37,6 +38,7 @@ const Dashboard = () => {
 			.getAllProjects()
 			.then((res) => {
 				setProjects(res);
+				setMounted(true)
 			})
 			.catch((err) => console.error(err));
 	};
@@ -46,37 +48,43 @@ const Dashboard = () => {
 			<Wrapper>
 				<Title>Projects</Title>
 				<div className={classes.dynamicgrid}>
-					<Grid
-						container
-						spacing={2}
-						direction="row"
-						justify="flex-start"
-						alignItems="flex-start">
-						{projects.length ? (
-							projects.map((project, index) => {
-								return (
-									<Grid item xs={12} sm={6} md={4} key={project._id}>
-										<ProjectCard
-											key={project._id}
-											id={project._id}
-											title={project.title}
-											description={<Markdown source={project.description}/>}
-											createdAt={project.createdAt}
-											updatedAt={project.updatedAt}
-											creator={project.creator.username}
-											admins={project.admins}
-											members={project.members}></ProjectCard>
-									</Grid>
-								);
-							})
-						) : (
-							<Grid item xs={12}>
-								<Typography paragraph>
-									No projects to display. Start one today!
-								</Typography>
-							</Grid>
-						)}
-					</Grid>
+					{mounted ? (
+						<Grid
+							container
+							spacing={2}
+							direction="row"
+							justify="flex-start"
+							alignItems="flex-start">
+							{projects.length ? (
+								projects.map((project, index) => {
+									return (
+										<Grid item xs={12} sm={6} md={4} key={project._id}>
+											<ProjectCard
+												key={project._id}
+												id={project._id}
+												title={project.title}
+												description={<Markdown source={project.description}/>}
+												createdAt={project.createdAt}
+												updatedAt={project.updatedAt}
+												creator={project.creator.username}
+												admins={project.admins}
+												members={project.members}></ProjectCard>
+										</Grid>
+									);
+								})
+							) : (
+								<Grid item xs={12}>
+									<Typography paragraph>
+										No projects to display. Start one today!
+									</Typography>
+								</Grid>
+							)}
+						</Grid>
+					) : (
+						<Grid container justify='center'>
+							<CircularProgress aria-describedby="Loading projects" aria-busy={!mounted} size="5rem" color="secondary" />
+						</Grid>
+					)}
 				</div>
 			</Wrapper>
 			<ProjectDialog

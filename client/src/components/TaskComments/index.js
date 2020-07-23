@@ -13,8 +13,9 @@ import Markdown from 'react-markdown'
  * @param {{ _id, body, createdAt, editMode, updatedAt, creator: { _id, username, firstName: string, lastName } }[]} props.comments
  * @param {Function} props.setComments
  * @param {string} props.taskId
+ * @param {string} props.projectId
  */
-const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
+const TaskComments = ({ user, comments, setComments, taskId, projectId, admins }) => {
 	const editCommentField = useRef(null);
 	const [visible, setVisible] = useState(false);
 	const commentField = useRef(null);
@@ -27,11 +28,11 @@ const TaskComments = ({ user, comments, setComments, taskId, admins }) => {
 	const handleCommentSubmit = async (event) => {
 		event.preventDefault();
 		console.log(taskId, commentField.current.value);
-		let res = await taskAPI.postComment(taskId, { body: commentField.current.value });
+		let res = await taskAPI.postComment(taskId, { body: commentField.current.value, project: projectId });
 		let newComment = {
 			...res.comment,
 			// Avoids a second db call in the backend
-			creator: user
+			creator: user,
 		};
 		setComments([newComment].concat(comments));
 		commentField.current.value = "";

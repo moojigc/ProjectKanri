@@ -1,6 +1,10 @@
 const { Schema, model, Types } = require("mongoose");
 
 const TaskCommentSchema = new Schema({
+	project: {
+		type: Schema.Types.ObjectId,
+		ref: "Project"
+	},
 	body: {
 		type: String,
 		required: true,
@@ -22,9 +26,6 @@ const TaskCommentSchema = new Schema({
 	}
 });
 
-TaskCommentSchema.pre("updateOne", function () {
-	this.updatedAt = new Date();
-});
 
 const TaskComment = model("TaskComment", TaskCommentSchema);
 

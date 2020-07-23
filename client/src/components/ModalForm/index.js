@@ -7,39 +7,10 @@ import { Box, Button, Typography, Grid, useMediaQuery } from "@material-ui/core"
 import { Alert } from "@material-ui/lab";
 import { SendOutlined } from "@material-ui/icons";
 
-const useStyles = makeStyles((theme) => ({
-	modal: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center"
-	},
-	paper: {
-		backgroundColor: theme.palette.background.paper,
-		border: "unset",
-		borderRadius: "0.25rem",
-		color: theme.palette.info.contrastText,
-		boxShadow: theme.shadows[5],
-		padding: theme.spacing(2, 4, 3),
-		"& button, input, label": {
-			color: theme.palette.getContrastText(theme.palette.background.paper)
-		},
-		"&:focus": {
-			border: "inital"
-		}
-	},
-	form: {
-		"& > div:not(:last-of-type)": {
-			marginBottom: "1rem"
-		}
-	},
-	helperText: {
-		color: "initial"
-	}
-}));
-
 /**
  *
  * @param {Object} props
+ * @param {boolean} props.noSubmitButton
  * @param {boolean} props.open
  * @param {Function} props.setOpen
  * @param {Function} props.onFormSubmit
@@ -48,7 +19,48 @@ const useStyles = makeStyles((theme) => ({
  * @param {import('react').FunctionComponent[]} props.TextFields
  * @param {import("react").CSSProperties} props.BoxStyle
  */
-const ModalForm = ({ open, setOpen, onFormSubmit, flash, information, TextFields, labelledby, describedby, BoxStyle, otherButtons }) => {
+const ModalForm = ({
+	noSubmitButton,
+	open,
+	setOpen,
+	onFormSubmit,
+	flash,
+	information,
+	TextFields,
+	labelledby,
+	describedby,
+	BoxStyle,
+	otherButtons
+}) => {
+	const useStyles = makeStyles((theme) => ({
+		modal: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center"
+		},
+		paper: {
+			backgroundColor: theme.palette.background.paper,
+			border: "unset",
+			borderRadius: "0.25rem",
+			color: theme.palette.info.contrastText,
+			boxShadow: theme.shadows[5],
+			padding: theme.spacing(2, 4, 3),
+			color: BoxStyle.color || theme.palette.getContrastText(theme.palette.background.paper),
+			// "& *": {
+			// },
+			"&:focus": {
+				border: "inital"
+			}
+		},
+		form: {
+			"& > div:not(:last-of-type)": {
+				marginBottom: "1rem"
+			}
+		},
+		helperText: {
+			color: "initial"
+		}
+	}));
 	const classes = useStyles();
 	const mobile = useMediaQuery("(max-width: 960px)");
 
@@ -67,7 +79,7 @@ const ModalForm = ({ open, setOpen, onFormSubmit, flash, information, TextFields
 		>
 			<Fade in={open}>
 				<Box style={BoxStyle} className={classes.paper}>
-					<form style={{ width: mobile ? "90vw" : "60vw" }} onSubmit={onFormSubmit} className={classes.form}>
+					<form style={{ width: "100%" }} onSubmit={onFormSubmit} className={classes.form}>
 						{information ? (
 							<Grid container justify="center">
 								{flash.type === "success" ? (
@@ -77,15 +89,17 @@ const ModalForm = ({ open, setOpen, onFormSubmit, flash, information, TextFields
 								)}
 							</Grid>
 						) : null}
-						{TextFields.map((t) => {
-							return <Grid container>{t}</Grid>;
+						{TextFields.map((t, i) => {
+							return <Grid key={i} container>{t}</Grid>;
 						})}
-						<Grid container justify="center">
-							<Button endIcon={<SendOutlined />} type="submit" variant="contained" color="secondary">
-								<Typography style={{ color: "white" }}>Submit</Typography>
-							</Button>
-							{otherButtons?.length && otherButtons.map((button) => button)}
-						</Grid>
+						{!noSubmitButton && (
+							<Grid container justify="center">
+								<Button endIcon={<SendOutlined />} type="submit" variant="contained" color="secondary">
+									<Typography style={{ color: "white" }}>Submit</Typography>
+								</Button>
+								{otherButtons?.length && otherButtons.map((button) => button)}
+							</Grid>
+						)}
 					</form>
 				</Box>
 			</Fade>

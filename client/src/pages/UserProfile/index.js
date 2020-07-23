@@ -8,7 +8,8 @@ import moment from "moment";
 import { ExpandMore, ArrowForwardRounded } from "@material-ui/icons";
 import UserDetailTable from "./table";
 import UpdatePassword from "./UpdatePassword";
-import InviteModal from "./InviteModal";
+import InviteModal from "../../components/InviteModal";
+import userAPI from "../../utils/userAPI";
 
 const useStyles = makeStyles((theme) => ({
 	accordion: {
@@ -43,11 +44,10 @@ const UserProfile = () => {
 		setInviteOpen(true);
 	};
 	useEffect(() => {
-		Axios({ url: "/api/myprofile" }).then(({ data }) => {
+		userAPI.getProfile().then((data) => {
 			setUserData(data.user);
 			setProjects(data.projects);
 			setMounted(true);
-			console.log(data);
 		});
 	}, []);
 	return (
