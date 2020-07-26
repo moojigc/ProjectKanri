@@ -13,6 +13,8 @@
 Head over to [ProjectKanri](https://projectkanri.herokuapp.com) today to sign up for an account and start tracking your next project's progress! (Guest account for demoing coming soon).
 
 ## The Team
-Moojig: All aspects of user authentication on back and front end, including setting up Express middleware to track user sessions. Created the schema for the Mongoose database models, optimizing our API endpoints and adding in checks for admin/non-admin users on PUT and DELETE routes for projects/tasks. Created some pages on the front end: `Welcome` page, `Profile` page, `Login` page, and `Comments` component for the `Task` page.
-Samantha: `/api/projects` endpoints, creating the `Dashboard` and `Project` pages, and creating the front end API interactions for the `Project` and `Dashboard` pages.
-Pia: Creating the `Task` page, set up front end API interactions for `tasks` and setting up back end `/api/tasks` endpoints.
+**Moojig**: All aspects of user authentication on back and front end, including setting up Express middleware to track user sessions. Created the schema for the Mongoose database models, optimizing our API endpoints and adding in checks for admin/non-admin users on PUT and DELETE routes for projects/tasks. Created some pages on the front end: `Welcome` page, `Profile` page, `Login` page, and `Comments` component for the `Task` page.
+
+**Samantha**: `/api/projects` endpoints, creating the `Dashboard` and `Project` pages, and creating the front end API interactions for the `Project` and `Dashboard` pages.
+
+**Pia**: Creating the `Task` page, set up front end API interactions for `tasks` and setting up back end `/api/tasks` endpoints.
