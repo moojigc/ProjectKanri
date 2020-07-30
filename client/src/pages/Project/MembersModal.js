@@ -17,14 +17,13 @@ import {
 	useMediaQuery
 } from "@material-ui/core";
 import useDebounce from "../../utils/debounceHook";
+import projectAPI from "../../utils/projectAPI";
 
-const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
+const MembersModal = ({ setProject, project, projectId, userIsOwner, members, admins, open, setOpen }) => {
 	const [flash, setFlash] = useState({ message: null, type: null }),
 		[invalid, setInvalid] = useState(true),
-		[userResults, setUserResults] = useState([]),
+		[members, setMembers] = useState([]),
 		[inProgress, setInProgress] = useState(false),
-		[search, setSearch] = useState(""),
-		debouncedSearch = useDebounce(search, 500),
 		isMobile = useMediaQuery("(max-width: 960px)"),
 		theme = useTheme(),
 		handleInvite = async (id, admin) => {
@@ -33,39 +32,17 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 		};
 	useEffect(() => {
 		setInvalid(flash.type === "error");
-	}, [flash.type]);
-	useEffect(() => {
-		if (search === "") {
-			setUserResults([]);
-			setInProgress(false);
-			return;
-		}
-		if (debouncedSearch) {
-			setInProgress(true);
-			inviteAPI.searchUsers(search.trim()).then((results) => {
-				setUserResults(
-					results.map((r) => {
-						return {
-							...r,
-							admin: false
-						};
-					})
-				);
-			setInProgress(false);
-			});
-		}
-	}, [debouncedSearch]);
-
-	const handleSetAdmin = (id, admin) => {
-		setUserResults(
-			userResults.map((r) => {
-				return {
-					...r,
-					admin: r._id === id ? admin : r.admin
-				};
-			})
-		);
-	};
+    }, [flash.type]);
+    /**
+     * 
+     * @param {"makeAdminNew" | "makeAdminExisiting" | "removeAdminRights" | "removeMember"} action 
+     */
+	const handleUpdate = async (action, id) => {
+        let res = await projectAPI.membersDispatch(action, projectId, id)
+        setFlash(res.flash)
+        let project = await projectAPI.getProject(projectId)
+        setProject(project)
+    }
 	return (
 		<ModalForm
 			onFormSubmit={(event) => event.preventDefault()}
@@ -73,11 +50,9 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 			open={openInvite}
 			setOpen={setInviteOpen}
 			noSubmitButton
-			information="Enter invitee's username or email address and they will receive an invite to join your project."
-			BoxStyle={{ minWidth: "50vw", width: isMobile ? "90%" : "600px" }}
+			BoxStyle={{ minWidth: "max-content", width: isMobile ? "95vw" : "600px" }}
 			TextFields={[
 				<TextField
-				variant="outlined"
 					error={invalid}
 					onChange={({ target }) => setSearch(target.value)}
 					onBlur={() => setInvalid(false)}
@@ -85,7 +60,7 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 					color="secondary"
 					name="email_or_username"
 					fullWidth
-					label="Search member"
+					label="Search by username or email address."
 					type="text"
 				/>,
 				search !== "" && (
@@ -96,9 +71,9 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 						<Divider />
 						<Grid container justify="center">
 							{!inProgress ? (
-								userResults.length ? (
+								members.length ? (
 									<List style={{ width: "inherit" }}>
-										{userResults.map((r, i, arr) => (
+										{members.map((r, i, arr) => (
 											<React.Fragment key={r._id}>
 												<ListItem key={r._id}>
 													<Grid container alignItems="center" justify="space-between">
@@ -109,18 +84,10 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 															</T>
 														</div>
 														<div>
-															{userIsAdmin && (
-																<FormControlLabel
-																	label="Admin?"
-																	control={
-																		<Switch
-																			color="primary"
-																			checked={r.admin}
-																			onChange={({ target }) => handleSetAdmin(r._id, target.checked)}
-																			name="admin"
-																		/>
-																	}
-																/>
+															{userIsOwner && (
+																<Button onClick={() => handleUpdate("makeAdminExisiting", r._id)}>
+                                                                    Make Admin
+                                                                </Button>
 															)}
 															<Button variant="contained" color="primary" onClick={() => handleInvite(r._id, r.admin)}>
 																Invite
@@ -153,4 +120,4 @@ const InviteModal = ({ projectId, userIsAdmin, openInvite, setInviteOpen }) => {
 	);
 };
 
-export default InviteModal;
+export default MembersModal;

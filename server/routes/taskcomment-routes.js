@@ -23,7 +23,7 @@ module.exports = (router) => {
 					}
 				}
 			);
-			res.json({ comment, ...flash("Saved comment.", "success") }).end();
+			res.json({ comment: comment.toObject(), ...flash("Saved comment.", "success") }).end();
 		} catch (error) {
 			console.error(error);
 			serverError(res);

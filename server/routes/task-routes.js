@@ -1,6 +1,6 @@
 const { User, Task, Project } = require("../models");
 const { ObjectId } = require("mongoose").Types;
-const { flash, serverError } = require("../config/utils");
+const { flash, serverError, isAuth } = require("../config/utils");
 const compareIds = (id1, id2) => ObjectId(id1).equals(ObjectId(id2));
 
 /**
@@ -8,7 +8,7 @@ const compareIds = (id1, id2) => ObjectId(id1).equals(ObjectId(id2));
  * @param {import("express").Router} router
  */
 module.exports = (router) => {
-	router.get("/api/task/:id", async (req, res) => {
+	router.get("/api/task/:id", isAuth, async (req, res) => {
 		try {
 			let rawTask = await Task.findById(req.params.id)
 				.populate({ path: "creator", select: { password: 0 } })
@@ -39,7 +39,7 @@ module.exports = (router) => {
 		}
 	});
 
-	router.put("/api/task/:id", async (req, res) => {
+	router.put("/api/task/:id", isAuth, async (req, res) => {
 		console.log("actually in this one")
 		try {
 			if (req.body.assignedUser === "NONE") {
@@ -79,7 +79,7 @@ module.exports = (router) => {
 		}
 	});
 
-	router.post("/api/project/:id/task", async (req, res) => {
+	router.post("/api/project/:id/task", isAuth, async (req, res) => {
 		try {
 			let dbTask = await Task.create({
 				...req.body,
@@ -103,7 +103,7 @@ module.exports = (router) => {
 			serverError(res);
 		}
 	});
-	router.delete("/api/task/:id", async (req, res) => {
+	router.delete("/api/task/:id", isAuth, async (req, res) => {
 		let task = await Task.findOne({_id: req.params.id}).populate("project")
 		if (compareIds(req.user._id, task.creator) || task.project.admins.includes(ObjectId(req.user._id))) {
 			await task.deleteOne();

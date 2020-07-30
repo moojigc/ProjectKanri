@@ -5,22 +5,8 @@ const { User, Project } = require("../models/"),
 	{ sendResetEmail, sendVerifyEmail } = require("../config/nodemailer"),
 	EMAIL_SECRET = process.env.EMAIL_SECRET || require("../config/secrets.json").EMAIL_SECRET,
 	crypt = require("../config/crypt"),
-	{ emailRegex } = require("../../shared");
-/**
- *
- * @param {string} message
- * @param {"error" | "success"} type
- */
-const flash = (message, type) => {
-	return {
-		flash: {
-			message: message,
-			type: type
-		}
-	};
-};
-const serverError = (res) => res.status(500).json(flash("Internal server error.", "error")).end();
-
+	{ emailRegex } = require("../../shared"),
+	{ flash, serverError, isAuth } = require("../config/utils");
 const guestUser = {
 	_id: null,
 	username: "Guest",
@@ -235,7 +221,7 @@ module.exports = (router) => {
 			serverError(res);
 		}
 	});
-	router.put("/api/update-pass", async (req, res) => {
+	router.put("/api/update-pass", isAuth, async (req, res) => {
 		if (!req.user) {
 			res.json(flash("Not logged in!", "error"));
 			return;
@@ -295,7 +281,7 @@ module.exports = (router) => {
 	});
 	router.get("/api/resend-verification/:usernameOrEmail", async (req, res) => {
 		try {
-			if (!req.params.usernameOrEmail) return res.json(flash("No username or email address entered.", "error"))
+			if (!req.params.usernameOrEmail) return res.json(flash("No username or email address entered.", "error"));
 			let user = await User.findOne({
 				[emailRegex.test(req.params.usernameOrEmail) ? "email" : "username"]: req.params.usernameOrEmail
 			});
@@ -304,10 +290,10 @@ module.exports = (router) => {
 				expiresIn: "1d"
 			});
 			await sendVerifyEmail({ address: user.email, token: token });
-			res.json(flash("Please check your email for the verification. It may take a few minutes for you to receive it.", "success"))
+			res.json(flash("Please check your email for the verification. It may take a few minutes for you to receive it.", "success"));
 		} catch (error) {
-			console.error(error)
-			serverError(res)
+			console.error(error);
+			serverError(res);
 		}
 	});
 };

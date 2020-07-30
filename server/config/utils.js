@@ -19,7 +19,13 @@ const serverError = (res) => res.status(500).json(flash("Internal server error."
 
 const isAuth = (req, res, next) => {
 	if (!req.user) return res.status(401).json(flash("Authorization error.", "error")).end();
-	else next();
+	// imitate the database response for the guest user
+	else if (req.user.username === "guest" && req.method !== "GET") {
+		console.log("caught demo user, database will not update");
+		let now = new Date();
+		let response = { ...req.body, updatedAt: req.method === "PUT" ? new Date() : now, createdAt: now, ...flash("Guest user action blocked.", "success") }
+		res.json(response);
+	} else next();
 };
 
 module.exports = { flash, serverError, isAuth };

@@ -3,6 +3,7 @@ const { flash, serverError, isAuth } = require("../config/utils");
 const nodemailer = require("../config/nodemailer");
 const EMAIL_SECRET = process.env.EMAIL_SECRET || require("../config/secrets.json").EMAIL_SECRET;
 const jwt = require("jsonwebtoken");
+const { emailRegex } = require("../../shared");
 const { ObjectId } = require("mongoose").Types;
 const compareIds = (id1, id2) => ObjectId(id1).equals(ObjectId(id2));
 
@@ -39,10 +40,9 @@ module.exports = (router) => {
 				_id: query.projectId
 			});
 			if (project.members.includes(member._id)) return res.json(flash(`${member.username} is already part of this project.`, "error"));
-			const admin = new Boolean(query.admin);
 			const token = jwt.sign(
 				{
-					admin: admin,
+					admin: query.admin,
 					projectId: project._id,
 					userId: query.userId,
 					projectTitle: project.title
@@ -76,12 +76,13 @@ module.exports = (router) => {
 	router.put("/api/invite-member/:token", isAuth, async (req, res) => {
 		try {
 			let { admin, projectId, userId } = jwt.verify(req.params.token, EMAIL_SECRET);
-			console.log(userId);
+			console.log(projectId)
+			let adminBoolean = admin === "true";
 			if (!compareIds(userId, req.user._id))
-				return res.json(flash(`Sorry, ${req.user.username}, you are not the intended recipient of this invite.`, "error"));
+			return res.json(flash(`Sorry, ${req.user.username}, you are not the intended recipient of this invite.`, "error"));
 			let { members } = await Project.findOne({ _id: projectId });
 			if (members.filter((m) => compareIds(m, userId)).length > 0) return res.json(flash("You are already in this project.", "error"));
-			if (admin) {
+			if (adminBoolean) {
 				console.log(req.query.userId);
 				let project = await Project.findOneAndUpdate(
 					{ _id: projectId },
@@ -98,14 +99,15 @@ module.exports = (router) => {
 					redirect: `/project/${project._id}`
 				}).end();
 			} else {
-				let project = await Project.updateOne(
+				let project = await Project.findOneAndUpdate(
 					{ _id: projectId },
 					{
 						$push: {
 							members: req.userId
 						},
 						updatedAt: new Date()
-					}
+					},
+					{ new: true }
 				);
 				res.json({
 					...flash(`You have now been added to ${project.title}.`, "success"),

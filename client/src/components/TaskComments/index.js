@@ -5,7 +5,7 @@ import taskAPI from "../../utils/taskAPI";
 import { MoreVert } from "@material-ui/icons";
 import OptionsMenu from "./OptionsMenu";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
-import Markdown from 'react-markdown'
+import Markdown from "react-markdown";
 /**
  *
  * @param {Object} props
@@ -32,7 +32,7 @@ const TaskComments = ({ user, comments, setComments, taskId, projectId, admins }
 		let newComment = {
 			...res.comment,
 			// Avoids a second db call in the backend
-			creator: user,
+			creator: user
 		};
 		setComments([newComment].concat(comments));
 		commentField.current.value = "";
@@ -56,8 +56,8 @@ const TaskComments = ({ user, comments, setComments, taskId, projectId, admins }
 			comments.map((c) => {
 				return {
 					...c,
-					body: c._id === res._id ? res.body : c.body,
-					updatedAt: c._id === res._id ? res.updatedAt : c.updatedAt,
+					body: c._id === id ? res.body : c.body,
+					updatedAt: c._id === id ? res.updatedAt : c.updatedAt,
 					editMode: false
 				};
 			})
@@ -99,7 +99,8 @@ const TaskComments = ({ user, comments, setComments, taskId, projectId, admins }
 										</Avatar>
 										<div>
 											<T variant="subtitle1" component="div" style={{ lineHeight: 1, fontWeight: 700 }}>
-												{creator.firstName + " " + creator.lastName} {creator._id === user._id && <em style={{fontSize: 'smaller'}}>(You)</em>}
+												{creator.firstName + " " + creator.lastName}{" "}
+												{creator._id === user._id && <em style={{ fontSize: "smaller" }}>(You)</em>}
 											</T>
 											<T variant="caption" style={{ fontWeight: 100 }}>
 												{moment(createdAt).fromNow()}
@@ -123,10 +124,12 @@ const TaskComments = ({ user, comments, setComments, taskId, projectId, admins }
 											) : (
 												<React.Fragment>
 													<T>
-														<Markdown source={body}/>
+														<Markdown source={body} />
 													</T>
 													{!moment(updatedAt).isSame(createdAt) && (
-														<T component="span" style={{ fontSize: "small" }}><em>Edited {moment(updatedAt).fromNow()}</em></T>
+														<T component="span" style={{ fontSize: "small" }}>
+															<em>Edited {moment(updatedAt).fromNow()}</em>
+														</T>
 													)}
 												</React.Fragment>
 											)}

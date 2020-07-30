@@ -10,6 +10,7 @@ import { makeStyles, Box, Typography, useMediaQuery } from "@material-ui/core";
 import { ButtonLink, SakuraBranches } from "../../components/MiniComponents";
 import { ArrowForward, Send } from "@material-ui/icons";
 import AlertModal from "./AlertModal";
+import { UserContext } from "../../utils/UserContext";
 
 const useStyles = makeStyles((theme) => ({
 	welcome: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Welcome = () => {
+	const history = useHistory();
 	const [continueSignUp, setContinue] = useState(false);
 	const [valid, setValid] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
@@ -33,6 +35,7 @@ const Welcome = () => {
 		lastName: "",
 		email: ""
 	});
+	const { setUser } = useContext(UserContext);
 	const { flash, setFlash } = useContext(FlashContext);
 	const handleChangeUserDetails = ({ target }) => {
 		let { name, value } = target;
@@ -45,7 +48,6 @@ const Welcome = () => {
 		}
 	};
 	const classes = useStyles();
-	const history = useHistory();
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		if (Object.values(signUpDetails).filter((s) => !s).length === 0) {
@@ -55,6 +57,11 @@ const Welcome = () => {
 		} else {
 			setContinue(true);
 		}
+	};
+	const handleDemoLogin = async () => {
+		let res = await userAPI.login({ usernameOrEmail: "guest", password: "password" });
+		setUser(res.user);
+		history.push("/dashboard");
 	};
 	return (
 		<Container maxWidth="xl" disableGutters className={classes.welcome}>
@@ -162,9 +169,11 @@ const Welcome = () => {
 							</Grid>
 						</Grid>
 						{valid && (
-							<Grid style={{marginTop: "1rem"}} container justify="flex-end">
-								<Button style={{color: "white"}} onClick={() => setContinue(false)}>Cancel</Button>
-								<Button color="primary" style={{marginLeft: "1rem"}} type="submit" variant="contained" endIcon={<Send />}>
+							<Grid style={{ marginTop: "1rem" }} container justify="flex-end">
+								<Button style={{ color: "white" }} onClick={() => setContinue(false)}>
+									Cancel
+								</Button>
+								<Button color="primary" style={{ marginLeft: "1rem" }} type="submit" variant="contained" endIcon={<Send />}>
 									Sign up!
 								</Button>
 							</Grid>
@@ -195,7 +204,7 @@ const Welcome = () => {
 								Continue sign up
 							</Button>
 							<ButtonLink
-								style={{ marginTop: isMobile ? "0.5rem" : "initial" }}
+								style={{ marginTop: isMobile ? "0.5rem" : "initial", marginRight: "1rem" }}
 								variant="contained"
 								color="secondary"
 								to="/login"
@@ -203,6 +212,13 @@ const Welcome = () => {
 							>
 								Login with exisiting account
 							</ButtonLink>
+							<Button
+								style={{ marginTop: isMobile ? "0.5rem" : "initial", }}
+								onClick={handleDemoLogin}
+								variant="contained"
+							>
+								View demo
+							</Button>
 						</Grid>
 					</React.Fragment>
 				)}

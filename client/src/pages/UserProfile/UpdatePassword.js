@@ -18,12 +18,12 @@ const UpdatePassword = ({ open, setOpen }) => {
 		});
 	};
 	const handleUpdatePass = async (event) => {
+		event.preventDefault();
 		let res = await userAPI.updatePasswordWithCurrent(
 			passwords.current,
 			passwords.password,
 			passwords.password2
 		);
-		console.log(res);
 		setFlash(res.flash);
 	};
 	return (

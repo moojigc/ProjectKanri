@@ -24,7 +24,7 @@ import moment from "moment";
 import InviteModal from "../../components/InviteModal";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import OptionsMenu from "../../components/TaskComments/OptionsMenu";
-import DeleteModal from './DeleteModal'
+import DeleteModal from "./DeleteModal";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -61,14 +61,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Project = () => {
-	const history = useHistory()
+	const history = useHistory();
 	const classes = useStyles();
 	const [project, setProject] = useState({});
 	const [tasks, setTasks] = useState([]);
 	const descriptionInput = useRef(null);
 	const [editMode, setEditMode] = useState(false);
-	const [flash, setFlash] = useState({message: null, type: null})
-	const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+	const [flash, setFlash] = useState({ message: null, type: null });
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 	const { id } = useParams();
 	const { user } = useContext(UserContext);
 
@@ -132,14 +132,18 @@ const Project = () => {
 	const changeTaskStatus = useCallback(
 		(id, status) => {
 			let task = tasks.find((task) => task._id === id);
-			task = { ...task, status: status, updatedAt: Date.now() };
+			task = { ...task, status: status, updatedAt: new Date() };
 
 			//call api to update task
 			taskAPI
 				.updateTask(id, task)
-				.then((res) => {
-					console.log("updated task", res);
-					loadProject();
+				.then(() => {
+					setTasks(
+						tasks.map((t) => ({
+							...t,
+							status: t._id === id ? status : t.status
+						}))
+					);
 				})
 				.catch((err) => console.error(err));
 		},
@@ -148,9 +152,9 @@ const Project = () => {
 	const handleDelete = async (event) => {
 		event.preventDefault();
 		let res = await projectAPI.delete(project._id);
-		console.log(res)
+		console.log(res);
 		res.success ? history.push("/") : setFlash(res.flash);
-	}
+	};
 
 	const handleDescSubmit = async () => {
 		let res = await projectAPI.updateDesc(descriptionInput.current.value, id);
@@ -169,7 +173,7 @@ const Project = () => {
 		<div className={clsx(classes.root)}>
 			<ProjectNav projectId={id} />
 			<InviteModal openInvite={open} setInviteOpen={setOpen} projectId={id} userIsAdmin={project.userIsAdmin} />
-			<DeleteModal flash={flash} setOpen={setDeleteModalOpen} open={deleteModalOpen} onFormSubmit={handleDelete}/>
+			<DeleteModal flash={flash} setOpen={setDeleteModalOpen} open={deleteModalOpen} onFormSubmit={handleDelete} />
 			<Container disableGutters maxWidth="xl" component="main" className={clsx(classes.content)}>
 				<Wrapper>
 					<Title>{project.title || "Loading..."}</Title>
@@ -297,16 +301,18 @@ const Project = () => {
 													</Grid>
 												</div>
 											</MenuItem>
-											{project.creator === user._id && <MenuItem>
-												<div onClick={() => setDeleteModalOpen(true)}>
-													<Grid container spacing={1} alignItems="flex-start">
-														<Grid item>
-															<Delete />
+											{project.creator === user._id && (
+												<MenuItem>
+													<div onClick={() => setDeleteModalOpen(true)}>
+														<Grid container spacing={1} alignItems="flex-start">
+															<Grid item>
+																<Delete />
+															</Grid>
+															<Grid item>Delete</Grid>
 														</Grid>
-														<Grid item>Delete</Grid>
-													</Grid>
-												</div>
-											</MenuItem>}
+													</div>
+												</MenuItem>
+											)}
 										</Menu>
 									</React.Fragment>
 								)}
