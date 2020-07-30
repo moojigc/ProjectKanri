@@ -25,7 +25,6 @@ module.exports = (router) => {
 						username
 					};
 				});
-			console.log(filteredUsers);
 			res.json(filteredUsers).end();
 		} catch (error) {
 			console.error(error);
@@ -34,7 +33,7 @@ module.exports = (router) => {
 	});
 	router.get("/api/invite-member", isAuth, async ({ query, user }, res) => {
 		try {
-			console.log(query);
+			if (user.username === "guest") return res.json(flash("Create a real account to invite users to your projects!", "success"))
 			let member = await User.findOne({ _id: query.userId });
 			let project = await Project.findOne({
 				_id: query.projectId
@@ -76,14 +75,12 @@ module.exports = (router) => {
 	router.put("/api/invite-member/:token", isAuth, async (req, res) => {
 		try {
 			let { admin, projectId, userId } = jwt.verify(req.params.token, EMAIL_SECRET);
-			console.log(projectId)
 			let adminBoolean = admin === "true";
 			if (!compareIds(userId, req.user._id))
 			return res.json(flash(`Sorry, ${req.user.username}, you are not the intended recipient of this invite.`, "error"));
 			let { members } = await Project.findOne({ _id: projectId });
 			if (members.filter((m) => compareIds(m, userId)).length > 0) return res.json(flash("You are already in this project.", "error"));
 			if (adminBoolean) {
-				console.log(req.query.userId);
 				let project = await Project.findOneAndUpdate(
 					{ _id: projectId },
 					{
