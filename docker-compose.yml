@@ -1,0 +1,52 @@
+version: "3.6"
+### networks
+networks:
+  kanri-net:
+    driver: bridge
+###
+services:
+  projectkanri-db:
+    image: mongo:latest
+    container_name: projectkanri-db
+    networks:
+      - kanri-net
+    volumes:
+      - ./.db:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=projectkanri
+      - MONGO_INITDB_ROOT_PASSWORD=password123
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    container_name: api
+    networks:
+      - kanri-net
+    volumes:
+      - .:/app
+      - /app/node_modules/
+      - /app/client/
+    ports:
+      - 5040:5040
+    environment:
+      - PORT=5040
+      - EMAIL_SECRET=secret2
+      - SESS_SECRET=secret
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://projectkanri:password123@projectkanri-db
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+      - MAIL_HOST=${MAIL_HOST}
+  client:
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile.development
+    container_name: client
+    networks:
+      - kanri-net
+    volumes:
+      - /app/node_modules
+      - ./client:/app:rw
+    ports:
+      - 5050:5050 # you should keep these the same in local dev
+ 

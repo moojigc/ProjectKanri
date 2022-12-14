@@ -1,8 +1,10 @@
 const nodemailer = require("nodemailer");
 const MAIL_USER = process.env.MAIL_USER || require("./secrets.json").MAIL_USER;
 const MAIL_PASS = process.env.MAIL_PASS || require("./secrets.json").MAIL_PASS;
+const MAIL_HOST = process.env.MAIL_HOST || require("./secrets.json").MAIL_HOST;
+
 const { emailRegex } = require("../../shared");
-const LINK = process.env.NODE_ENV === "production" ? "https://projectkanri.herokuapp.com" : "http://localhost:3000";
+const LINK = process.env.NODE_ENV === "production" ? `https://${process.env.FQDN}` : `http://localhost:${process.env.PORT || 3000}`;
 
 const body = (address, token) => `
 <body>
@@ -13,11 +15,11 @@ const body = (address, token) => `
 `;
 
 const transporter = nodemailer.createTransport({
-	service: "Gmail",
 	auth: {
 		user: MAIL_USER,
 		pass: MAIL_PASS
-	}
+	},
+	host: MAIL_HOST
 });
 
 /**

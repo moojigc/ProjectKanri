@@ -1,0 +1,38 @@
+version: 2.1
+jobs:
+  build:
+    machine: true
+    resource_class: moojigc/rocks_ci
+    steps:
+      - checkout
+      - run:
+          name: Build Docker Image
+          command: |
+            echo 'Starting build...'
+            sudo docker login $DOCKERHUB_HOST -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
+            sudo docker build --pull --rm -f "Dockerfile" -t $DOCKERHUB_HOST/portfolio/projectkanri:latest "."
+      - run:
+          name: Push Docker Image
+          command: |
+            echo 'Pushing to $DOCKERHUB_HOST...'
+            sudo docker push $DOCKERHUB_HOST/portfolio/projectkanri:latest
+      - run:
+          name: Run webhook
+          command: |
+            curl --location --request POST $WEBHOOK_URL \
+            --header 'X-Webhook-Password: '$WEBHOOK_PASS'' \
+            --header 'Content-Type: application/json' \
+            --data-raw '{
+                "container": "projectkanri"
+            }'
+workflows:
+  build:
+    jobs:
+      - build:
+          context: elite
+          filters:
+            branches:
+              only:
+                - master
+
+# VS Code Extension Version: 1.4.0
