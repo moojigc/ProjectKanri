@@ -1,19 +1,21 @@
-FROM node:18
+FROM node:18-alpine
 
-RUN mkdir /app
+RUN mkdir -p /app/node_modules/.vite \
+    && chown -R node:node /app/node_modules \
+    && chown -R node:node /app/node_modules/.vite
 
-COPY package*.json ./app/
+COPY package*.json ./app
 
 WORKDIR /app
 
 RUN npm install
 
-RUN chown -R node /app/node_modules
-
-USER node
-
-COPY . ./app/
+COPY . ./app
 
 EXPOSE 5040
 
-CMD ["npm", "run", "watch"]
+ENV NODE_ENV=development-docker
+
+USER node
+
+CMD ["npm", "start"]

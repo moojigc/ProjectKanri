@@ -17,15 +17,14 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password123
   api:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile.development
     container_name: api
     networks:
       - kanri-net
     volumes:
-      - .:/app
-      - /app/node_modules/
-      - /app/client/
+      - ./api:/app:rw
+      - /app/node_modules
     ports:
       - 5040:5040
     environment:
@@ -40,13 +39,17 @@ services:
   client:
     build:
       context: ./client
-      dockerfile: ./Dockerfile.development
+      dockerfile: Dockerfile.development
     container_name: client
     networks:
       - kanri-net
     volumes:
-      - /app/node_modules
       - ./client:/app:rw
+      - /app/node_modules
+    environment:
+      - PORT=5050
+      - NODE_ENV=development
+      - VITE_APP_API_URL=http://api:5040
     ports:
       - 5050:5050 # you should keep these the same in local dev
  
