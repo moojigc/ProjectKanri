@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./axios";
 
 export default {
 	getProject: async (id) => {
@@ -56,7 +56,7 @@ export default {
 			url: `/api/project/${pId}/members?userId=${userId}&action=${action}`,
 			method: "PUT",
 			withCredentials: true
-		})
+		});
 		return data;
 	},
 	delete: async (id) => {
@@ -64,7 +64,7 @@ export default {
 			url: `/api/project/${id}`,
 			method: "DELETE",
 			withCredentials: true
-		})
+		});
 		return data;
 	}
 };

@@ -37,7 +37,7 @@ if (productionEnv) app.use(express.static(join(__dirname, "client/dist")));
 app.use(express.urlencoded({ extended: true }))
 	.use(express.json())
 	// Allows cross-origin requests from our React dev server
-	.use(cors({ credentials: true, origin: `http://localhost:3000` }))
+	.use(cors({ credentials: true, origin: "*" }))
 	// Session middleware
 	.use(
 		session({

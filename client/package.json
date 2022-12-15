@@ -2,23 +2,23 @@
   "name": "project-planner",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://api:5050",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@vitejs/plugin-react": "^2.0.1",
+    "axios": "^1.2.1",
     "clsx": "^1.1.1",
     "material-ui-popup-state": "^1.6.1",
     "moment": "^2.27.0",
+    "react": "^16.14.0",
     "react-dnd": "^11.1.3",
     "react-dnd-html5-backend": "^11.1.3",
-    "react-markdown": "^8.0.4",
-    "react": "^16.14.0",
     "react-dom": "^16.13.1",
+    "react-markdown": "^8.0.4",
     "react-router-dom": "^5.2.0",
     "vite": "^3.0.9",
-    "vite-plugin-svgr": "^2.2.1",
-    "@vitejs/plugin-react": "^2.0.1"
+    "vite-plugin-svgr": "^2.2.1"
   },
   "devDependencies": {
     "sass": "^1.54.8",

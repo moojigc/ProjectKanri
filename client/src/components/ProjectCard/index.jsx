@@ -11,7 +11,7 @@ import { AvatarGroup } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { ButtonLink } from "../../components/MiniComponents";
+import { ButtonLink } from "../MiniComponents";
 import moment from "moment";
 import { Tooltip } from "@material-ui/core";
 
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: theme.palette.secondary.main,
 		borderColor: theme.palette.secondary.light
 	},
-	viewColor: { 
+	viewColor: {
 		backgroundColor: theme.palette.primary.main,
 		padding: ".5rem",
 		boxShadow: theme.shadows[1]
@@ -92,7 +92,8 @@ const ProjectCard = ({
 					})}
 					onClick={handleExpandClick}
 					aria-expanded={expanded}
-					aria-label="show more">
+					aria-label="show more"
+				>
 					<ExpandMoreIcon />
 				</IconButton>
 			</CardActions>
@@ -106,10 +107,7 @@ const ProjectCard = ({
 							? adminNames.map((admin) => {
 									return (
 										<Tooltip arrow title={admin} key={admin}>
-											<Avatar
-												style={{fontSize: "1rem" }}
-												className={classes.avatar}
-												alt={admin}>
+											<Avatar style={{ fontSize: "1rem" }} className={classes.avatar} alt={admin}>
 												{admin.charAt(0).toUpperCase()}
 											</Avatar>
 										</Tooltip>
@@ -126,10 +124,7 @@ const ProjectCard = ({
 							? memberNames.map((mem) => {
 									return (
 										<Tooltip arrow title={mem} key={mem}>
-											<Avatar
-												style={{fontSize: "1rem" }}
-												className={classes.avatar}
-												alt={mem}>
+											<Avatar style={{ fontSize: "1rem" }} className={classes.avatar} alt={mem}>
 												{mem.charAt(0).toUpperCase()}
 											</Avatar>
 										</Tooltip>
@@ -143,10 +138,7 @@ const ProjectCard = ({
 							Created By:
 						</Typography>
 						<Tooltip arrow title={creator}>
-							<Avatar
-								className={classes.avatar}
-								style={{ marginRight: "1rem", fontSize: "1rem" }}
-								alt={creator}>
+							<Avatar className={classes.avatar} style={{ marginRight: "1rem", fontSize: "1rem" }} alt={creator}>
 								{creator.charAt(0).toUpperCase()}
 							</Avatar>
 						</Tooltip>

@@ -5,7 +5,6 @@ import { Typography as T, Button, Container, Grid, Divider, useMediaQuery, TextF
 import inviteAPI from "../../utils/inviteAPI";
 import { Alert } from "@material-ui/lab";
 import ModalForm from "../../components/ModalForm";
-import { emailRegex } from "../../utils/shared";
 import userAPI from "../../utils/userAPI";
 
 const AcceptInvite = ({ user, setUser }) => {
@@ -34,12 +33,12 @@ const AcceptInvite = ({ user, setUser }) => {
 	};
 	const [login, setLogin] = useState({ usernameOrEmail: null, password: null, rememberMe: false });
 	const handleLoginDetails = ({ target }) => {
-		const { name, value, checked } = target
+		const { name, value, checked } = target;
 		setLogin({
 			...login,
 			[target.name]: name === "rememberMe" ? checked : value
 		});
-		console.log(login)
+		console.log(login);
 	};
 	const handleLogin = async (event) => {
 		event.preventDefault();

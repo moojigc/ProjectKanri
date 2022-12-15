@@ -20,7 +20,7 @@ import ForgotModal from "../../components/ForgotModal";
 
 const Login = () => {
 	const history = useHistory();
-	const params = useParams();
+	const params = new URLSearchParams(document.location.search);
 
 	const [nonVerified, setNonVerified] = useState(false);
 	const [modalOpen, setModalOpen] = useState(false);
@@ -46,8 +46,8 @@ const Login = () => {
 	};
 
 	useEffect(() => {
-		if ("token" in params) {
-			userAPI.verifyUser(params.token).then((res) => {
+		if (params.get("token")) {
+			userAPI.verifyUser(params.get("token")).then((res) => {
 				setFlash(res.flash);
 				setUser(res.user);
 				if (res.user?.auth) {

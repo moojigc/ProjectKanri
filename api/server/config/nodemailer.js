@@ -56,13 +56,19 @@ const sendVerifyEmail = async ({ address, token }) => {
 	</body>
 	`;
 	if (!emailRegex.test(address)) throw new Error("Must be valid email address.");
-	let info = await transporter.sendMail({
-		from: `"ProjectKanri" <projectkanriteam@gmail.com>`,
-		to: address,
-		subject: "Verify your ProjectKanri account",
-		html: body
-	});
-	return info;
+
+	console.log("Trying to send email to " + address);
+	try {
+		const result = await transporter.sendMail({
+			from: `"ProjectKanri" <projectkanriteam@gmail.com>`,
+			to: address,
+			subject: `Verify Your ProjectKanri Account`,
+			html: body
+		});
+		return result;
+	} catch (err) {
+		console.log(`Error sending email to ${address}: ${err}`);
+	}
 };
 
 const sendInviteEmail = async ({ address, token, name }) => {
@@ -74,12 +80,19 @@ const sendInviteEmail = async ({ address, token, name }) => {
 		<p>This link will expire in 1 week.</p>
 	</body>`;
 	if (!emailRegex.test(address)) throw new Error("Must be valid email address.");
-	return await transporter.sendMail({
-		from: `"ProjectKanri" <projectkanriteam@gmail.com>`,
-		to: address,
-		subject: `Project Invite from ${name}`,
-		html: body
-	});
+
+	console.log("Trying to send email to " + address);
+	try {
+		const result = await transporter.sendMail({
+			from: `"ProjectKanri" <projectkanriteam@gmail.com>`,
+			to: address,
+			subject: `Project Invite from ${name}`,
+			html: body
+		});
+		return result;
+	} catch (err) {
+		console.log(`Error sending email to ${address}: ${err}`);
+	}
 };
 
 module.exports = { sendResetEmail, sendVerifyEmail, sendInviteEmail };

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./axios";
 
 /**
  * @param {import('axios').AxiosRequestConfig} options
@@ -20,8 +20,8 @@ export default {
 	deleteTask: async (id) => {
 		return await request({
 			url: `/api/task/${id}`,
-			method: "DELETE",
-		})
+			method: "DELETE"
+		});
 	},
 	getTask: async (id) => {
 		return await request({
@@ -62,12 +62,12 @@ export default {
 			data: {
 				body: body
 			}
-		})
+		});
 	},
 	deleteComment: async (taskId, commentId) => {
 		return await request({
-			url:  `/api/task-comment?commentId=${commentId}&taskId=${taskId}`,
-			method: "DELETE",
-		})
+			url: `/api/task-comment?commentId=${commentId}&taskId=${taskId}`,
+			method: "DELETE"
+		});
 	}
 };

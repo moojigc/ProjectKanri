@@ -26,9 +26,9 @@ services:
       - ./api:/app:rw
       - /app/node_modules
     ports:
-      - 5040:5040
+      - 5051:5051
     environment:
-      - PORT=5040
+      - PORT=5051
       - EMAIL_SECRET=secret2
       - SESS_SECRET=secret
       - NODE_ENV=development
@@ -49,7 +49,7 @@ services:
     environment:
       - PORT=5050
       - NODE_ENV=development
-      - VITE_APP_API_URL=http://api:5040
+      - VITE_APP_API_URL=http://localhost:5051
     ports:
       - 5050:5050 # you should keep these the same in local dev
  

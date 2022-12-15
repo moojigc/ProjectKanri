@@ -1,4 +1,4 @@
-import Axios from "axios";
+import axios from "./axios";
 
 /**
  * Server request handler
@@ -13,7 +13,7 @@ import Axios from "axios";
  */
 const request = async (action, details, method, params) => {
 	try {
-		let { data } = await Axios({
+		let { data } = await axios({
 			url: `/api/${action}/${params || ""}`,
 			method: method || "GET",
 			data: details,

@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "cd client && npm run build",
-    "watch": "nodemon --ignore \"./client/\" server.js",
+    "watch": "nodemon -e js,ts,json server.js",
     "test": "echo \"Error: no test specified\" && exit 0",
     "start": "node server.js"
   },
