@@ -11,7 +11,7 @@ services:
     networks:
       - kanri-net
     volumes:
-      - ./.db:/data/db
+      - db-data:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=projectkanri
       - MONGO_INITDB_ROOT_PASSWORD=password123
@@ -53,3 +53,5 @@ services:
     ports:
       - 5050:5050 # you should keep these the same in local dev
  
+volumes:
+  db-data:

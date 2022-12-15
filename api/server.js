@@ -33,7 +33,7 @@ Store.on("error", (error) => console.log(error));
 
 const app = express();
 // Server up the static files when in production (otherwise React dev server handles that)
-if (productionEnv) app.use(express.static(join(__dirname, "client/dist")));
+if (productionEnv) app.use(express.static(join(__dirname, "client")));
 app.use(express.urlencoded({ extended: true }))
 	.use(express.json())
 	// Allows cross-origin requests from our React dev server
