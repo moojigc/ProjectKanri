@@ -64,7 +64,7 @@ const Welcome = () => {
 		history.push("/dashboard");
 	};
 	return (
-		<Container maxWidth="xl" disableGutters className={classes.welcome}>
+		<div className={classes.welcome}>
 			<AlertModal open={openModal} setOpen={setOpenModal} message={flash?.message || "Default text"} severity={flash?.type} />
 			<Box className="welcome" zIndex={2} position="relative">
 				<Grid container>
@@ -212,11 +212,7 @@ const Welcome = () => {
 							>
 								Login with exisiting account
 							</ButtonLink>
-							<Button
-								style={{ marginTop: isMobile ? "0.5rem" : "initial", }}
-								onClick={handleDemoLogin}
-								variant="contained"
-							>
+							<Button style={{ marginTop: isMobile ? "0.5rem" : "initial" }} onClick={handleDemoLogin} variant="contained">
 								View demo
 							</Button>
 						</Grid>
@@ -224,7 +220,7 @@ const Welcome = () => {
 				)}
 			</form>
 			<SakuraBranches zIndex={0} opacity="0.5" width={isMobile ? "15rem" : "25rem"} />
-		</Container>
+		</div>
 	);
 };
 
