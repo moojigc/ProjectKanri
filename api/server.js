@@ -69,7 +69,7 @@ require("./server/routes/invite-routes")(app);
 
 if (productionEnv)
 	app.get("*", (_req, res) => {
-		res.sendFile(join(__dirname, "client", "build", "index.html"));
+		res.sendFile(join(__dirname, "client", "index.html"));
 	});
 app.listen(PORT, (error) => {
 	if (error) throw error;
