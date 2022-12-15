@@ -167,11 +167,12 @@ module.exports = (router) => {
 		}
 	});
 	router.get("/api/logout", (req, res) => {
-		req.logout();
-		res.json({
-			user: guestUser,
-			...flash("Logged out.", "success"),
-			redirect: "/login"
+		req.logout(() => {
+			res.json({
+				user: guestUser,
+				...flash("Logged out.", "success"),
+				redirect: "/login"
+			});
 		});
 	});
 	router.get("/api/myprofile", async (req, res) => {
