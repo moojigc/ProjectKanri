@@ -50,8 +50,8 @@ const sendVerifyEmail = async ({ address, token }) => {
 	let body = `
 	<body>
 		<h1>Hello from ProjectKanri.</h1>
-		<h2>An account was made at projectkanri.herokuapp.com under the email address <b>${address}</b>.</h2>
-		<p>Please <a href=${LINK}/login/${token}>click this link to verify your account</a>. If this was not you, <strong>please ignore this email</strong>.</p>
+		<p>An account was made at <a href="${LINK}">ProjectKanri</a> under the email address <b>${address}</b>.</p>
+		<p>Please <a href=${LINK}/login?token=${token}>click this link to verify your account</a>. If this was not you, <strong>please ignore this email</strong>.</p>
 		<p>This link will expire in 1 day.</p>
 	</body>
 	`;
